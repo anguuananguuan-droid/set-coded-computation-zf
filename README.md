@@ -1,4 +1,4 @@
-# Set-Coded Turing Machines in Isabelle/ZF
+# Set-Coded Computation in Isabelle/ZF
 
 Tang Ziyi, Version 0.1, July 2026
 
