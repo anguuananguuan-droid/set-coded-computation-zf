@@ -1,0 +1,10 @@
+session Turing_CH = Turing_Machines_ZF +
+  description "
+    A conditional connection between halting and invariance across
+    transitive models of ZFC.
+  "
+  options [timeout=300]
+  sessions
+    Independence_CH
+  theories
+    Turing_CH

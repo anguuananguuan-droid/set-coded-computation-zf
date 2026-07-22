@@ -1,0 +1,7 @@
+session Turing_Machines_ZF = ZF +
+  description "
+    Set-coded Turing-machine semantics in Isabelle/ZF.
+  "
+  options [timeout=300]
+  theories
+    Turing_Machine
