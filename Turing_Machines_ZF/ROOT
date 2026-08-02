@@ -5,3 +5,4 @@ session Turing_Machines_ZF = ZF +
   options [timeout=300]
   theories
     Turing_Machine
+    Turing_Coding

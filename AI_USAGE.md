@@ -1,6 +1,6 @@
 # AI Assistance Disclosure
 
-Tang Ziyi, Version 0.1, July 2026
+Tang Ziyi, Version 0.2, August 2026
 
 ## Purpose
 
@@ -22,6 +22,14 @@ extending that source into the present version. Tang Ziyi continued to work
 directly in Isabelle, reviewed the retained definitions and theorem structure,
 and edited portions of the source. Anthropic Claude Opus was used for
 second-model cross-review.
+
+On 2 August 2026, Tang Ziyi authorised Codex to continue the remaining
+formalisation as a sequence of independently implemented, kernel-checked
+weekly increments. Later development commits may therefore be implemented,
+verified, and pushed by Codex under the standing research and design
+constraints before line-by-line human review. The commit history and this
+disclosure distinguish those increments from the author's earlier direct
+formal work.
 
 The design requirements and architectural choices explicitly set by Tang Ziyi
 included
@@ -71,7 +79,7 @@ not a publication policy.
 
 | System | Period | Role |
 | --- | --- | --- |
-| OpenAI Codex using GPT-5.6-sol | 10-22 July 2026 | Author-directed assistance with Isabelle and AFP source inspection, proof planning, construction of candidate formal source, build diagnosis, refactoring, documentation, and release checks |
+| OpenAI Codex using GPT-5.6-sol | 10 July-2 August 2026 | Author-directed and, from 2 August, standing-authorised work on Isabelle and AFP source inspection, proof planning, formal implementation, build diagnosis, refactoring, documentation, and release checks |
 | Anthropic Claude Opus 4.8 | July 2026 | Second-model cross-review of mathematical scope, locale assumptions, completion claims, and presentation |
 
 Claude's comments were supplied to the development process by the author.
@@ -83,6 +91,7 @@ edit repository files or run Isabelle.
 | Artifact | AI assistance | Author control | Verification |
 | --- | --- | --- | --- |
 | `Turing_Machine.thy` | Codex assisted in extending and revising definitions, theorem statements, proof scripts, names, and theory structure from the initial development into the retained theory | Tang Ziyi wrote and tested the initial formalisation, set the model and structural constraints, reviewed the retained semantic structure, and directly revised portions of the theory | Isabelle2025-2 build |
+| `Turing_Coding.thy` | Codex inspected the Isabelle/ZF and AFP coding libraries, implemented the first instruction-stream encoding, diagnosed proof search, and replaced an unstable automated step with an explicit equality argument | Tang Ziyi authorised the machine-numbering programme and fixed the requirements of minimality, readability, and effective reuse; this increment was implemented under his standing direction rather than line-by-line co-written by him | Isabelle2025-2 build |
 | `Turing_CH.thy` | Codex assisted in constructing the locale interface, the general invariance theorem, the CH instance, and their proofs; Claude supplied cross-review of assumptions and completion claims | Tang Ziyi developed the EPQ reduction, fixed its formal scope, directed its implementation, and decided which conditional claims to retain | Isabelle2025-2 and AFP build |
 | `TURING_INTERNALISATION.md` | Codex inspected Isabelle and AFP sources and assisted in constructing the technical route; Claude cross-reviewed the boundary of the missing theorem | Tang Ziyi determined the target, scope, and final structure and directly revised the text | Design specification only; Module III is not implemented |
 | `README.md` and release files | Codex assisted in drafting, restructuring, and auditing the documentation, build configuration, file selection, licensing presentation, and PDF metadata | Tang Ziyi set the release standard, directed the revisions, edited the text, and approved the public structure | Build, link, file-tree, and formatting checks |

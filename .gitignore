@@ -5,6 +5,8 @@ afp-2026-02-06.tar.gz
 *~
 \#*\#
 tmp/
+.recovery/
+output/
 Mechanical_Mathematics/
 ~$*
 *.class

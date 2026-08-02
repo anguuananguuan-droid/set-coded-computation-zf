@@ -1,6 +1,6 @@
 # Set-Coded Computation in Isabelle/ZF
 
-Tang Ziyi, Version 0.1, July 2026
+Tang Ziyi, Version 0.2, August 2026
 
 This repository contains a set-coded operational semantics for deterministic
 binary Turing machines in Isabelle/ZF and a conditional application to
@@ -22,7 +22,8 @@ instance of the closed non-invariant sentence used by the general theorem.
 
 | Module | Source | Result | Status |
 | --- | --- | --- | --- |
-| I | [`Turing_Machine.thy`](Turing_Machines_ZF/Turing_Machine.thy) | Set-coded operational semantics | Implemented |
+| I.1 | [`Turing_Machine.thy`](Turing_Machines_ZF/Turing_Machine.thy) | Set-coded operational semantics | Implemented |
+| I.2 | [`Turing_Coding.thy`](Turing_Machines_ZF/Turing_Coding.thy) | Injective instruction-stream encoding | First coding gate implemented |
 | II | [`Turing_CH.thy`](Turing_CH/Turing_CH.thy) | Conditional invariance equivalence | Implemented as a locale theorem |
 | III | [Technical note](papers/TURING_INTERNALISATION.md) | Internal halting formula and adequacy | Specified, not implemented |
 
@@ -31,21 +32,27 @@ The checked source dependencies are
 ```text
 ZF
 └── Turing_Machines_ZF.Turing_Machine
+    └── Turing_Machines_ZF.Turing_Coding
 
 Turing_Machines_ZF.Turing_Machine  ──┐
                                      ├── Turing_CH.Turing_CH
 Independence_CH.Definitions_Main ────┘
 ```
 
-The mathematical completion order is
+The two remaining foundational paths are
 
 ```text
-Module I                 Module III                  Module II
-operational semantics -> internalisation theorem -> concrete instantiation
+operational semantics
+├── machine numbering -> universal simulation -> halting undecidability
+└── finite-run formula -> satisfaction adequacy
+
+both paths -> effective invariance reduction
 ```
 
 Module II is proved conditionally inside `halting_sentence`. Module III will
-construct the objects required to interpret that locale.
+construct the internal formula and adequacy theorem required to interpret that
+locale. The coding path will provide the effective machine numbering and the
+undecidability theorem required by the final reduction.
 
 ## Verified results
 
@@ -76,8 +83,19 @@ empty boundary is read as blank, and missing instructions return
 of iterated steps. `halts_on_iff_finite_run` characterises halting by a finite
 run from the initial configuration to a configuration with state `0`.
 
-This module does not yet contain a machine numbering, a universal machine, or
-a proof of halting undecidability.
+### Machine coding
+
+`Turing_Coding.thy` begins the machine-numbering layer. `machine_code_list`
+flattens every instruction into its action and successor-state fields. The
+retained theorems prove that the result is a list of natural numbers and that
+this representation is injective on well-formed machines. This intermediate
+construction follows the corresponding machine-to-list stage in the AFP entry
+`Universal_Turing_Machine`, re-expressed for set-coded Isabelle/ZF objects.
+
+This is not yet a natural-number numbering. The explicit natural pairing,
+natural-list codec, decoder, validity predicate, and primitive-recursiveness
+proofs remain to be constructed. The repository also does not yet contain a
+universal machine or a proof of halting undecidability.
 
 ### Invariance interface
 
