@@ -288,6 +288,39 @@ lemma steps_final [simp]:
   using time unfolding steps_def
   by (rule iterates_triv) simp
 
+lemma steps_final_mono:
+  assumes machine_M: "M \<in> machine"
+    and configuration: "c \<in> configuration"
+    and earlier: "m \<in> nat"
+    and later: "n \<in> nat"
+    and ordered: "m \<le> n"
+    and final: "fst(steps(M,c,m)) = final_state"
+  shows "fst(steps(M,c,n)) = final_state"
+proof -
+  let ?d = "n #- m"
+  let ?z = "steps(M,c,m)"
+  have difference: "?d \<in> nat"
+    by typecheck
+  from add_diff_inverse[OF ordered later] have decomposition:
+    "m #+ ?d = n" .
+  from steps_type[OF machine_M configuration earlier]
+  have reached: "?z \<in> configuration" .
+  from reached have pair:
+    "\<langle>fst(?z),snd(?z)\<rangle> = ?z"
+    unfolding configuration_def by (rule Pair_fst_snd_eq)
+  from pair final have final_pair:
+    "?z = \<langle>final_state,snd(?z)\<rangle>"
+    by simp
+  from steps_final[OF difference, of M "snd(?z)"] final_pair
+  have absorbed: "steps(M,?z,?d) = ?z"
+    by simp
+  from steps_add[OF earlier difference, of M c]
+  have split:
+    "steps(M,c,m #+ ?d) = steps(M,?z,?d)" .
+  from decomposition split absorbed final show ?thesis
+    by simp
+qed
+
 definition finite_run :: "[i,i,i] \<Rightarrow> o" where
   "finite_run(M,n,r) \<equiv>
     relation(r) \<and>

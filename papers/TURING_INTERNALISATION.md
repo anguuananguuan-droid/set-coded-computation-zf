@@ -52,8 +52,10 @@ prove satisfaction adequacy.
 
 Module III ends with a concrete interpretation of `halting_sentence`.
 The machine layer now proves the self-input halting set undecidable. An
-effective hardwiring reduction to blank-input halting and the subsequent
-effective reduction to invariance belong to a later computability layer.
+explicit machine-level hardwiring theorem now reduces arbitrary-input halting
+to blank-input halting. Certifying the induced natural-code transformation as
+effective, and the subsequent effective reduction to invariance, belong to a
+later computability layer.
 Universality remains a separate infrastructure objective.
 
 ## 2. COMPLETION CONTRACT
@@ -148,8 +150,16 @@ not tm_decidable(self_halting),
 where each machine receives the unary numeral encoding of its own number.
 This does not by itself establish the third item above, because the current
 `halting_sentence` interface uses blank-input halting. A finite hardwiring
-transformation and its effective code map must still connect the two
-predicates. These obligations lie beyond Module III.
+transformation now proves
+
+```text
+M in machine and x in list(symbol) ==>
+  (halts_blank(hardwire(M,x)) <-> halts_on(M,x)).
+```
+
+The remaining obligation is to certify the induced transformation on natural
+machine codes as effective and to formalise the corresponding preimage
+reduction. This obligation lies beyond Module III.
 
 ## 3. ADEQUACY ROUTES
 

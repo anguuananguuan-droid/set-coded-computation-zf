@@ -1,6 +1,6 @@
 # Set-Coded Computation in Isabelle/ZF
 
-Tang Ziyi, Version 0.5, August 2026
+Tang Ziyi, Version 0.6, August 2026
 
 This repository contains a set-coded operational semantics for deterministic
 binary Turing machines in Isabelle/ZF and a conditional application to
@@ -28,7 +28,7 @@ instance of the closed non-invariant sentence used by the general theorem.
 | I.4 | [`Turing_Evaluator.thy`](Turing_Machines_ZF/Turing_Evaluator.thy) | Numeric evaluator and semantic simulation | Implemented |
 | I.5 | [`Turing_Evaluator_Primrec.thy`](Turing_Machines_ZF/Turing_Evaluator_Primrec.thy) | Primitive-recursive evaluator certificates | Implemented through bounded blank-input halting |
 | I.6 | [`Turing_Decidability.thy`](Turing_Machines_ZF/Turing_Decidability.thy) | Decision semantics and diagonal languages | Implemented |
-| I.7 | [`Turing_Transformations.thy`](Turing_Machines_ZF/Turing_Transformations.thy) | Finite rejection transform and self-halting undecidability | Implemented |
+| I.7 | [`Turing_Transformations.thy`](Turing_Machines_ZF/Turing_Transformations.thy) | Rejection transform, self-halting undecidability, and semantic input hardwiring | Implemented |
 | II | [`Turing_CH.thy`](Turing_CH/Turing_CH.thy) | Conditional invariance equivalence | Implemented as a locale theorem |
 | III | [Technical note](papers/TURING_INTERNALISATION.md) | Internal halting formula and adequacy | Specified, not implemented |
 
@@ -53,7 +53,8 @@ The remaining completion paths are
 
 ```text
 self-input halting undecidability
-  -> effective hardwiring of an input -> blank-input halting undecidability
+  -> semantic input hardwiring
+  -> primitive-recursive code transformation -> blank-input halting undecidability
 
 machine numbering -> primitive-recursive numeric evaluator
   -> Turing-machine realisation and universal simulation
@@ -68,9 +69,10 @@ blank-input undecidability + satisfaction adequacy + formula-code effectivity
 Module II is proved conditionally inside `halting_sentence`. Module III will
 construct the internal formula and adequacy theorem required to interpret that
 locale. Module I now proves that its self-input halting set is not decidable by
-any machine in the formalised model. The final invariance reduction still
-requires a verified effective hardwiring transformation from self-input to
-blank-input halting, formula-level effectivity, and Module III adequacy.
+any machine in the formalised model and supplies a verified machine-level
+hardwiring transformation from arbitrary input to blank input. The final
+invariance reduction still requires an effective natural-code implementation
+of this transformation, formula-level effectivity, and Module III adequacy.
 Universal simulation remains a separate reusable infrastructure target.
 
 ## Verified results
@@ -201,8 +203,23 @@ not tm_decidable(self_halting).
 ```
 
 This is an unconditional undecidability theorem for self-input halting. A
-reduction to the repository's blank-input halting predicate and a universal
-machine remain open.
+universal machine remains open.
+
+The same theory constructs `hardwire(M,x)` by compiling a finite loader,
+shifting every non-final state of `M`, and appending the shifted instruction
+table. The proof first establishes exact execution of the compiled loader,
+then proves one-step and finite-step simulation of the shifted machine. Its
+semantic endpoint is
+
+```text
+M in machine and x in list(symbol) ==>
+  (halts_blank(hardwire(M,x)) <-> halts_on(M,x)).
+```
+
+Thus arbitrary-input halting has been reduced to blank-input halting at the
+level of concrete set-coded machines. The induced transformation on natural
+machine codes has not yet been certified primitive recursive or realised by a
+Turing machine, so blank-input halting undecidability is not yet claimed.
 
 ### Invariance interface
 
@@ -227,8 +244,8 @@ Taking `sigma` to be CH gives the current CH instance. This is a semantic
 equivalence under the named locale assumptions, not yet an undecidability
 theorem. The machine layer now proves self-input halting undecidable. An
 effective reduction for the present blank-input interface additionally
-requires effective hardwiring of numeral inputs, effective closed-formula
-encoding, and the adequacy theorem of Module III.
+requires a verified effective code map for the completed semantic hardwiring,
+effective closed-formula encoding, and the adequacy theorem of Module III.
 
 The accompanying [EPQ paper](papers/EPQ.pdf) gives the set-theoretic motivation
 for this application.
