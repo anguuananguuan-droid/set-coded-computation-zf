@@ -1,6 +1,6 @@
 # Set-Coded Computation in Isabelle/ZF
 
-Tang Ziyi, Version 0.3, August 2026
+Tang Ziyi, Version 0.5, August 2026
 
 This repository contains a set-coded operational semantics for deterministic
 binary Turing machines in Isabelle/ZF and a conditional application to
@@ -23,35 +23,55 @@ instance of the closed non-invariant sentence used by the general theorem.
 | Module | Source | Result | Status |
 | --- | --- | --- | --- |
 | I.1 | [`Turing_Machine.thy`](Turing_Machines_ZF/Turing_Machine.thy) | Set-coded operational semantics | Implemented |
-| I.2 | [`Turing_Coding.thy`](Turing_Machines_ZF/Turing_Coding.thy) | Set-theoretic machine numbering | Implemented; effectivity remains open |
+| I.2 | [`Turing_Coding.thy`](Turing_Machines_ZF/Turing_Coding.thy) | Set-theoretic machine numbering | Implemented |
+| I.3 | [`Turing_Primrec.thy`](Turing_Machines_ZF/Turing_Primrec.thy) | Primitive-recursive arithmetic, pairing, and coded lists | Implemented |
+| I.4 | [`Turing_Evaluator.thy`](Turing_Machines_ZF/Turing_Evaluator.thy) | Numeric evaluator and semantic simulation | Implemented |
+| I.5 | [`Turing_Evaluator_Primrec.thy`](Turing_Machines_ZF/Turing_Evaluator_Primrec.thy) | Primitive-recursive evaluator certificates | Implemented through bounded blank-input halting |
+| I.6 | [`Turing_Decidability.thy`](Turing_Machines_ZF/Turing_Decidability.thy) | Decision semantics and diagonal languages | Implemented |
+| I.7 | [`Turing_Transformations.thy`](Turing_Machines_ZF/Turing_Transformations.thy) | Finite rejection transform and self-halting undecidability | Implemented |
 | II | [`Turing_CH.thy`](Turing_CH/Turing_CH.thy) | Conditional invariance equivalence | Implemented as a locale theorem |
 | III | [Technical note](papers/TURING_INTERNALISATION.md) | Internal halting formula and adequacy | Specified, not implemented |
 
 The checked source dependencies are
 
 ```text
-ZF
-└── Turing_Machines_ZF.Turing_Machine
-    └── Turing_Machines_ZF.Turing_Coding ──┐
-                                           ├── Turing_CH.Turing_CH
-Independence_CH.Definitions_Main ──────────┘
+ZF-Induct.Primrec ────────────────────────┐
+                                         │
+ZF ── Turing_Machine ── Turing_Coding    │
+                              ├── Turing_Primrec ◄──┘
+                              │       └── Turing_Evaluator
+                              │               └── Turing_Evaluator_Primrec
+                              │
+                              ├── Turing_Decidability
+                              │       └── Turing_Transformations
+                              │
+                              └──────────────┐
+Independence_CH.Definitions_Main ────────────┴── Turing_CH
 ```
 
-The two remaining foundational paths are
+The remaining completion paths are
 
 ```text
-operational semantics
-├── effective numeric operations -> universal simulation -> halting undecidability
-└── finite-run formula -> satisfaction adequacy
+self-input halting undecidability
+  -> effective hardwiring of an input -> blank-input halting undecidability
 
-both paths -> effective invariance reduction
+machine numbering -> primitive-recursive numeric evaluator
+  -> Turing-machine realisation and universal simulation
+
+primitive-recursive bounded halting
+  -> internal first-order formula -> satisfaction adequacy
+
+blank-input undecidability + satisfaction adequacy + formula-code effectivity
+  -> effective invariance reduction
 ```
 
 Module II is proved conditionally inside `halting_sentence`. Module III will
 construct the internal formula and adequacy theorem required to interpret that
-locale. The coding path now provides a set-theoretic numbering. It must still
-establish effective numeric operations, universal simulation, and the
-undecidability theorem required by the final reduction.
+locale. Module I now proves that its self-input halting set is not decidable by
+any machine in the formalised model. The final invariance reduction still
+requires a verified effective hardwiring transformation from self-input to
+blank-input halting, formula-level effectivity, and Module III adequacy.
+Universal simulation remains a separate reusable infrastructure target.
 
 ## Verified results
 
@@ -102,11 +122,87 @@ decode_machine_surj:
   nat ->> machine
 ```
 
-Thus the development now has an explicit natural-number numbering and a total
-decoder. This is a set-theoretic codec: the current proofs do not yet show that
-its numeric operations belong to Isabelle/ZF's object-level `prim_rec` class.
-The repository also does not yet contain a universal evaluator or a proof of
-halting undecidability.
+Thus the development has an explicit natural-number numbering and a total
+decoder. The following three theories establish a primitive-recursive numeric
+evaluator over this numbering.
+
+### Primitive-recursive numeric evaluation
+
+`Turing_Primrec.thy` constructs object-level `prim_rec` witnesses for the
+arithmetic, Cantor projections, and coded-list operations used by evaluation.
+`Turing_Evaluator.thy` then defines natural-number codes for tapes and
+configurations and implements numeric scanning, update, instruction fetch,
+one-step execution, and finite iteration.
+
+The central commuting theorem is
+
+```text
+e in nat and c in configuration ==>
+  code_step(e,encode_configuration(c))
+    = encode_configuration(step(decode_machine(e),c)).
+```
+
+It holds for every natural number `e`, including non-canonical instruction
+streams, because instruction decoding and numeric instruction normalisation
+use the same default instruction. Induction lifts the result from one step to
+every finite number of steps.
+
+`Turing_Evaluator_Primrec.thy` supplies explicit witnesses in Isabelle/ZF's
+object-level `prim_rec` class for this complete numeric data flow. In
+particular, it proves certificates for `code_step`, `code_steps`, and the
+bounded blank-input halting predicate. The semantic endpoint is
+
+```text
+e in nat ==>
+  (halts_blank(decode_machine(e))
+    <-> (exists n in nat. code_halts_blank_at(n,e) = 1)).
+```
+
+This proves that the bounded computation predicate is primitive recursive. It
+does not yet provide a Turing machine implementing the evaluator or a
+universal Turing machine. Unbounded self-input halting is treated separately
+by a direct machine-level diagonal argument.
+
+### Decision semantics and diagonalisation
+
+`Turing_Decidability.thy` defines unary numeral inputs, final-tape output,
+decision semantics, and the self-input halting set
+
+```text
+self_halting =
+  {e in nat. halts_on(decode_machine(e),numeral_input(e))}.
+```
+
+The machine numbering first yields the unconditional Cantor-style result
+
+```text
+not tm_decidable(diagonal_rejection).
+```
+
+`Turing_Transformations.thy` then supplies the operational content needed for
+self-halting. Given a machine `M`, `rejecting_machine(M)` is a finite machine
+that redirects every explicit transition to the final state, fills every
+missing instruction slot that would otherwise halt by totalisation, and tests
+the resulting output at a fresh bounded control state. It halts exactly when
+`M` rejects:
+
+```text
+halts_on(rejecting_machine(M),numeral_input(n))
+  <-> rejects_number(M,n).
+```
+
+The proof establishes a state bound, one-step and finite-step semantic
+projection, and the invariant that every actual final configuration of the
+transformed machine scans blank. Interpreting the abstract diagonal locale
+with this concrete transform gives
+
+```text
+not tm_decidable(self_halting).
+```
+
+This is an unconditional undecidability theorem for self-input halting. A
+reduction to the repository's blank-input halting predicate and a universal
+machine remain open.
 
 ### Invariance interface
 
@@ -129,8 +225,10 @@ e in nat
 
 Taking `sigma` to be CH gives the current CH instance. This is a semantic
 equivalence under the named locale assumptions, not yet an undecidability
-theorem. An effective reduction additionally requires effective machine and
-formula encodings and a formal proof of halting undecidability.
+theorem. The machine layer now proves self-input halting undecidable. An
+effective reduction for the present blank-input interface additionally
+requires effective hardwiring of numeral inputs, effective closed-formula
+encoding, and the adequacy theorem of Module III.
 
 The accompanying [EPQ paper](papers/EPQ.pdf) gives the set-theoretic motivation
 for this application.
@@ -147,10 +245,12 @@ e in nat and transitive_zfc_model(A)
   <-> halts_blank(decode_machine(e))).
 ```
 
-The first machine-specific gate is the adequacy of a first-order formula for
-one execution step. Finite-run or reachability adequacy, the internal halting
-formula, machine-code quotation, and the concrete locale interpretation follow
-from that gate.
+The completed numeric layer supplies a smaller candidate gate: construct a
+first-order formula representing `code_halts_blank_at(n,e)` and prove that its
+satisfaction agrees with the verified primitive-recursive predicate. Merely
+proving membership in `prim_rec` does not construct this formula or establish
+model absoluteness. The direct set-coded route through a first-order formula
+for one execution step remains available as an alternative.
 
 The [technical note](papers/TURING_INTERNALISATION.md) records the theorem
 contracts, relevant `Transitive_Models` infrastructure, two candidate

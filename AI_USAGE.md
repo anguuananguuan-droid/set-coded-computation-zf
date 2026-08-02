@@ -1,6 +1,6 @@
 # AI Assistance Disclosure
 
-Tang Ziyi, Version 0.3, August 2026
+Tang Ziyi, Version 0.5, August 2026
 
 ## Purpose
 
@@ -52,7 +52,7 @@ included
 These constraints governed the candidate implementations produced with Codex
 and the subsequent decisions to retain, rewrite, simplify, or remove them.
 Substantial Codex-generated or Codex-drafted definitions, theorem statements,
-and proof scripts are retained in all three Isabelle theories.
+and proof scripts are retained throughout the Isabelle sources.
 
 ## Policy basis
 
@@ -79,7 +79,7 @@ not a publication policy.
 
 | System | Period | Role |
 | --- | --- | --- |
-| OpenAI Codex using GPT-5.6-sol | 10 July-2 August 2026 | Author-directed and, from 2 August, standing-authorised work on Isabelle and AFP source inspection, proof planning, formal implementation, build diagnosis, refactoring, documentation, and release checks |
+| OpenAI Codex using GPT-5.6-sol | From 10 July 2026 | Author-directed and, from 2 August, standing-authorised work on Isabelle and AFP source inspection, proof planning, formal implementation, build diagnosis, refactoring, documentation, and release checks |
 | Anthropic Claude Opus 4.8 | July 2026 | Second-model cross-review of mathematical scope, locale assumptions, completion claims, and presentation |
 
 Claude's comments were supplied to the development process by the author.
@@ -92,6 +92,11 @@ edit repository files or run Isabelle.
 | --- | --- | --- | --- |
 | `Turing_Machine.thy` | Codex assisted in extending and revising definitions, theorem statements, proof scripts, names, and theory structure from the initial development into the retained theory | Tang Ziyi wrote and tested the initial formalisation, set the model and structural constraints, reviewed the retained semantic structure, and directly revised portions of the theory | Isabelle2025-2 build |
 | `Turing_Coding.thy` | Codex inspected the Isabelle/ZF coding libraries and implemented the explicit natural pairing, natural-list codec, instruction codec, total machine decoder, canonical machine-code set, round-trip theorems, bijective numbering, and decoder surjectivity. Codex subagents performed independent read-only design and proof audits. | Tang Ziyi authorised the machine-numbering programme and fixed the requirements of minimality, readability, and effective reuse; this increment was implemented under his standing direction rather than line-by-line co-written by him | Isabelle2025-2 build and independent Codex proof-structure audits |
+| `Turing_Primrec.thy` | Codex implemented and verified object-level primitive-recursive witnesses for arithmetic, Cantor pairing projections, and coded natural-list operations. Independent Codex subagents reviewed the construction and parameter conventions. | Tang Ziyi authorised the effective coding programme and its separation from the operational semantics; this increment was implemented under his standing direction before line-by-line human review | Isabelle2025-2 build and independent Codex proof-structure audits |
+| `Turing_Evaluator.thy` | Codex implemented the numeric tape and configuration encodings, total numeric evaluator, one-step and finite-step commuting theorems, and the bounded blank-input halting characterisation. | Tang Ziyi fixed the set-coded machine model, totalisation policy, architectural separation, and requirement that numeric and semantic layers be connected by explicit adequacy theorems | Isabelle2025-2 build and independent Codex proof-structure audits |
+| `Turing_Evaluator_Primrec.thy` | Codex implemented explicit `prim_rec` witnesses for numeric scan, update, fetch, step, finite iteration, initial configuration coding, and bounded blank-input halting. Codex subagents independently audited selector directions, `COMP` arguments, `PREC` projections, and arbitrary-tail contracts. | Tang Ziyi authorised autonomous weekly completion under the repository's mathematical and presentation constraints; this increment has not yet received his line-by-line review | Isabelle2025-2 build and independent Codex proof-structure audits |
+| `Turing_Decidability.thy` | Codex implemented unary numeral inputs, output and decision semantics, an unconditional diagonal-rejection theorem, and the abstract self-halting diagonal interface. | Tang Ziyi authorised the formal computability programme and required unfinished closure obligations to remain explicit until concretely discharged; this increment has not yet received his line-by-line review | Isabelle2025-2 build and independent Codex mathematical review |
+| `Turing_Transformations.thy` | Codex designed and implemented the finite rejection transformer, including control-state bounds, completion of missing instruction slots, semantic projection, the final-output invariant, the halting-rejection equivalence, and the unconditional self-halting undecidability theorem. Codex subagents independently reviewed the boundary conditions and proof architecture. | Tang Ziyi authorised autonomous completion under the repository's minimality, readability, and engineering-truth constraints; this increment has not yet received his line-by-line review | Isabelle2025-2 build and independent Codex adversarial review |
 | `Turing_CH.thy` | Codex assisted in constructing the locale interface, the general invariance theorem, the CH instance, and their proofs; it later connected the verified machine decoder and removed the corresponding locale assumption. Claude supplied cross-review of assumptions and completion claims. | Tang Ziyi developed the EPQ reduction, fixed its formal scope, directed its implementation, and decided which conditional claims to retain | Isabelle2025-2 and AFP build |
 | `TURING_INTERNALISATION.md` | Codex inspected Isabelle and AFP sources and assisted in constructing the technical route; Claude cross-reviewed the boundary of the missing theorem | Tang Ziyi determined the target, scope, and final structure and directly revised the text | Design specification only; Module III is not implemented |
 | `README.md` and release files | Codex assisted in drafting, restructuring, and auditing the documentation, build configuration, file selection, licensing presentation, and PDF metadata | Tang Ziyi set the release standard, directed the revisions, edited the text, and approved the public structure | Build, link, file-tree, and formatting checks |
@@ -104,11 +109,13 @@ edit repository files or run Isabelle.
 - The retained theories build with Isabelle2025-2 and the AFP snapshot dated
   6 February 2026. Kernel acceptance is used as a check of formal derivability,
   not as evidence of novelty or of the adequacy of unfinished interfaces.
-- Mathematical status is stated explicitly. The set-theoretic codec and its
-  round-trip theorems are complete. The required code-level numeric operations
-  have not yet been certified primitive recursive; the internal halting
-  formula and adequacy theorem, universality, and halting undecidability are
-  not claimed as completed.
+- Mathematical status is stated explicitly. The set-theoretic codec, numeric
+  evaluator, simulation theorems, and object-level primitive-recursive
+  certificates through bounded blank-input halting are complete. The
+  self-input halting set is proved undecidable by a concrete finite machine
+  transformation and diagonal argument. A reduction to blank-input halting, a
+  Turing machine realising the numeric evaluator, the internal halting formula
+  and adequacy theorem, and universality are not claimed as completed.
 - External references and library claims retained after AI-assisted work were
   checked against the cited sources or the installed Isabelle and AFP source
   during the release audit. The author remains responsible for their accuracy.

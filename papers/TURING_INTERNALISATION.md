@@ -33,9 +33,28 @@ with the machine, input, and time typing conditions stated in the formal
 theorem. The finite witness `r` is the object whose existence must be
 recognised by a first-order formula.
 
+The verified numeric basis now also provides
+
+```text
+e in nat implies
+  (halts_blank(decode_machine(e))
+    <->
+  there exists n in nat such that code_halts_blank_at(n,e) = 1),
+
+pr_code_halts_blank_at in prim_rec.
+```
+
+Thus blank-input halting already has the external shape of an existential
+quantifier over a primitive-recursive bounded predicate. Membership in
+`prim_rec` is not itself a first-order formula or an absoluteness theorem; the
+remaining task is to represent this particular witness inside the model and
+prove satisfaction adequacy.
+
 Module III ends with a concrete interpretation of `halting_sentence`.
-Universality, halting undecidability, and an effective reduction to invariance
-belong to a later computability layer.
+The machine layer now proves the self-input halting set undecidable. An
+effective hardwiring reduction to blank-input halting and the subsequent
+effective reduction to invariance belong to a later computability layer.
+Universality remains a separate infrastructure objective.
 
 ## 2. COMPLETION CONTRACT
 
@@ -101,11 +120,14 @@ decode_machine_surj:
   nat ->> machine
 ```
 
-The numbering is presently set-theoretic. The required code-level numeric
-operations have not yet been certified in the object-level `prim_rec` class,
-and the decoder graph has not yet been represented internally. Closing the
-formula also requires a verified quotation of the natural number or
-hereditarily finite set representing the decoded machine.
+The numeric evaluator over the chosen numbering is now primitive recursive at
+the object level. Explicit `prim_rec` witnesses have been verified for the
+numeric coding operations used by evaluation, one-step evaluation, finite
+iteration, and bounded blank-input halting. Effectivity of the machine encoder,
+decoder, and code transformations has not yet been formalised. The graphs of
+the verified evaluator witnesses have not yet been represented by first-order
+formulas inside a transitive model. Closing the formula also requires a
+verified quotation of the natural-number parameter `e`.
 
 ### 2.3 Boundary of Module III
 
@@ -117,9 +139,48 @@ The semantic equivalence becomes a many-one reduction only after proving
 - a formal reduction between the corresponding sets of natural-number codes
 
 Surjectivity of a decoder is not sufficient because its enumeration may be
-non-computable. These obligations lie beyond Module III.
+non-computable. Module I now proves
 
-## 3. ONE-STEP ADEQUACY
+```text
+not tm_decidable(self_halting),
+```
+
+where each machine receives the unary numeral encoding of its own number.
+This does not by itself establish the third item above, because the current
+`halting_sentence` interface uses blank-input halting. A finite hardwiring
+transformation and its effective code map must still connect the two
+predicates. These obligations lie beyond Module III.
+
+## 3. ADEQUACY ROUTES
+
+### 3.1 Primitive-recursive bounded halting
+
+The numeric route starts from the completed function
+`code_halts_blank_at(n,e)`. Construct a formula `halts_at_fm` with two free
+variables and prove the schematic contract
+
+```text
+assumes transitive_zfc_model(A)
+    and n in nat
+    and e in nat
+shows
+  (A, [n,e] satisfies halts_at_fm)
+    <-> code_halts_blank_at(n,e) = 1.
+```
+
+The target closed sentence is then obtained by quoting `e` and existentially
+quantifying `n`. The external theorem `halts_blank_iff_code_halts_at` supplies
+the final semantic step.
+
+This route requires first-order graph formulas and satisfaction theorems for
+the primitive-recursive basis `SC`, `CONSTANT`, `PROJ`, `COMP`, and `PREC`, or
+an explicit formula construction for the particular witness
+`pr_code_halts_blank_at`. The `PREC` case must be connected to the existing
+`is_wfrec_fm` or finite-function infrastructure. The inductive set
+`prim_rec` contains semantic functions rather than a canonical syntax tree, so
+its membership theorem alone cannot be treated as a formula compiler.
+
+### 3.2 Set-coded one-step adequacy
 
 The first machine-specific theorem is an adequacy theorem for one execution
 step. Define a relativised relation `is_step` and a first-order formula
@@ -139,7 +200,7 @@ The construction must cover every operation used by `step`: scanning, tape
 update, instruction addressing, instruction lookup, list operations,
 natural-number arithmetic, and ordered pairs.
 
-Both candidate constructions of finite computation depend on this theorem.
+Both set-coded constructions of finite computation depend on this theorem.
 Reflexive-transitive closure can supply finite-path reasoning, but it cannot
 construct or justify the one-step relation.
 
@@ -198,7 +259,7 @@ finite function, its recurrence condition, and the two endpoint conditions.
 
 ### 5.2 Reflexive-transitive closure
 
-The alternative first proves a generic reachability formula
+The alternative instantiates the existing generic reachability formula
 
 ```text
 A satisfies Reach(R,x,y)
@@ -226,8 +287,22 @@ one-step adequacy theorem in Section 3.
 
 ## 6. IMPLEMENTATION ORDER
 
+The numeric route has the shorter current dependency chain.
+
 ```text
-generic reachability formula
+formulae for the primitive-recursive basis
+  -> graph-formula closure under COMP and PREC
+  -> formula for code_halts_blank_at(n,e)
+  -> bounded-predicate satisfaction adequacy
+  -> existential halting formula with quoted e
+  -> closed halt_fm(e)
+  -> interpretation of halting_sentence
+```
+
+The alternative set-coded route is
+
+```text
+instantiate existing reachability formula
   -> transitive-ZFC bridge for list absoluteness
   -> length and slot formulae
   -> scan, update, fetch, and step formulae
