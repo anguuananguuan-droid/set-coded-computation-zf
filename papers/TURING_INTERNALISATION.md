@@ -53,8 +53,11 @@ prove satisfaction adequacy.
 Module III ends with a concrete interpretation of `halting_sentence`.
 The machine layer now proves the self-input halting set undecidable. An
 explicit machine-level hardwiring theorem now reduces arbitrary-input halting
-to blank-input halting. Certifying the induced natural-code transformation as
-effective, and the subsequent effective reduction to invariance, belong to a
+to blank-input halting. The induced natural-code transformation now has an
+explicit object-level `prim_rec` witness and a proved pointwise reduction from
+self-input to blank-input halting. Connecting that witness to machine
+realisation or to closure of `tm_decidable` under primitive-recursive
+preimages, and the subsequent code-level reduction to invariance, belong to a
 later computability layer.
 Universality remains a separate infrastructure objective.
 
@@ -125,17 +128,18 @@ decode_machine_surj:
 The numeric evaluator over the chosen numbering is now primitive recursive at
 the object level. Explicit `prim_rec` witnesses have been verified for the
 numeric coding operations used by evaluation, one-step evaluation, finite
-iteration, and bounded blank-input halting. Effectivity of the machine encoder,
-decoder, and code transformations has not yet been formalised. The graphs of
-the verified evaluator witnesses have not yet been represented by first-order
-formulas inside a transitive model. Closing the formula also requires a
-verified quotation of the natural-number parameter `e`.
+iteration, bounded blank-input halting, and natural-code hardwiring. The
+verified evaluator and hardwiring witnesses have not yet been connected to the
+operational model by a theorem realising the relevant `prim_rec` functions as
+set-coded Turing machines. Their graphs have not yet been represented by
+first-order formulas inside a transitive model. Closing the formula also
+requires a verified quotation of the natural-number parameter `e`.
 
 ### 2.3 Boundary of Module III
 
 The semantic equivalence becomes a many-one reduction only after proving
 
-- effective encodings of machines and closed formulas
+- a concrete natural-number coding of closed formulas
 - computability of `e |-> Or(halt_fm(e),sigma)` at formula-code level
 - undecidability of blank-input halting for the chosen numbering
 - a formal reduction between the corresponding sets of natural-number codes
@@ -157,9 +161,12 @@ M in machine and x in list(symbol) ==>
   (halts_blank(hardwire(M,x)) <-> halts_on(M,x)).
 ```
 
-The remaining obligation is to certify the induced transformation on natural
-machine codes as effective and to formalise the corresponding preimage
-reduction. This obligation lies beyond Module III.
+The induced self-hardwiring transformation on natural machine codes is now
+proved primitive recursive, and its pointwise membership equivalence is
+formalised. The remaining obligation is operational: realise the
+primitive-recursive transformation by a set-coded Turing machine, or prove the
+corresponding closure theorem for `tm_decidable`, before deriving blank-input
+halting undecidability. This obligation lies beyond Module III.
 
 ## 3. ADEQUACY ROUTES
 

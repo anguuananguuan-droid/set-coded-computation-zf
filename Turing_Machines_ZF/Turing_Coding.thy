@@ -454,6 +454,36 @@ proof (induct n rule: complete_induct_rule)
   qed
 qed
 
+lemma length_nat_list_encode_le:
+  assumes list: "l \<in> list(nat)"
+  shows "length(l) \<le> nat_list_encode(l)"
+  using list
+proof (induct l rule: list.induct)
+  case Nil
+  then show ?case by simp
+next
+  case (Cons a l)
+  from Cons.hyps(2) have tail_code: "nat_list_encode(l) \<in> nat"
+    by (rule nat_list_encode_type)
+  from pair_code_second_le[OF Cons.hyps(1) tail_code] have code_bound:
+    "nat_list_encode(l) \<le> pair_code(a,nat_list_encode(l))" .
+  from Cons.hyps(3) code_bound have length_bound:
+    "length(l) \<le> pair_code(a,nat_list_encode(l))"
+    by (rule le_trans)
+  from length_bound show ?case by simp
+qed
+
+lemma length_nat_list_decode_le:
+  assumes natural: "n \<in> nat"
+  shows "length(nat_list_decode(n)) \<le> n"
+proof -
+  from natural have decoded: "nat_list_decode(n) \<in> list(nat)"
+    by (rule nat_list_decode_type)
+  from length_nat_list_encode_le[OF decoded]
+    nat_list_encode_decode[OF natural]
+  show ?thesis by simp
+qed
+
 theorem nat_list_encode_bij:
   "(\<lambda>l\<in>list(nat). nat_list_encode(l))
     \<in> bij(list(nat),nat)"

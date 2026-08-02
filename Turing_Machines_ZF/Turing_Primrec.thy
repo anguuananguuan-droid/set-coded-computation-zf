@@ -93,6 +93,20 @@ next
     unfolding pr_add_def by (simp add: PREC_succ SC)
 qed
 
+definition pr_double :: i where
+  "pr_double \<equiv> COMP(pr_add,[PROJ(0),PROJ(0)])"
+
+lemma pr_double_in_prim_rec [TC]:
+  "pr_double \<in> prim_rec"
+  unfolding pr_double_def by typecheck
+
+lemma pr_double_apply:
+  assumes natural: "n \<in> nat"
+    and tail: "l \<in> list(nat)"
+  shows "pr_double`Cons(n,l) = n #+ n"
+  unfolding pr_double_def using natural tail
+  by (simp add: COMP_2 PROJ_0 pr_add_apply)
+
 definition pr_reverse_diff :: i where
   "pr_reverse_diff \<equiv>
     PREC(PROJ(0),COMP(pr_pred,[PROJ(0)]))"
@@ -136,6 +150,33 @@ lemma pr_diff_apply:
   unfolding pr_diff_def
   using first second tail
   by (simp add: COMP_2 pr_reverse_diff_apply PROJ_0)
+
+lemma succ_diff_succ:
+  assumes index: "j \<in> nat"
+    and total: "n \<in> nat"
+    and bounded: "succ(j) \<le> n"
+  shows "succ(n #- succ(j)) = n #- j"
+proof -
+  from bounded have less: "j < n"
+    by (rule succ_leE)
+  from total index have comparison:
+    "\<not> n \<le> j \<longleftrightarrow> j < n"
+    using not_le_iff_lt[OF nat_into_Ord nat_into_Ord] by simp
+  from less comparison have not_le: "\<not> n \<le> j"
+    by simp
+  from index total not_le have nonzero: "n #- j \<noteq> 0"
+    by (simp add: diff_is_0_lemma)
+  have difference: "n #- j \<in> nat"
+    by typecheck
+  from difference show ?thesis
+  proof (cases rule: natE)
+    case 0
+    with nonzero show ?thesis by contradiction
+  next
+    case (succ d)
+    then show ?thesis by (simp add: diff_succ_eq_pred)
+  qed
+qed
 
 subsection \<open>Conditionals\<close>
 

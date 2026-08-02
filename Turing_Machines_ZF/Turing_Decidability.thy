@@ -160,6 +160,22 @@ proof
   then show False by blast
 qed
 
+subsection \<open>Blank-Input Halting\<close>
+
+definition blank_halting :: i where
+  "blank_halting \<equiv>
+    {e\<in>nat. halts_blank(decode_machine(e))}"
+
+lemma blank_halting_subset_nat:
+  "blank_halting \<subseteq> nat"
+  unfolding blank_halting_def by blast
+
+lemma blank_halting_iff:
+  assumes natural: "e \<in> nat"
+  shows "e \<in> blank_halting \<longleftrightarrow>
+    halts_blank(decode_machine(e))"
+  using natural unfolding blank_halting_def by simp
+
 subsection \<open>Self-Halting\<close>
 
 definition self_halting :: i where

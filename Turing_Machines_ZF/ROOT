@@ -1,7 +1,7 @@
 session Turing_Machines_ZF = ZF +
   description "
-    Set-coded Turing-machine semantics, numbering, evaluation, and
-    diagonalisation in Isabelle/ZF.
+    Set-coded Turing-machine semantics, numbering, evaluation,
+    transformations, and diagonalisation in Isabelle/ZF.
   "
   options [timeout=300]
   sessions
@@ -14,3 +14,4 @@ session Turing_Machines_ZF = ZF +
     Turing_Evaluator_Primrec
     Turing_Decidability
     Turing_Transformations
+    Turing_Transformations_Primrec
