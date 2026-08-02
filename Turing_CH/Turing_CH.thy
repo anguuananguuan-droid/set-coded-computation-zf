@@ -6,7 +6,7 @@ section \<open>Halting and ZFC-Invariance\<close>
 
 theory Turing_CH
   imports
-    "Turing_Machines_ZF.Turing_Machine"
+    "Turing_Machines_ZF.Turing_Coding"
     "Independence_CH.Definitions_Main"
 begin
 
@@ -57,11 +57,8 @@ proof -
 qed
 
 locale halting_sentence =
-  fixes decode_machine :: "i \<Rightarrow> i"
-    and halt_fm :: "i \<Rightarrow> i"
-  assumes decode_machine_type [TC]:
-    "e \<in> nat \<Longrightarrow> decode_machine(e) \<in> machine"
-    and halt_fm_type [TC]:
+  fixes halt_fm :: "i \<Rightarrow> i"
+  assumes halt_fm_type [TC]:
     "e \<in> nat \<Longrightarrow> halt_fm(e) \<in> formula"
     and halt_fm_closed:
     "e \<in> nat \<Longrightarrow> arity(halt_fm(e)) = 0"

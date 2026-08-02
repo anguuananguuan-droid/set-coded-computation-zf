@@ -1,6 +1,6 @@
 # INTERNALISING TURING-MACHINE COMPUTATION IN ISABELLE/ZF
 
-Tang Ziyi, Technical Design Note, July 2026
+Tang Ziyi, Technical Design Note, August 2026
 
 ## 1. PURPOSE AND SEMANTIC BASIS
 
@@ -67,8 +67,9 @@ the external semantics and in every transitive set model of ZFC.
 
 ### 2.2 Closed indexed halting sentences
 
-The second target defines a decoder and closes the machine parameter inside a
-formula.
+`Turing_Coding.thy` now supplies a total decoder and a canonical
+natural-number machine code. The second target closes the decoded machine
+parameter inside a formula.
 
 ```text
 e in nat ==> decode_machine(e) in machine
@@ -86,21 +87,25 @@ The exact completion criterion is
 
 ```text
 interpretation concrete_halting:
-  halting_sentence decode_machine halt_fm
+  halting_sentence halt_fm
 ```
 
-with all four locale obligations derived from definitions.
-
-A decoder alone is not a machine numbering. A reusable numbering additionally
-requires an encoder and a coverage theorem such as
+with all three formula and adequacy obligations derived from definitions. The
+numbering layer already proves
 
 ```text
-P in machine ==> encode_machine(P) in nat
-P in machine ==> decode_machine(encode_machine(P)) = P.
+machine_numbering_bij:
+  machine <-> machine_code
+
+decode_machine_surj:
+  nat ->> machine
 ```
 
-Closing the formula also requires a verified quotation of the natural number
-or hereditarily finite set representing the decoded machine.
+The numbering is presently set-theoretic. The required code-level numeric
+operations have not yet been certified in the object-level `prim_rec` class,
+and the decoder graph has not yet been represented internally. Closing the
+formula also requires a verified quotation of the natural number or
+hereditarily finite set representing the decoded machine.
 
 ### 2.3 Boundary of Module III
 
@@ -230,7 +235,7 @@ generic reachability formula
   -> construction and model closure of step_relation(P)
   -> finite reachability and halts_machine_fm
   -> machine-parameter adequacy
-  -> decoder, quotation, and closed halt_fm(e)
+  -> machine-code quotation and closed halt_fm(e)
   -> interpretation of halting_sentence
 ```
 
