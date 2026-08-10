@@ -238,6 +238,17 @@ lemma step_final [simp]:
   "step(M,\<langle>final_state,t\<rangle>) = \<langle>final_state,t\<rangle>"
   unfolding step_def Let_def by simp
 
+lemma step_final_configuration [simp]:
+  assumes configuration: "c \<in> configuration"
+    and final: "fst(c) = final_state"
+  shows "step(M,c) = c"
+proof -
+  from configuration obtain q t where representation: "c = \<langle>q,t\<rangle>"
+    unfolding configuration_def by auto
+  from final representation have "q = final_state" by simp
+  with representation show ?thesis by simp
+qed
+
 subsection \<open>Finite Computations\<close>
 
 definition steps :: "[i,i,i] \<Rightarrow> i" where
@@ -319,6 +330,36 @@ proof -
     "steps(M,c,m #+ ?d) = steps(M,?z,?d)" .
   from decomposition split absorbed final show ?thesis
     by simp
+qed
+
+lemma steps_final_absorb:
+  assumes machine_M: "M \<in> machine"
+    and configuration: "c \<in> configuration"
+    and earlier: "m \<in> nat"
+    and later: "n \<in> nat"
+    and ordered: "m \<le> n"
+    and final: "fst(steps(M,c,m)) = final_state"
+  shows "steps(M,c,n) = steps(M,c,m)"
+proof -
+  let ?d = "n #- m"
+  let ?z = "steps(M,c,m)"
+  from steps_type[OF machine_M configuration earlier]
+  have reached: "?z \<in> configuration" .
+  from reached final have absorbed:
+    "steps(M,?z,?d) = ?z"
+  proof -
+    from reached obtain q t where representation: "?z = \<langle>q,t\<rangle>"
+      unfolding configuration_def by auto
+    from final representation have "q = final_state" by simp
+    moreover have "?d \<in> nat" by typecheck
+    ultimately show ?thesis using representation by simp
+  qed
+  from add_diff_inverse[OF ordered later] have decomposition:
+    "m #+ ?d = n" .
+  have difference: "?d \<in> nat" by typecheck
+  from steps_add[OF earlier difference, of M c] have split:
+    "steps(M,c,m #+ ?d) = steps(M,?z,?d)" .
+  from decomposition split absorbed show ?thesis by simp
 qed
 
 definition finite_run :: "[i,i,i] \<Rightarrow> o" where

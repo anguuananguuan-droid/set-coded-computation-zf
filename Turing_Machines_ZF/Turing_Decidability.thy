@@ -68,6 +68,57 @@ lemma rejects_number_imp_halts_on:
   shows "halts_on(M,numeral_input(n))"
   using rejects unfolding rejects_number_def by (rule yields_imp_halts_on)
 
+lemma yields_unique:
+  assumes first: "yields(M,x,b)"
+    and second: "yields(M,x,d)"
+  shows "b = d"
+proof -
+  from first obtain m where machine_M: "M \<in> machine"
+    and input: "x \<in> list(symbol)"
+    and time_m: "m \<in> nat"
+    and final_m:
+      "fst(steps(M,initial_config(x),m)) = final_state"
+    and output_b:
+      "scan(snd(steps(M,initial_config(x),m))) = b"
+    unfolding yields_def by auto
+  from second obtain n where time_n: "n \<in> nat"
+    and final_n:
+      "fst(steps(M,initial_config(x),n)) = final_state"
+    and output_d:
+      "scan(snd(steps(M,initial_config(x),n))) = d"
+    unfolding yields_def by auto
+  from initial_config_type[OF input] have configuration:
+    "initial_config(x) \<in> configuration" .
+  show ?thesis
+  proof (rule Ord_linear_le[
+      OF nat_into_Ord[OF time_m] nat_into_Ord[OF time_n]])
+    assume ordered: "m \<le> n"
+    from steps_final_absorb[
+      OF machine_M configuration time_m time_n ordered final_m]
+    output_b output_d show ?thesis by simp
+  next
+    assume ordered: "n \<le> m"
+    from steps_final_absorb[
+      OF machine_M configuration time_n time_m ordered final_n]
+    output_b output_d show ?thesis by simp
+  qed
+qed
+
+lemma accepts_rejects_exclusive:
+  assumes accepts: "accepts_number(M,n)"
+    and rejects: "rejects_number(M,n)"
+  shows False
+proof -
+  from accepts have first:
+    "yields(M,numeral_input(n),one_symbol)"
+    unfolding accepts_number_def .
+  from rejects have second:
+    "yields(M,numeral_input(n),blank_symbol)"
+    unfolding rejects_number_def .
+  from yields_unique[OF first second]
+  show False by simp
+qed
+
 subsection \<open>Decision Semantics\<close>
 
 definition decides :: "[i,i] \<Rightarrow> o" where

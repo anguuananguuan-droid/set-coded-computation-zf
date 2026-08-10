@@ -1,6 +1,6 @@
 # Set-Coded Computation in Isabelle/ZF
 
-Tang Ziyi, Version 0.7, August 2026
+Tang Ziyi, Version 0.8, August 2026
 
 This repository contains a set-coded operational semantics for deterministic
 binary Turing machines in Isabelle/ZF and a conditional application to
@@ -30,25 +30,32 @@ instance of the closed non-invariant sentence used by the general theorem.
 | I.6 | [`Turing_Decidability.thy`](Turing_Machines_ZF/Turing_Decidability.thy) | Decision semantics and diagonal languages | Implemented |
 | I.7 | [`Turing_Transformations.thy`](Turing_Machines_ZF/Turing_Transformations.thy) | Rejection transform, self-halting undecidability, and semantic input hardwiring | Implemented |
 | I.8 | [`Turing_Transformations_Primrec.thy`](Turing_Machines_ZF/Turing_Transformations_Primrec.thy) | Primitive-recursive natural-code hardwiring | Implemented |
+| I.9 | [`Turing_Composition.thy`](Turing_Machines_ZF/Turing_Composition.thy) | Sequential machine composition and bidirectional termination semantics | Implemented |
+| I.10 | [`Turing_Reduction.thy`](Turing_Machines_ZF/Turing_Reduction.thy) | Canonical numerical computation and machine many-one reductions | Implemented |
+| I.11 | [`Turing_Primrec_Reduction.thy`](Turing_Machines_ZF/Turing_Primrec_Reduction.thy) | Primitive-recursive reductions and their machine-realisation interface | Implemented; the required realiser remains open |
 | II | [`Turing_CH.thy`](Turing_CH/Turing_CH.thy) | Conditional invariance equivalence | Implemented as a locale theorem |
 | III | [Technical note](papers/TURING_INTERNALISATION.md) | Internal halting formula and adequacy | Specified, not implemented |
 
 The checked source dependencies are
 
 ```text
-ZF-Induct.Primrec ────────────────────────┐
-                                         │
-ZF ── Turing_Machine ── Turing_Coding    │
-                              ├── Turing_Primrec ◄──┘
-                              │       └── Turing_Evaluator
-                              │               └── Turing_Evaluator_Primrec ──┐
-                              │
-                              ├── Turing_Decidability
-                              │       └── Turing_Transformations ─────────────┤
-                              │                                              └── Turing_Transformations_Primrec
-                              │
-                              └──────────────┐
-Independence_CH.Definitions_Main ────────────┴── Turing_CH
+ZF -> Turing_Machine -> Turing_Coding
+
+Turing_Coding + ZF-Induct.Primrec
+  -> Turing_Primrec -> Turing_Evaluator -> Turing_Evaluator_Primrec
+
+Turing_Coding
+  -> Turing_Decidability -> Turing_Transformations
+  -> Turing_Composition -> Turing_Reduction
+
+Turing_Transformations + Turing_Evaluator_Primrec
+  -> Turing_Transformations_Primrec
+
+Turing_Reduction + Turing_Transformations_Primrec
+  -> Turing_Primrec_Reduction
+
+Turing_Coding + Independence_CH.Definitions_Main
+  -> Turing_CH
 ```
 
 The principal dependency paths are
@@ -57,7 +64,9 @@ The principal dependency paths are
 self-input halting undecidability
   -> semantic input hardwiring
   -> primitive-recursive self-hardwiring map
-  -> Turing-machine realisation or decidable-preimage closure
+  -> primitive-recursive many-one reduction
+  -> Turing-machine realisation of the reducing map
+  -> machine many-one reduction and decidability closure
   -> blank-input halting undecidability
 
 machine numbering -> primitive-recursive numeric evaluator
@@ -72,15 +81,16 @@ blank-input undecidability + satisfaction adequacy + formula-code mapping
 
 Module II is proved conditionally inside `halting_sentence`. Module III will
 construct the internal formula and adequacy theorem required to interpret that
-locale. Module I now proves that its self-input halting set is not decidable by
-any machine in the formalised model and supplies both a verified machine-level
-hardwiring transformation and a primitive-recursive transformation of natural
-machine codes. Concluding blank-input halting undecidability still requires a
-machine realisation theorem for primitive-recursive maps or a closure theorem
-for `tm_decidable` under primitive-recursive preimages. The final invariance
-reduction additionally requires formula-code effectivity and Module III
-adequacy. Universal simulation remains a separate reusable infrastructure
-target.
+locale. Module I proves that its self-input halting set is not decidable by any
+machine in the formalised model. It supplies semantic and natural-code
+hardwiring, sequential machine composition, machine many-one reductions, and
+closure of `tm_decidable` under those reductions. The self-hardwiring function
+is primitive recursive and reduces self-input halting to blank-input halting.
+Concluding blank-input halting undecidability now has one isolated operational
+obligation: construct a set-coded machine that computes this primitive-recursive
+function. The final invariance reduction additionally requires formula-code
+effectivity and Module III adequacy. Universal simulation remains a separate
+reusable infrastructure target.
 
 ## Verified results
 
@@ -244,9 +254,62 @@ e in self_halting
 ```
 
 The primitive-recursive map and this pointwise equivalence are complete. The
-development does not yet realise the map by a set-coded Turing machine or
-prove that `tm_decidable` is closed under its preimages. Blank-input halting
-undecidability is therefore not yet claimed.
+development does not yet realise the map by a set-coded Turing machine.
+
+### Sequential composition and many-one reduction
+
+`Turing_Composition.thy` constructs `sequential_machine(M,N)`. Its continuation
+table redirects every explicit transition of `M` whose target is state `0`,
+and every missing instruction that would halt by totalisation, into a handoff
+to a shifted copy of `N`. The construction therefore covers both ways in which
+the operational semantics can halt. The principal semantic theorem has the
+assumptions
+
+```text
+M in machine
+N in machine
+c in configuration
+fst(c) in control_bound(M)
+fst(c) != final_state
+```
+
+and concludes
+
+```text
+sequential_machine(M,N) terminates from c
+  <-> M terminates from c and N terminates from the tape left by M.
+```
+
+The proof establishes exact simulation before the handoff, exact shifted
+simulation afterwards, and the converse decomposition of every terminating
+composed run.
+
+`Turing_Reduction.thy` defines `computes_number(M,n,m)` by a canonical final
+configuration containing the unary numeral for `m`. The output is unique.
+Sequential composition then gives
+
+```text
+computes_number(R,n,m) ==>
+  D in machine ==>
+  (yields(sequential_machine(R,D),numeral_input(n),b)
+    <-> yields(D,numeral_input(m),b)).
+```
+
+This result lifts to accept and reject semantics and proves closure of
+`tm_decidable` under the machine many-one relation `tm_many_one_reducible`.
+
+`Turing_Primrec_Reduction.thy` separates an extensional primitive-recursive
+reduction from its operational realisation. It proves unconditionally that
+`pr_self_hardwire_code` reduces `self_halting` to `blank_halting`, and proves
+
+```text
+tm_realises_unary(R,pr_self_hardwire_code) ==>
+  not tm_decidable(blank_halting).
+```
+
+Thus the preimage-closure argument is complete. Blank-input halting
+undecidability is not yet unconditional because the machine `R` has not yet
+been constructed.
 
 ### Invariance interface
 
@@ -270,11 +333,11 @@ e in nat
 Taking `sigma` to be CH gives the current CH instance. This is a semantic
 equivalence under the named locale assumptions, not yet an undecidability
 theorem. The machine layer now proves self-input halting undecidable and the
-natural-code self-hardwiring map primitive recursive. Reaching the present
-blank-input interface still requires a Turing-machine realisation theorem or a
-corresponding preimage-closure theorem. An effective invariance reduction also
-requires effective closed-formula encoding and the adequacy theorem of Module
-III.
+natural-code self-hardwiring map primitive recursive. It also proves the
+many-one preimage-closure theorem. Reaching the present blank-input interface
+now requires the set-coded machine realising that map. An effective invariance
+reduction additionally requires effective closed-formula encoding and the
+adequacy theorem of Module III.
 
 The accompanying [EPQ paper](papers/EPQ.pdf) gives the set-theoretic motivation
 for this application.

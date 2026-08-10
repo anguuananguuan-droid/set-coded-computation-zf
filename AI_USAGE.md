@@ -1,6 +1,6 @@
 # AI Assistance Disclosure
 
-Tang Ziyi, Version 0.7, August 2026
+Tang Ziyi, Version 0.8, August 2026
 
 ## Purpose
 
@@ -98,6 +98,9 @@ edit repository files or run Isabelle.
 | `Turing_Decidability.thy` | Codex implemented unary numeral inputs, output and decision semantics, the blank-input and self-input halting languages, an unconditional diagonal-rejection theorem, and the abstract self-halting diagonal interface. | Tang Ziyi authorised the formal computability programme and required unfinished closure obligations to remain explicit until concretely discharged; this increment has not yet received his line-by-line review | Isabelle2025-2 build and independent Codex mathematical review |
 | `Turing_Transformations.thy` | Codex designed and implemented the finite rejection transformer, the unconditional self-halting undecidability theorem, and the semantic input-hardwiring layer. The latter includes a concrete loader, compilation to instruction tables, state shifting, finite-step simulation, and the equivalence between blank-input halting of the transformed machine and halting of the original machine on the fixed input. Codex independently reviewed the boundary conditions and proof architecture. | Tang Ziyi authorised autonomous completion under the repository's minimality, readability, and engineering-truth constraints; this increment has not yet received his line-by-line review | Isabelle2025-2 build and independent Codex adversarial review |
 | `Turing_Transformations_Primrec.thy` | Codex implemented the natural-number counterpart of semantic hardwiring: normalised instruction and machine shifting, an encoded unary-input loader prefix, the commuting theorem for `hardwire_code`, explicit object-level `prim_rec` witnesses, and the pointwise reduction from `self_halting` to `blank_halting`. Codex also added the coded-list length bound used to justify bounded traversal. Independent Codex subagents audited raw-code normalisation, loader numbering, primitive-recursion projections, semantic correctness, and source minimality. | Tang Ziyi authorised autonomous completion under the repository's minimality, readability, and engineering-truth constraints; this increment has not yet received his line-by-line review | Isabelle2025-2 build and independent Codex mathematical and source-structure audits |
+| `Turing_Composition.thy` | Codex designed and implemented a sequential machine constructor covering both explicit final-state transitions and implicit out-of-range halting. It proved exact first-phase execution, bounded handoff, shifted second-phase execution, converse decomposition, and the resulting termination equivalence. Independent Codex subagents audited boundary cases, mathematical completeness, and source structure. | Tang Ziyi authorised the weekly increment under the repository's simplicity, readability, and explicit-boundary requirements; this increment has not yet received his line-by-line review | Isabelle2025-2 build and independent Codex mathematical, boundary, and source-structure audits |
+| `Turing_Reduction.thy` | Codex defined a canonical numerical-output relation, proved output uniqueness, connected sequential execution to accept and reject semantics, defined witness-level and existential machine many-one reductions, and proved closure of `tm_decidable` under them. | Tang Ziyi authorised the reduction layer as the next step toward blank-input halting undecidability and required the operational realisation gap to remain explicit; this increment has not yet received his line-by-line review | Isabelle2025-2 build and independent Codex mathematical and source-structure audits |
+| `Turing_Primrec_Reduction.thy` | Codex separated extensional primitive-recursive reductions from their set-coded machine realisers, proved the self-hardwiring primitive-recursive reduction, and derived blank-input halting undecidability under the exact machine-realisation premise. | Tang Ziyi authorised the incremental proof architecture and required that no unconditional undecidability result be claimed before the realising machine is constructed; this increment has not yet received his line-by-line review | Isabelle2025-2 build and independent Codex mathematical and source-structure audits |
 | `Turing_CH.thy` | Codex assisted in constructing the locale interface, the general invariance theorem, the CH instance, and their proofs; it later connected the verified machine decoder and removed the corresponding locale assumption. Claude supplied cross-review of assumptions and completion claims. | Tang Ziyi developed the EPQ reduction, fixed its formal scope, directed its implementation, and decided which conditional claims to retain | Isabelle2025-2 and AFP build |
 | `TURING_INTERNALISATION.md` | Codex inspected Isabelle and AFP sources and assisted in constructing the technical route; Claude cross-reviewed the boundary of the missing theorem | Tang Ziyi determined the target, scope, and final structure and directly revised the text | Design specification only; Module III is not implemented |
 | `README.md` and release files | Codex assisted in drafting, restructuring, and auditing the documentation, build configuration, file selection, licensing presentation, and PDF metadata | Tang Ziyi set the release standard, directed the revisions, edited the text, and approved the public structure | Build, link, file-tree, and formatting checks |
@@ -116,12 +119,14 @@ edit repository files or run Isabelle.
   self-input halting set is proved undecidable by a concrete finite machine
   transformation and diagonal argument. Semantic input hardwiring and its
   induced primitive-recursive natural-code transformation are complete,
-  including the pointwise reduction to blank-input halting. No set-coded
-  Turing machine realising that transformation or theorem closing
-  `tm_decidable` under its primitive-recursive preimages has been proved.
-  Blank-input halting undecidability, a Turing machine realising the numeric
-  evaluator, the internal halting formula and adequacy theorem, and
-  universality are therefore not claimed as completed.
+  including the pointwise primitive-recursive reduction to blank-input halting.
+  Sequential machine composition, canonical numerical computation, and closure
+  of `tm_decidable` under explicitly realised machine many-one reductions are
+  complete. No set-coded Turing machine realising the self-hardwiring numerical
+  transformation has been constructed. Blank-input halting undecidability, a
+  Turing machine realising the numeric evaluator, the internal halting formula
+  and adequacy theorem, and universality are therefore not claimed as
+  completed.
 - External references and library claims retained after AI-assisted work were
   checked against the cited sources or the installed Isabelle and AFP source
   during the release audit. The author remains responsible for their accuracy.

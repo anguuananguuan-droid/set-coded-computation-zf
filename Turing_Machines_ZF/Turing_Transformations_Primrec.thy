@@ -1012,6 +1012,11 @@ lemma pr_self_hardwire_code_apply:
   using natural tail
   by (simp add: COMP_2 PROJ_0 pr_hardwire_code_apply)
 
+lemma pr_self_hardwire_code_singleton:
+  assumes natural: "e \<in> nat"
+  shows "pr_self_hardwire_code`[e] = self_hardwire_code(e)"
+  using pr_self_hardwire_code_apply[OF natural, of "[]"] by simp
+
 theorem self_hardwire_reduction:
   assumes natural: "e \<in> nat"
   shows "e \<in> self_halting \<longleftrightarrow>

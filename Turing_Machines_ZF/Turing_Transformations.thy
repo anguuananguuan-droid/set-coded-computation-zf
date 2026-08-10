@@ -134,6 +134,95 @@ next
   qed
 qed
 
+lemma nth_in_set_of_list:
+  assumes list: "xs \<in> list(A)"
+    and natural: "j \<in> nat"
+    and in_range: "j < length(xs)"
+  shows "nth(j,xs) \<in> set_of_list(xs)"
+  using list natural in_range set_of_list_conv_nth[OF list]
+  by auto
+
+lemma fetch_target_below_control:
+  assumes machine_M: "M \<in> machine"
+    and state: "q \<in> control_bound(M)"
+    and nonfinal: "q \<noteq> final_state"
+    and scanned: "b \<in> symbol"
+  shows "snd(fetch(M,q,b)) < control_bound(M)"
+proof (cases "slot(q,b) < length(M)")
+  case True
+  from machine_M have instructions: "M \<in> list(instruction)"
+    unfolding machine_def .
+  from machine_M have control: "control_bound(M) \<in> nat"
+    by (rule control_bound_type)
+  from state control have natural: "q \<in> nat"
+    by (blast intro: Ord_trans Ord_nat)
+  from slot_type[OF natural scanned] have slot_natural:
+    "slot(q,b) \<in> nat" .
+  from nth_in_set_of_list[OF instructions slot_natural True]
+  have member: "nth(slot(q,b),M) \<in> set_of_list(M)" .
+  from control_bound_target[OF machine_M member]
+  show ?thesis using nonfinal True by simp
+next
+  case False
+  have zero_lt_one: "0 < 1" by simp
+  from zero_lt_one one_lt_control_bound[OF machine_M]
+  have positive: "0 < control_bound(M)"
+    by (rule lt_trans)
+  show ?thesis using False positive by simp
+qed
+
+lemma step_state_below_control:
+  assumes machine_M: "M \<in> machine"
+    and configuration: "c \<in> configuration"
+    and state: "fst(c) \<in> control_bound(M)"
+    and nonfinal: "fst(c) \<noteq> final_state"
+  shows "fst(step(M,c)) \<in> control_bound(M)"
+proof -
+  from configuration have tape: "snd(c) \<in> tape"
+    unfolding configuration_def by typecheck
+  from scan_type[OF tape] have scanned: "scan(snd(c)) \<in> symbol" .
+  from fetch_target_below_control[
+      OF machine_M state nonfinal scanned]
+  have "snd(fetch(M,fst(c),scan(snd(c)))) < control_bound(M)" .
+  then have "snd(fetch(M,fst(c),scan(snd(c)))) \<in> control_bound(M)"
+    by (rule ltD)
+  then show ?thesis
+    unfolding step_def Let_def by simp
+qed
+
+lemma steps_state_below_control:
+  assumes machine_M: "M \<in> machine"
+    and configuration: "c \<in> configuration"
+    and initial: "fst(c) \<in> control_bound(M)"
+    and time: "n \<in> nat"
+    and nonfinal: "fst(steps(M,c,n)) \<noteq> final_state"
+  shows "fst(steps(M,c,n)) \<in> control_bound(M)"
+  using time nonfinal
+proof (induct n rule: nat_induct)
+  case 0
+  with initial show ?case by simp
+next
+  case (succ n)
+  from steps_type[OF machine_M configuration succ.hyps(1)]
+  have current: "steps(M,c,n) \<in> configuration" .
+  have current_nonfinal:
+    "fst(steps(M,c,n)) \<noteq> final_state"
+  proof
+    assume current_final:
+      "fst(steps(M,c,n)) = final_state"
+    from step_final_configuration[OF current current_final] current_final
+    have endpoint_final:
+      "fst(steps(M,c,succ(n))) = final_state"
+      by simp
+    from succ.prems endpoint_final show False by contradiction
+  qed
+  from succ.hyps(2)[OF current_nonfinal] have current_below:
+    "fst(steps(M,c,n)) \<in> control_bound(M)" .
+  from step_state_below_control[
+      OF machine_M current current_below current_nonfinal]
+  show ?case by simp
+qed
+
 subsection \<open>Rejection Transform\<close>
 
 definition redirect_final :: "[i,i] \<Rightarrow> i" where
@@ -161,6 +250,17 @@ lemma redirect_final_type [TC]:
   shows "redirect_final(k,ins) \<in> instruction"
   using control instruction unfolding redirect_final_def instruction_def
   by typecheck
+
+lemma redirect_final_nonfinal_eq:
+  assumes instruction: "ins \<in> instruction"
+    and nonfinal: "snd(ins) \<noteq> final_state"
+  shows "redirect_final(k,ins) = ins"
+proof -
+  from instruction have pair: "\<langle>fst(ins),snd(ins)\<rangle> = ins"
+    unfolding instruction_def by (rule Pair_fst_snd_eq)
+  from nonfinal pair show ?thesis
+    unfolding redirect_final_def by simp
+qed
 
 lemma rejecting_entry_type [TC]:
   assumes machine_M: "M \<in> machine"
@@ -361,43 +461,6 @@ proof -
     "length(M) \<le> slot(control_bound(M),b)"
     by (rule le_trans)
   then show ?thesis by (rule le_imp_not_lt)
-qed
-
-lemma nth_in_set_of_list:
-  assumes list: "xs \<in> list(A)"
-    and natural: "j \<in> nat"
-    and in_range: "j < length(xs)"
-  shows "nth(j,xs) \<in> set_of_list(xs)"
-  using list natural in_range set_of_list_conv_nth[OF list]
-  by auto
-
-lemma fetch_target_below_control:
-  assumes machine_M: "M \<in> machine"
-    and state: "q \<in> control_bound(M)"
-    and nonfinal: "q \<noteq> final_state"
-    and scanned: "b \<in> symbol"
-  shows "snd(fetch(M,q,b)) < control_bound(M)"
-proof (cases "slot(q,b) < length(M)")
-  case True
-  from machine_M have instructions: "M \<in> list(instruction)"
-    unfolding machine_def .
-  from machine_M have control: "control_bound(M) \<in> nat"
-    by (rule control_bound_type)
-  from state control have natural: "q \<in> nat"
-    by (blast intro: Ord_trans Ord_nat)
-  from slot_type[OF natural scanned] have slot_natural:
-    "slot(q,b) \<in> nat" .
-  from nth_in_set_of_list[OF instructions slot_natural True]
-  have member: "nth(slot(q,b),M) \<in> set_of_list(M)" .
-  from control_bound_target[OF machine_M member]
-  show ?thesis using nonfinal True by simp
-next
-  case False
-  have zero_lt_one: "0 < 1" by simp
-  from zero_lt_one one_lt_control_bound[OF machine_M]
-  have positive: "0 < control_bound(M)"
-    by (rule lt_trans)
-  show ?thesis using False positive by simp
 qed
 
 lemma fetch_rejecting_machine:

@@ -55,10 +55,10 @@ The machine layer now proves the self-input halting set undecidable. An
 explicit machine-level hardwiring theorem now reduces arbitrary-input halting
 to blank-input halting. The induced natural-code transformation now has an
 explicit object-level `prim_rec` witness and a proved pointwise reduction from
-self-input to blank-input halting. Connecting that witness to machine
-realisation or to closure of `tm_decidable` under primitive-recursive
-preimages, and the subsequent code-level reduction to invariance, belong to a
-later computability layer.
+self-input to blank-input halting. Closure of `tm_decidable` under explicitly
+realised machine many-one reductions is now verified. Constructing a set-coded
+machine that realises the primitive-recursive witness, and the subsequent
+code-level reduction to invariance, belong to a later computability layer.
 Universality remains a separate infrastructure objective.
 
 ## 2. COMPLETION CONTRACT
@@ -164,9 +164,10 @@ M in machine and x in list(symbol) ==>
 The induced self-hardwiring transformation on natural machine codes is now
 proved primitive recursive, and its pointwise membership equivalence is
 formalised. The remaining obligation is operational: realise the
-primitive-recursive transformation by a set-coded Turing machine, or prove the
-corresponding closure theorem for `tm_decidable`, before deriving blank-input
-halting undecidability. This obligation lies beyond Module III.
+primitive-recursive transformation by a set-coded Turing machine. Closure of
+`tm_decidable` under the resulting machine many-one reduction is already
+verified. The realising machine is required before deriving blank-input halting
+undecidability. This obligation lies beyond Module III.
 
 ## 3. ADEQUACY ROUTES
 

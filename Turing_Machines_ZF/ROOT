@@ -14,4 +14,7 @@ session Turing_Machines_ZF = ZF +
     Turing_Evaluator_Primrec
     Turing_Decidability
     Turing_Transformations
+    Turing_Composition
+    Turing_Reduction
     Turing_Transformations_Primrec
+    Turing_Primrec_Reduction
