@@ -1,6 +1,6 @@
 # Set-Coded Computation in Isabelle/ZF
 
-Tang Ziyi, Version 0.8, August 2026
+Tang Ziyi, Version 0.10, September 2026
 
 This repository contains a set-coded operational semantics for deterministic
 binary Turing machines in Isabelle/ZF and a conditional application to
@@ -11,18 +11,26 @@ Substantive use of generative AI during development is documented in the
 
 The project continues an integration programme exemplified by Lawrence C.
 Paulson's [formalisation of Wetzel's problem](https://arxiv.org/abs/2205.03159).
-Wetzel brings complex analysis and ZF set theory into one Isabelle development.
+Wetzel integrates complex analysis with the ZFC library inside Isabelle/HOL;
+this repository instead works in Isabelle/ZF.
 This project isolates an interface intended to connect external machine
 execution with internal first-order satisfaction; constructing and discharging
 that interface is the unfinished Module III. The analogy is deliberately
 asymmetric: CH does not determine whether a machine halts. It supplies one
 instance of the closed non-invariant sentence used by the general theorem.
 
+The [September review and roadmap](papers/REVIEW_AND_ROADMAP.md) records a
+numerical-output defect found in the previous version and its correction.
+Output is now compared by represented tape contents, ignoring trailing blanks.
+The roadmap also distinguishes the halting application from the stronger
+non-arithmetical index-set conclusion of the EPQ.
+
 ## Status and architecture
 
 | Module | Source | Result | Status |
 | --- | --- | --- | --- |
 | I.1 | [`Turing_Machine.thy`](Turing_Machines_ZF/Turing_Machine.thy) | Set-coded operational semantics | Implemented |
+| I.1a | [`Turing_Tape.thy`](Turing_Machines_ZF/Turing_Tape.thy) | Tape-content equivalence and finite-step congruence | Implemented |
 | I.2 | [`Turing_Coding.thy`](Turing_Machines_ZF/Turing_Coding.thy) | Set-theoretic machine numbering | Implemented |
 | I.3 | [`Turing_Primrec.thy`](Turing_Machines_ZF/Turing_Primrec.thy) | Primitive-recursive arithmetic, pairing, and coded lists | Implemented |
 | I.4 | [`Turing_Evaluator.thy`](Turing_Machines_ZF/Turing_Evaluator.thy) | Numeric evaluator and semantic simulation | Implemented |
@@ -32,21 +40,34 @@ instance of the closed non-invariant sentence used by the general theorem.
 | I.8 | [`Turing_Transformations_Primrec.thy`](Turing_Machines_ZF/Turing_Transformations_Primrec.thy) | Primitive-recursive natural-code hardwiring | Implemented |
 | I.9 | [`Turing_Composition.thy`](Turing_Machines_ZF/Turing_Composition.thy) | Sequential machine composition and bidirectional termination semantics | Implemented |
 | I.10 | [`Turing_Reduction.thy`](Turing_Machines_ZF/Turing_Reduction.thy) | Canonical numerical computation and machine many-one reductions | Implemented |
+| I.10a | [`Turing_Basic.thy`](Turing_Machines_ZF/Turing_Basic.thy) | Concrete identity, successor, and zero machines | Implemented |
+| I.10b | [`Turing_Programs.thy`](Turing_Machines_ZF/Turing_Programs.thy) and [`Turing_Arguments.thy`](Turing_Machines_ZF/Turing_Arguments.thy) | Composable tape transformations and unambiguous argument lists | Implemented |
+| I.10c | [`Turing_Copy.thy`](Turing_Machines_ZF/Turing_Copy.thy) and [`Turing_Arithmetic.thy`](Turing_Machines_ZF/Turing_Arithmetic.thy) | Binary copying, addition, and a machine realising `pr_double` | Implemented |
+| I.10d | [`Turing_Storage.thy`](Turing_Machines_ZF/Turing_Storage.thy) and [`Turing_Projection.thy`](Turing_Machines_ZF/Turing_Projection.thy) | Argument erasure, all projections, and list-based successor | Implemented, including empty and short argument lists |
+| I.10e | [`Turing_Realisation.thy`](Turing_Machines_ZF/Turing_Realisation.thy) and [`Turing_Context.thy`](Turing_Machines_ZF/Turing_Context.thy) | All constant functions, unary-interface bridge, and workspace counterexample | Basis implemented; general `COMP` and `PREC` closure open |
 | I.11 | [`Turing_Primrec_Reduction.thy`](Turing_Machines_ZF/Turing_Primrec_Reduction.thy) | Primitive-recursive reductions and their machine-realisation interface | Implemented; the required realiser remains open |
-| II | [`Turing_CH.thy`](Turing_CH/Turing_CH.thy) | Conditional invariance equivalence | Implemented as a locale theorem |
+| II | [`Turing_CH.thy`](Turing_CH/Turing_CH.thy) | Uniform-truth disjunction principle and conditional halting/nonhalting equivalences | General principle proved; halting instances remain conditional |
 | III | [Technical note](papers/TURING_INTERNALISATION.md) | Internal halting formula and adequacy | Specified, not implemented |
 
 The checked source dependencies are
 
 ```text
 ZF -> Turing_Machine -> Turing_Coding
+                   -> Turing_Tape
 
 Turing_Coding + ZF-Induct.Primrec
   -> Turing_Primrec -> Turing_Evaluator -> Turing_Evaluator_Primrec
 
 Turing_Coding
   -> Turing_Decidability -> Turing_Transformations
-  -> Turing_Composition -> Turing_Reduction
+  -> Turing_Composition
+Turing_Composition + Turing_Tape -> Turing_Reduction
+Turing_Reduction + ZF-Induct.Primrec -> Turing_Basic
+Turing_Basic -> Turing_Programs -> Turing_Arguments
+Turing_Arguments -> Turing_Storage -> Turing_Projection
+Turing_Arguments -> Turing_Copy
+Turing_Copy + Turing_Primrec -> Turing_Arithmetic
+Turing_Projection + Turing_Arithmetic -> Turing_Realisation -> Turing_Context
 
 Turing_Transformations + Turing_Evaluator_Primrec
   -> Turing_Transformations_Primrec
@@ -284,9 +305,20 @@ The proof establishes exact simulation before the handoff, exact shifted
 simulation afterwards, and the converse decomposition of every terminating
 composed run.
 
-`Turing_Reduction.thy` defines `computes_number(M,n,m)` by a canonical final
-configuration containing the unary numeral for `m`. The output is unique.
-Sequential composition then gives
+`Turing_Tape.thy` compares half-tapes at every natural position, treating
+unrepresented positions as blank. It proves that scanning, updates, and every
+finite computation respect tape-content equivalence. `Turing_Reduction.thy`
+defines `computes_number(M,n,m)` by equivalence of the final configuration to
+the unary numeral for `m`, including the final state and head alignment.
+The output is unique. Literal list equality would forbid every output smaller
+than its input; `literal_numeral_output_not_smaller` proves this obstruction.
+`Turing_Basic.thy` supplies concrete identity, successor, and zero machines,
+including `zero_computes` for every natural input.
+`computes_number_sequential` composes numerical computations;
+`zero_then_successor_computes_one` checks its use on the blank-padded tape
+left by erasure.
+
+Sequential composition passes the actual output tape and gives
 
 ```text
 computes_number(R,n,m) ==>
@@ -310,6 +342,50 @@ tm_realises_unary(R,pr_self_hardwire_code) ==>
 Thus the preimage-closure argument is complete. Blank-input halting
 undecidability is not yet unconditional because the machine `R` has not yet
 been constructed.
+
+### Concrete programs and the primitive-recursive basis
+
+`arguments(ns)` represents each natural argument `n` by `n+1` strokes and a
+blank separator. `arguments_eq_imp_equal` proves that even after ignoring
+trailing blanks, different argument lists remain distinguishable. The original
+unary input convention remains `n` strokes. `successor_arguments_computes`
+connects it to a singleton argument list by an actual finite machine.
+
+The eight-state binary `copy_machine` duplicates a unary block. Composing it
+with the input adapter gives `duplicate_arguments_computes`, producing the
+argument list `[n,n]` for every natural `n`. The nine-state `addition_machine`
+consumes `[n,m]`, clears the representation overhead, and produces `n+m`.
+Their composition establishes
+
+```text
+n in nat ==> computes_number(doubling_machine,n,n #+ n)
+tm_realises_unary(doubling_machine,pr_double).
+```
+
+Storage programs delete the first argument, erase an arbitrary argument list,
+and retain the first argument while clearing the rest and restoring the head.
+`tm_realises_arguments(M,f)` requires correct numerical output on **every**
+list of natural arguments. Concrete machine witnesses now establish
+
+```text
+tm_realises_arguments(keep_first_machine,SC)
+i in nat ==> tm_realises_arguments(projection_machine(i),PROJ(i))
+k in nat ==> tm_realises_arguments(constant_arguments_machine(k),CONSTANT(k)).
+```
+
+These contracts include the library's empty-list cases and out-of-range
+projections. `argument_realiser_to_unary` translates this interface into
+`tm_realises_unary` using a concrete input adapter.
+
+This completes the primitive-recursive **basis**, not the general realisation
+theorem. Arbitrary `COMP` and `PREC` need protected storage for retained
+arguments and intermediate results. `Turing_Context.thy` proves a concrete
+counterexample: a machine can compute numerical identity on a blank context
+while erasing a saved stroke to its left. Standalone numerical correctness
+therefore supplies no automatic workspace-preservation rule. The general
+compiler must establish that additional discipline or implement a simulator
+that protects the stored data. The self-hardwiring and universal-evaluator
+realisers remain open.
 
 ### Invariance interface
 
@@ -339,8 +415,21 @@ now requires the set-coded machine realising that map. An effective invariance
 reduction additionally requires effective closed-formula encoding and the
 adequacy theorem of Module III.
 
-The accompanying [EPQ paper](papers/EPQ.pdf) gives the set-theoretic motivation
-for this application.
+The complementary locale theorem
+`nonhalting_or_invariant_iff_not_halts_blank` proves the corresponding
+nonhalting equivalence using `Or(Neg(halt_fm(e)),sigma)`. Both are instances of
+`uniform_or_invariant_iff`, which turns any uniformly true-or-false closed
+sentence into an invariance test by disjoining a fixed non-invariant sentence.
+
+The accompanying [EPQ paper](papers/EPQ.pdf), Section V, has a stronger final
+target: true arithmetic many-one reduces to the codes of invariant sentences,
+so that index set is not arithmetical. Reaching it additionally requires
+arithmetic syntax and truth, an effective translation into set-theoretic
+formulas, arithmetic satisfaction adequacy, and the non-definability argument.
+The halting and nonhalting reductions alone establish a weaker endpoint once
+their effectivity and the enumerability infrastructure are supplied; they do
+not prove non-arithmeticality. See the [review](papers/REVIEW_AND_ROADMAP.md)
+for the staged completion criteria.
 
 ## Missing interface: Module III
 

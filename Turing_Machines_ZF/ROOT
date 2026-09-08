@@ -8,6 +8,7 @@ session Turing_Machines_ZF = ZF +
     "ZF-Induct"
   theories
     Turing_Machine
+    Turing_Tape
     Turing_Coding
     Turing_Primrec
     Turing_Evaluator
@@ -16,5 +17,14 @@ session Turing_Machines_ZF = ZF +
     Turing_Transformations
     Turing_Composition
     Turing_Reduction
+    Turing_Basic
+    Turing_Programs
+    Turing_Arguments
+    Turing_Storage
+    Turing_Projection
+    Turing_Copy
+    Turing_Arithmetic
+    Turing_Realisation
+    Turing_Context
     Turing_Transformations_Primrec
     Turing_Primrec_Reduction

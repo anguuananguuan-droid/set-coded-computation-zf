@@ -5,7 +5,7 @@
 section \<open>Machine Reductions\<close>
 
 theory Turing_Reduction
-  imports Turing_Composition
+  imports Turing_Composition Turing_Tape
 begin
 
 subsection \<open>Numerical Computation\<close>
@@ -16,8 +16,8 @@ definition computes_number :: "[i,i,i] \<Rightarrow> o" where
     n \<in> nat \<and>
     m \<in> nat \<and>
     (\<exists>k\<in>nat.
-      steps(M,initial_config(numeral_input(n)),k) =
-        \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>)"
+      config_eq(steps(M,initial_config(numeral_input(n)),k),
+        \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>))"
 
 lemma computes_number_machine:
   assumes computation: "computes_number(M,n,m)"
@@ -34,56 +34,85 @@ lemma computes_number_output:
   shows "m \<in> nat"
   using computation unfolding computes_number_def by auto
 
+lemma nth_repeat_one:
+  assumes n: "n \<in> nat" and k: "k \<in> nat" and less: "k < n"
+  shows "nth(k,numeral_input(n)) = one_symbol"
+  using n k less unfolding numeral_input_def
+proof (induct n arbitrary: k rule: nat_induct)
+  case 0 then show ?case by simp
+next
+  case (succ n)
+  then show ?case by (erule_tac n=k in natE) auto
+qed
+
+lemma numeral_tape_eq_unique:
+  assumes m: "m \<in> nat" and n: "n \<in> nat"
+    and eq: "half_tape_eq(numeral_input(m),numeral_input(n))"
+  shows "m = n"
+proof (rule Ord_linear_lt[OF nat_into_Ord[OF m] nat_into_Ord[OF n]])
+  assume "m < n"
+  from nth_repeat_one[OF n m this] eq m
+    nth_eq_0[OF numeral_input_type[OF m] m]
+  show ?thesis unfolding half_tape_eq_def by auto
+next
+  assume "m = n" then show ?thesis .
+next
+  assume "n < m"
+  from nth_repeat_one[OF m n this] eq n
+    nth_eq_0[OF numeral_input_type[OF n] n]
+  show ?thesis unfolding half_tape_eq_def by auto
+qed
+
+lemma final_runs_equal:
+  assumes M: "M \<in> machine" and c: "c \<in> configuration"
+    and p: "p \<in> nat" and q: "q \<in> nat"
+    and fp: "fst(steps(M,c,p)) = final_state"
+    and fq: "fst(steps(M,c,q)) = final_state"
+  shows "steps(M,c,p) = steps(M,c,q)"
+proof (rule Ord_linear_le[OF nat_into_Ord[OF p] nat_into_Ord[OF q]])
+  assume "p \<le> q"
+  from steps_final_absorb[OF M c p q this fp] show ?thesis by simp
+next
+  assume "q \<le> p"
+  from steps_final_absorb[OF M c q p this fq] show ?thesis .
+qed
+
 lemma computes_number_unique:
   assumes first: "computes_number(M,n,m)"
     and second: "computes_number(M,n,k)"
   shows "m = k"
 proof -
-  from first obtain p where machine_M: "M \<in> machine"
-    and natural_n: "n \<in> nat"
-    and natural_m: "m \<in> nat"
-    and time_p: "p \<in> nat"
-    and result_m:
-      "steps(M,initial_config(numeral_input(n)),p) =
-        \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>"
+  from first obtain p where M: "M \<in> machine" and n: "n \<in> nat"
+    and m: "m \<in> nat" and p: "p \<in> nat"
+    and out_m: "config_eq(steps(M,initial_config(numeral_input(n)),p),
+      \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>)"
     unfolding computes_number_def by auto
-  from second obtain q where natural_k: "k \<in> nat"
-    and time_q: "q \<in> nat"
-    and result_k:
-      "steps(M,initial_config(numeral_input(n)),q) =
-        \<langle>final_state,\<langle>[],numeral_input(k)\<rangle>\<rangle>"
+  from second obtain q where k: "k \<in> nat" and q: "q \<in> nat"
+    and out_k: "config_eq(steps(M,initial_config(numeral_input(n)),q),
+      \<langle>final_state,\<langle>[],numeral_input(k)\<rangle>\<rangle>)"
     unfolding computes_number_def by auto
-  from numeral_input_type[OF natural_n] have input:
-    "numeral_input(n) \<in> list(symbol)" .
-  from initial_config_type[OF input] have configuration:
-    "initial_config(numeral_input(n)) \<in> configuration" .
-  have terminal_equal:
-    "steps(M,initial_config(numeral_input(n)),p) =
-      steps(M,initial_config(numeral_input(n)),q)"
-  proof (rule Ord_linear_le[
-      OF nat_into_Ord[OF time_p] nat_into_Ord[OF time_q]])
-    assume ordered: "p \<le> q"
-    from result_m have final:
-      "fst(steps(M,initial_config(numeral_input(n)),p)) = final_state"
-      by simp
-    from steps_final_absorb[
-      OF machine_M configuration time_p time_q ordered final]
-    show ?thesis by simp
-  next
-    assume ordered: "q \<le> p"
-    from result_k have final:
-      "fst(steps(M,initial_config(numeral_input(n)),q)) = final_state"
-      by simp
-    from steps_final_absorb[
-      OF machine_M configuration time_q time_p ordered final]
-    show ?thesis by simp
-  qed
-  from terminal_equal result_m result_k have
-    "numeral_input(m) = numeral_input(k)"
-    by simp
-  then show ?thesis
-    by (rule numeral_input_injective[OF natural_m natural_k])
+  from out_m out_k have fp: "fst(steps(M,initial_config(numeral_input(n)),p)) = 0"
+    and fq: "fst(steps(M,initial_config(numeral_input(n)),q)) = 0"
+    unfolding config_eq_def by auto
+  from final_runs_equal[OF M initial_config_type[OF numeral_input_type[OF n]] p q fp fq]
+    out_m out_k
+  have "half_tape_eq(numeral_input(m),numeral_input(k))"
+    unfolding config_eq_def tape_eq_def half_tape_eq_def by auto
+  then show ?thesis by (rule numeral_tape_eq_unique[OF m k])
 qed
+
+text \<open>The former literal-output contract could only compute outputs at
+least as large as the input. This invariant records the reason it was replaced.\<close>
+
+lemma literal_numeral_output_not_smaller:
+  assumes M: "M \<in> machine" and n: "n \<in> nat" and m: "m \<in> nat"
+    and k: "k \<in> nat"
+    and exact: "steps(M,initial_config(numeral_input(n)),k) =
+      \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>"
+  shows "n \<le> m"
+  using steps_span_mono[OF M initial_config_type[OF numeral_input_type[OF n]] k]
+    exact n m
+  by (simp add: tape_span_def)
 
 subsection \<open>Unary Realisation\<close>
 
@@ -111,190 +140,154 @@ lemma tm_realises_unary_apply:
 
 subsection \<open>Sequential Evaluation\<close>
 
+lemma computation_restart_eq:
+  assumes out: "config_eq(c,\<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>)"
+  shows "config_eq(\<langle>initial_state,snd(c)\<rangle>,initial_config(numeral_input(m)))"
+proof (rule config_eq_pair)
+  show "initial_state \<in> nat" by simp
+  from out show "tape_eq(snd(c),\<langle>[],numeral_input(m)\<rangle>)"
+    unfolding config_eq_def by auto
+qed
+
+theorem computes_number_sequential:
+  assumes first: "computes_number(R,n,m)" and second: "computes_number(S,m,p)"
+  shows "computes_number(sequential_machine(R,S),n,p)"
+proof -
+  from first obtain k where R: "R \<in> machine" and n: "n \<in> nat"
+    and k: "k \<in> nat"
+    and out_R: "config_eq(steps(R,initial_config(numeral_input(n)),k),
+      \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>)"
+    unfolding computes_number_def by auto
+  from second obtain l where S: "S \<in> machine" and p: "p \<in> nat"
+    and l: "l \<in> nat"
+    and out_S: "config_eq(steps(S,initial_config(numeral_input(m)),l),
+      \<langle>final_state,\<langle>[],numeral_input(p)\<rangle>\<rangle>)"
+    unfolding computes_number_def by auto
+  let ?c = "initial_config(numeral_input(n))"
+  let ?d = "\<langle>initial_state,snd(steps(R,?c,k))\<rangle>"
+  let ?z = "steps(S,?d,l)"
+  from steps_config_eq[OF S computation_restart_eq[OF out_R] l] out_S
+  have final_eq: "config_eq(?z,\<langle>final_state,\<langle>[],numeral_input(p)\<rangle>\<rangle>)"
+    by (rule config_eq_trans)
+  have c: "?c \<in> configuration" by (rule initial_config_type[OF numeral_input_type[OF n]])
+  have bound: "fst(?c) \<in> control_bound(R)"
+    using initial_state_below_control[OF R] by simp
+  from out_R have final_R: "fst(steps(R,?c,k)) = final_state"
+    unfolding config_eq_def by auto
+  from steps_sequential_after_halting[OF R S c bound _ k final_R l]
+  obtain h where h: "h \<in> nat"
+    and sim: "steps(sequential_machine(R,S),?c,h #+ l) = shift_configuration(control_bound(R),?z)"
+    by auto
+  from final_eq have z: "?z \<in> configuration" and final_z: "fst(?z) = final_state"
+    unfolding config_eq_def by auto
+  from z have pair: "\<langle>fst(?z),snd(?z)\<rangle> = ?z"
+    unfolding configuration_def by (rule Pair_fst_snd_eq)
+  from pair final_z have shift: "shift_configuration(control_bound(R),?z) = ?z"
+    unfolding shift_configuration_def by simp
+  from sim shift final_eq have composed:
+    "config_eq(steps(sequential_machine(R,S),?c,h #+ l),
+      \<langle>final_state,\<langle>[],numeral_input(p)\<rangle>\<rangle>)" by simp
+  from sequential_machine_type[OF R S] n p add_type[of h l] composed
+  show ?thesis unfolding computes_number_def by blast
+qed
+
 lemma computes_number_then_yields:
   assumes computation: "computes_number(R,n,m)"
     and result: "yields(D,numeral_input(m),b)"
   shows "yields(sequential_machine(R,D),numeral_input(n),b)"
 proof -
-  from computation obtain k where machine_R: "R \<in> machine"
-    and natural_n: "n \<in> nat"
-    and natural_m: "m \<in> nat"
-    and time_k: "k \<in> nat"
-    and computed:
-      "steps(R,initial_config(numeral_input(n)),k) =
-        \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>"
+  from computation obtain k where R: "R \<in> machine" and n: "n \<in> nat"
+    and m: "m \<in> nat" and k: "k \<in> nat"
+    and out: "config_eq(steps(R,initial_config(numeral_input(n)),k),
+      \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>)"
     unfolding computes_number_def by auto
-  from result obtain l where machine_D: "D \<in> machine"
-    and symbol_b: "b \<in> symbol"
-    and time_l: "l \<in> nat"
-    and final_D:
-      "fst(steps(D,initial_config(numeral_input(m)),l)) = final_state"
-    and output_D:
-      "scan(snd(steps(D,initial_config(numeral_input(m)),l))) = b"
+  from result obtain l where D: "D \<in> machine" and b: "b \<in> symbol"
+    and l: "l \<in> nat"
+    and final: "fst(steps(D,initial_config(numeral_input(m)),l)) = final_state"
+    and output_b: "scan(snd(steps(D,initial_config(numeral_input(m)),l))) = b"
     unfolding yields_def by auto
-  from numeral_input_type[OF natural_n] have input_n:
-    "numeral_input(n) \<in> list(symbol)" .
-  from initial_config_type[OF input_n] have configuration:
-    "initial_config(numeral_input(n)) \<in> configuration" .
-  from initial_state_below_control[OF machine_R] have initial_below:
-    "fst(initial_config(numeral_input(n))) \<in> control_bound(R)"
-    by simp
-  have initial_nonfinal:
-    "fst(initial_config(numeral_input(n))) \<noteq> final_state"
-    by simp
-  from computed have final_R:
-    "fst(steps(R,initial_config(numeral_input(n)),k)) = final_state"
-    by simp
-  from steps_sequential_after_halting[
-      OF machine_R machine_D configuration initial_below initial_nonfinal
-        time_k final_R time_l]
-  obtain h where time_h: "h \<in> nat"
-    and composed:
-      "steps(sequential_machine(R,D),
-        initial_config(numeral_input(n)),h #+ l) =
-        shift_configuration(control_bound(R),
-          steps(D,
-            \<langle>initial_state,
-              snd(steps(R,initial_config(numeral_input(n)),k))\<rangle>,l))"
-    by auto
-  from computed have handoff_input:
-    "\<langle>initial_state,
-      snd(steps(R,initial_config(numeral_input(n)),k))\<rangle> =
-      initial_config(numeral_input(m))"
-    by simp
-  from time_h time_l have total_time: "h #+ l \<in> nat"
-    by typecheck
-  from machine_R have offset: "control_bound(R) \<in> nat"
-    by typecheck
-  from numeral_input_type[OF natural_m] have input_m:
-    "numeral_input(m) \<in> list(symbol)" .
-  from initial_config_type[OF input_m] time_l machine_D have terminal_D:
-    "steps(D,initial_config(numeral_input(m)),l) \<in> configuration"
-    by typecheck
-  from shift_configuration_final_iff[OF offset terminal_D]
-    composed handoff_input final_D
-  have final_composed:
-    "fst(steps(sequential_machine(R,D),
-      initial_config(numeral_input(n)),h #+ l)) = final_state"
-    by simp
-  from composed handoff_input output_D have output_composed:
-    "scan(snd(steps(sequential_machine(R,D),
-      initial_config(numeral_input(n)),h #+ l))) = b"
-    by simp
-  from sequential_machine_type[OF machine_R machine_D] input_n symbol_b
-    total_time final_composed output_composed
+  let ?c = "initial_config(numeral_input(n))"
+  let ?d = "\<langle>initial_state,snd(steps(R,?c,k))\<rangle>"
+  from computation_restart_eq[OF out] have restart:
+    "config_eq(?d,initial_config(numeral_input(m)))" .
+  from steps_config_eq[OF D restart l] final output_b
+  have final_d: "fst(steps(D,?d,l)) = final_state"
+    and output_d: "scan(snd(steps(D,?d,l))) = b"
+    by (auto dest: config_eq_observe)
+  have c: "?c \<in> configuration" by (rule initial_config_type[OF numeral_input_type[OF n]])
+  have bound: "fst(?c) \<in> control_bound(R)"
+    using initial_state_below_control[OF R] by simp
+  from out have final_R: "fst(steps(R,?c,k)) = final_state"
+    unfolding config_eq_def by auto
+  from steps_sequential_after_halting[OF R D c bound _ k final_R l]
+  obtain h where h: "h \<in> nat"
+    and sim: "steps(sequential_machine(R,D),?c,h #+ l) =
+      shift_configuration(control_bound(R),steps(D,?d,l))" by auto
+  from restart have d: "?d \<in> configuration" unfolding config_eq_def by auto
+  from R have offset: "control_bound(R) \<in> nat" by typecheck
+  from shift_configuration_final_iff[OF offset steps_type[OF D d l]] sim final_d
+  have final_composed: "fst(steps(sequential_machine(R,D),?c,h #+ l)) = final_state" by simp
+  from sim output_d have output_composed:
+    "scan(snd(steps(sequential_machine(R,D),?c,h #+ l))) = b" by simp
+  from sequential_machine_type[OF R D] numeral_input_type[OF n] b
+    add_type[of h l] final_composed output_composed
   show ?thesis unfolding yields_def by blast
 qed
 
 lemma yields_sequential_imp:
-  assumes computation: "computes_number(R,n,m)"
-    and machine_D: "D \<in> machine"
-    and result:
-      "yields(sequential_machine(R,D),numeral_input(n),b)"
+  assumes computation: "computes_number(R,n,m)" and D: "D \<in> machine"
+    and result: "yields(sequential_machine(R,D),numeral_input(n),b)"
   shows "yields(D,numeral_input(m),b)"
 proof -
-  from computation obtain k where machine_R: "R \<in> machine"
-    and natural_n: "n \<in> nat"
-    and natural_m: "m \<in> nat"
-    and time_k: "k \<in> nat"
-    and computed:
-      "steps(R,initial_config(numeral_input(n)),k) =
-        \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>"
+  from computation obtain k where R: "R \<in> machine" and n: "n \<in> nat"
+    and m: "m \<in> nat" and k: "k \<in> nat"
+    and out: "config_eq(steps(R,initial_config(numeral_input(n)),k),
+      \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>)"
     unfolding computes_number_def by auto
-  from result obtain l where symbol_b: "b \<in> symbol"
-    and time_l: "l \<in> nat"
-    and final_composed:
-      "fst(steps(sequential_machine(R,D),
-        initial_config(numeral_input(n)),l)) = final_state"
-    and output_composed:
-      "scan(snd(steps(sequential_machine(R,D),
-        initial_config(numeral_input(n)),l))) = b"
+  from result obtain l where b: "b \<in> symbol" and l: "l \<in> nat"
+    and final: "fst(steps(sequential_machine(R,D),initial_config(numeral_input(n)),l)) = final_state"
+    and output_b: "scan(snd(steps(sequential_machine(R,D),initial_config(numeral_input(n)),l))) = b"
     unfolding yields_def by auto
-  from numeral_input_type[OF natural_n] have input_n:
-    "numeral_input(n) \<in> list(symbol)" .
-  from initial_config_type[OF input_n] have configuration:
-    "initial_config(numeral_input(n)) \<in> configuration" .
-  from initial_state_below_control[OF machine_R] have initial_below:
-    "fst(initial_config(numeral_input(n))) \<in> control_bound(R)"
-    by simp
-  have initial_nonfinal:
-    "fst(initial_config(numeral_input(n))) \<noteq> final_state"
-    by simp
-  from computed have final_R:
-    "fst(steps(R,initial_config(numeral_input(n)),k)) = final_state"
-    by simp
-  from steps_sequential_handoff[
-      OF machine_R machine_D configuration initial_below initial_nonfinal
-        time_k final_R]
+  let ?c = "initial_config(numeral_input(n))"
+  let ?d = "\<langle>initial_state,snd(steps(R,?c,k))\<rangle>"
+  have c: "?c \<in> configuration" by (rule initial_config_type[OF numeral_input_type[OF n]])
+  have bound: "fst(?c) \<in> control_bound(R)"
+    using initial_state_below_control[OF R] by simp
+  from out have final_R: "fst(steps(R,?c,k)) = final_state"
+    unfolding config_eq_def by auto
+  from steps_sequential_handoff[OF R D c bound _ k final_R]
   obtain h where bounded: "h \<in> succ(k)"
-    and handoff:
-      "steps(sequential_machine(R,D),
-        initial_config(numeral_input(n)),h) =
-        shift_configuration(control_bound(R),
-          \<langle>initial_state,
-            snd(steps(R,initial_config(numeral_input(n)),k))\<rangle>)"
+    and handoff: "steps(sequential_machine(R,D),?c,h) = shift_configuration(control_bound(R),?d)"
     by auto
-  from bounded time_k have time_h: "h \<in> nat"
-    by (blast intro: Ord_trans Ord_nat)
-  from computed have handoff_input:
-    "\<langle>initial_state,
-      snd(steps(R,initial_config(numeral_input(n)),k))\<rangle> =
-      initial_config(numeral_input(m))"
-    by simp
-  from machine_R have offset: "control_bound(R) \<in> nat"
-    by typecheck
-  from handoff handoff_input offset have handoff_nonfinal:
-    "fst(steps(sequential_machine(R,D),
-      initial_config(numeral_input(n)),h)) \<noteq> final_state"
-    by simp
-  from sequential_machine_type[OF machine_R machine_D] have machine_composed:
-    "sequential_machine(R,D) \<in> machine" .
+  from bounded k have h: "h \<in> nat" by (blast intro: Ord_trans Ord_nat)
+  from R have offset: "control_bound(R) \<in> nat" by typecheck
+  from handoff offset have nonfinal:
+    "fst(steps(sequential_machine(R,D),?c,h)) \<noteq> final_state" by simp
   have not_before: "\<not> l \<le> h"
   proof
-    assume before: "l \<le> h"
-    from steps_final_mono[
-      OF machine_composed configuration time_l time_h before final_composed]
-    handoff_nonfinal show False by contradiction
+    assume "l \<le> h"
+    from steps_final_mono[OF sequential_machine_type[OF R D] c l h this final] nonfinal
+    show False by contradiction
   qed
-  from not_le_iff_lt[
-      OF nat_into_Ord[OF time_l] nat_into_Ord[OF time_h]] not_before
-  have after_handoff: "h < l"
-    by (rule iffD1)
-  then have ordered: "h \<le> l" by (rule leI)
-  let ?d = "l #- h"
-  have continuation_time: "?d \<in> nat" by typecheck
-  from add_diff_inverse[OF ordered time_l] have decomposition:
-    "h #+ ?d = l" .
-  from numeral_input_type[OF natural_m] have input_m:
-    "numeral_input(m) \<in> list(symbol)" .
-  from initial_config_type[OF input_m] have next_configuration:
-    "initial_config(numeral_input(m)) \<in> configuration" .
-  from handoff handoff_input have handoff_D:
-    "steps(sequential_machine(R,D),
-      initial_config(numeral_input(n)),h) =
-      shift_configuration(control_bound(R),
-        initial_config(numeral_input(m)))"
-    by simp
-  from steps_sequential_after_handoff[
-      OF machine_R machine_D next_configuration time_h
-        continuation_time handoff_D]
-  have simulation:
-    "steps(sequential_machine(R,D),
-      initial_config(numeral_input(n)),h #+ ?d) =
-      shift_configuration(control_bound(R),
-        steps(D,initial_config(numeral_input(m)),?d))" .
-  from steps_type[OF machine_D next_configuration continuation_time]
-  have terminal_D:
-    "steps(D,initial_config(numeral_input(m)),?d) \<in> configuration" .
-  from shift_configuration_final_iff[OF offset terminal_D]
-    simulation decomposition final_composed
-  have final_D:
-    "fst(steps(D,initial_config(numeral_input(m)),?d)) = final_state"
-    by simp
-  from simulation decomposition output_composed have output_D:
-    "scan(snd(steps(D,initial_config(numeral_input(m)),?d))) = b"
-    by simp
-  from machine_D input_m symbol_b continuation_time final_D output_D
+  from not_le_iff_lt[OF nat_into_Ord[OF l] nat_into_Ord[OF h]] not_before
+  have ordered: "h \<le> l" by (auto intro: leI)
+  let ?r = "l #- h"
+  have r: "?r \<in> nat" by typecheck
+  from add_diff_inverse[OF ordered l] have split: "h #+ ?r = l" .
+  from computation_restart_eq[OF out] have restart:
+    "config_eq(?d,initial_config(numeral_input(m)))" .
+  from restart have d: "?d \<in> configuration" unfolding config_eq_def by auto
+  from steps_sequential_after_handoff[OF R D d h r handoff] have sim:
+    "steps(sequential_machine(R,D),?c,h #+ ?r) =
+      shift_configuration(control_bound(R),steps(D,?d,?r))" .
+  from shift_configuration_final_iff[OF offset steps_type[OF D d r]] sim split final
+  have final_d: "fst(steps(D,?d,?r)) = final_state" by simp
+  from sim split output_b have output_d: "scan(snd(steps(D,?d,?r))) = b" by simp
+  from steps_config_eq[OF D restart r] final_d output_d
+  have final_D: "fst(steps(D,initial_config(numeral_input(m)),?r)) = final_state"
+    and output_D: "scan(snd(steps(D,initial_config(numeral_input(m)),?r))) = b"
+    by (auto dest: config_eq_observe)
+  from D numeral_input_type[OF m] b r final_D output_D
   show ?thesis unfolding yields_def by blast
 qed
 

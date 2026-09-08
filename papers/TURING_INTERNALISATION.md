@@ -61,6 +61,13 @@ machine that realises the primitive-recursive witness, and the subsequent
 code-level reduction to invariance, belong to a later computability layer.
 Universality remains a separate infrastructure objective.
 
+The September 8 implementation supplies concrete machines for the entire
+primitive-recursive basis (`SC`, `PROJ(i)`, and `CONSTANT(k)`) on arbitrary
+argument lists, and a concrete unary realiser for `pr_double`. General `COMP`
+and `PREC` compilation remains open. These new base cases do not yet realise
+the evaluator or self-hardwiring map, and do not construct internal formulas.
+See `Turing_Realisation.thy` and the updated review for the precise boundary.
+
 ## 2. COMPLETION CONTRACT
 
 ### 2.1 Machine-parameter adequacy
@@ -305,7 +312,10 @@ one-step adequacy theorem in Section 3.
 
 ## 6. IMPLEMENTATION ORDER
 
-The numeric route has the shorter current dependency chain.
+The numeric route is the current candidate, because it can reuse the existing
+primitive-recursive certificates. Its formula construction and satisfaction
+proofs have not yet been implemented; it is not established that this route
+is shorter in proof effort than the direct route.
 
 ```text
 formulae for the primitive-recursive basis
@@ -337,3 +347,19 @@ If the direct finite-run route is chosen, the generic reachability and
 and a closure theorem placing the canonical finite run in the model. The
 endpoint conditions are then added by `halts_machine_fm`. The one-step work is
 unchanged.
+
+## 7. RELATION TO THE FULL EPQ CONCLUSION
+
+The September [review and roadmap](REVIEW_AND_ROADMAP.md) separates this
+module from the full EPQ endpoint. Interpreting `halting_sentence` supplies
+semantic adequacy for halting and its negation. Effective formula-code maps
+and enumerability infrastructure are still needed for the two halting-based
+reductions. The non-arithmeticality conclusion additionally needs effective
+translation and absoluteness of arbitrary arithmetic truth, followed by the
+non-definability argument. It does not follow solely from this module.
+
+The numerical realisation interface now observes final tape contents modulo
+trailing blanks. A literal-list output contract would make general
+primitive-recursive realisation impossible; the tape-span obstruction and
+its repair are proved in the machine session. This does not alter the raw
+`step`, `finite_run`, or numeric evaluator used by the internalisation target.

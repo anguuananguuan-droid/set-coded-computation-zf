@@ -56,6 +56,28 @@ proof -
     by blast
 qed
 
+text \<open>This is the semantic core of EPQ Section V. The stable sentence
+may express halting, nonhalting, or arbitrary arithmetic truth. Effective
+syntax translation and satisfaction adequacy remain separate obligations.\<close>
+
+lemma uniform_or_invariant_iff:
+  assumes stable: "\<phi> \<in> formula" and stable_closed: "arity(\<phi>) = 0"
+    and sentence: "\<sigma> \<in> formula" and closed: "arity(\<sigma>) = 0"
+    and noninvariant: "\<not> zfc_invariant(\<sigma>)"
+    and uniform: "\<And>M. transitive_zfc_model(M) \<Longrightarrow> ((M, [] \<Turnstile> \<phi>) \<longleftrightarrow> P)"
+  shows "zfc_invariant(Or(\<phi>,\<sigma>)) \<longleftrightarrow> P"
+proof -
+  from noninvariant sentence closed have disagreement:
+    "\<not> (\<forall>M N.
+      transitive_zfc_model(M) \<longrightarrow>
+      transitive_zfc_model(N) \<longrightarrow>
+      ((M, [] \<Turnstile> \<sigma>) \<longleftrightarrow> (N, [] \<Turnstile> \<sigma>)))"
+    unfolding zfc_invariant_def by blast
+  show ?thesis unfolding zfc_invariant_def
+    using stable stable_closed sentence closed uniform disagreement
+    by (auto simp add: arity_Or)
+qed
+
 locale halting_sentence =
   fixes halt_fm :: "i \<Rightarrow> i"
   assumes halt_fm_type [TC]:
@@ -75,18 +97,23 @@ lemma halting_or_invariant_iff_halts_blank:
     and noninvariant: "\<not> zfc_invariant(\<sigma>)"
   shows "zfc_invariant(Or(halt_fm(e), \<sigma>)) \<longleftrightarrow>
     halts_blank(decode_machine(e))"
-proof -
-  from noninvariant sentence closed have disagreement:
-    "\<not> (\<forall>M N.
-      transitive_zfc_model(M) \<longrightarrow>
-      transitive_zfc_model(N) \<longrightarrow>
-      ((M, [] \<Turnstile> \<sigma>) \<longleftrightarrow> (N, [] \<Turnstile> \<sigma>)))"
-    unfolding zfc_invariant_def by blast
-  show ?thesis
-    unfolding zfc_invariant_def
-    using halt_fm_type[OF code] halt_fm_closed[OF code]
-      sats_halt_fm_iff[OF code] sentence closed disagreement
-    by (auto simp add: arity_Or)
+  by (rule uniform_or_invariant_iff[OF halt_fm_type[OF code]
+      halt_fm_closed[OF code] sentence closed noninvariant])
+    (rule sats_halt_fm_iff[OF code])
+
+lemma nonhalting_or_invariant_iff_not_halts_blank:
+  assumes code: "e \<in> nat"
+    and sentence: "\<sigma> \<in> formula"
+    and closed: "arity(\<sigma>) = 0"
+    and noninvariant: "\<not> zfc_invariant(\<sigma>)"
+  shows "zfc_invariant(Or(Neg(halt_fm(e)),\<sigma>)) \<longleftrightarrow>
+    \<not> halts_blank(decode_machine(e))"
+proof (rule uniform_or_invariant_iff[OF _ _ sentence closed noninvariant])
+  show "Neg(halt_fm(e)) \<in> formula" using code by typecheck
+  show "arity(Neg(halt_fm(e))) = 0" using halt_fm_closed[OF code] by simp
+  fix M assume model: "transitive_zfc_model(M)"
+  show "(M, [] \<Turnstile> Neg(halt_fm(e))) \<longleftrightarrow> \<not> halts_blank(decode_machine(e))"
+    using sats_halt_fm_iff[OF code model] by simp
 qed
 
 definition halting_or_CH_fm :: "i \<Rightarrow> i" where
