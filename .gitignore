@@ -1,5 +1,6 @@
 afp-2026-02-06/
 afp-2026-02-06.tar.gz
+.ci-deps/
 /docs/
 .DS_Store
 *~

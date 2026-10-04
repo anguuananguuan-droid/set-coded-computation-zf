@@ -1,0 +1,42 @@
+name: Isabelle build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: isabelle-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  proofs:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check source and documentation
+        run: python3 scripts/check_repository.py
+      - name: Cache pinned dependencies
+        uses: actions/cache@v4
+        with:
+          path: .ci-deps
+          key: linux-isabelle2025-2-afp2026-02-06-${{ hashFiles('scripts/install-ci.sh') }}
+      - name: Install Isabelle and AFP
+        run: bash scripts/install-ci.sh "$GITHUB_WORKSPACE/.ci-deps"
+      - name: Register AFP
+        run: .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/afp-2026-02-06"
+      - name: Check all proofs
+        run: |
+          set -o pipefail
+          .ci-deps/Isabelle2025-2/bin/isabelle build -v -j 1 -o threads=2 -o timeout=1800 -D . 2>&1 | tee "$RUNNER_TEMP/isabelle-build.log"
+      - name: Save build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: isabelle-build-log
+          path: ${{ runner.temp }}/isabelle-build.log
+          if-no-files-found: ignore

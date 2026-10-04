@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this development, please cite the repository and the commit used."
+title: "Set-Coded Computation in Isabelle/ZF"
+authors:
+  - family-names: Tang
+    given-names: Ziyi
+repository-code: "https://github.com/anguuananguuan-droid/set-coded-computation-zf"
+license: BSD-3-Clause
+type: software

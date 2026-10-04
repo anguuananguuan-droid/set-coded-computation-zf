@@ -1,6 +1,6 @@
 # INTERNALISING TURING-MACHINE COMPUTATION IN ISABELLE/ZF
 
-Tang Ziyi, Technical Design Note, August 2026
+Tang Ziyi, Technical Design Note, August 2026; updated 4 October 2026
 
 ## 1. PURPOSE AND SEMANTIC BASIS
 
@@ -68,6 +68,16 @@ and `PREC` compilation remains open. These new base cases do not yet realise
 the evaluator or self-hardwiring map, and do not construct internal formulas.
 See `Turing_Realisation.thy` and the updated review for the precise boundary.
 
+The October 4 development proves finite-witness closure in the new
+`Turing_Models` session. `transitive_zfc_contains_machine`,
+`transitive_zfc_contains_configuration`, and `transitive_zfc_contains_trace`
+place the actual finite objects in every transitive ZFC set model. The theorem
+`transitive_zfc_halting_witness_iff` then characterises external halting by a
+certificate belonging to the model. Its recurrence predicate remains the
+external `finite_run`; no formula or `sats` equivalence is inferred from this
+closure result. The direct route's canonical-run membership obligation is
+therefore discharged, while its one-step and formula-adequacy work remains.
+
 ## 2. COMPLETION CONTRACT
 
 ### 2.1 Machine-parameter adequacy
@@ -86,15 +96,17 @@ shows
   "(A, [P] satisfies halts_machine_fm) <-> halts_blank(P)"
 ```
 
-A closure theorem should then remove the explicit membership premise.
+The October development proves the closure theorem removing the explicit
+membership premise, in `Turing_Model_Witnesses.thy`:
 
 ```text
 transitive_zfc_model(A) and P in machine
   ==> P in A.
 ```
 
-This establishes that a set-coded machine has the same finite computation in
-the external semantics and in every transitive set model of ZFC.
+The closure theorem establishes membership of the machine in every model.
+Together with the still-open satisfaction theorem above, it would establish
+agreement between external execution and internal satisfaction.
 
 ### 2.2 Closed indexed halting sentences
 
