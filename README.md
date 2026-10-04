@@ -50,9 +50,10 @@ it is not a procedure for predicting when a program halts.
 
 ## Connection to the EPQ
 
-The intended endpoint is a many-one reduction from true arithmetic to the
-codes of sentences invariant across transitive ZFC set models. This would
-establish that the invariant-sentence index set is not arithmetical.
+Assuming a countable transitive model of ZFC exists, the intended endpoint is
+a many-one reduction from true arithmetic to the codes of sentences invariant
+across transitive ZFC set models. This would establish that the invariant-sentence
+index set is not arithmetical.
 
 The current development proves the semantic disjunction principle and uses
 AFP's CH independence results to obtain a non-invariant sentence, assuming a
