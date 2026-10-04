@@ -78,16 +78,30 @@ qed
 
 end
 
-lemma transitive_zfc_M_trivial:
+lemma transitive_zfc_M_ZF1_trans:
   assumes model: "transitive_zfc_model(A)"
-  shows "M_trivial(##A)"
+  shows "M_ZF1_trans(A)"
 proof -
   from model have trans: "Transset(A)" and zf: "A \<Turnstile> ZF"
     unfolding transitive_zfc_model_def ZFC_def by auto
-  interpret A: M_ZF1_trans A
-    using M_satT_imp_M_ZF2[OF zf] trans
+  from M_satT_imp_M_ZF2[OF zf] trans show ?thesis
     unfolding M_ZF1_trans_def M_Z_trans_def M_transset_def M_ZF1_def by auto
-  show ?thesis by unfold_locales
+qed
+
+lemma transitive_zfc_M_trivial:
+  "transitive_zfc_model(A) \<Longrightarrow> M_trivial(##A)"
+proof -
+  assume model: "transitive_zfc_model(A)"
+  interpret A: M_ZF1_trans A by (rule transitive_zfc_M_ZF1_trans[OF model])
+  show "M_trivial(##A)" by unfold_locales
+qed
+
+lemma transitive_zfc_M_trancl:
+  "transitive_zfc_model(A) \<Longrightarrow> M_trancl(##A)"
+proof -
+  assume model: "transitive_zfc_model(A)"
+  interpret A: M_ZF1_trans A by (rule transitive_zfc_M_ZF1_trans[OF model])
+  show "M_trancl(##A)" by unfold_locales
 qed
 
 theorem transitive_zfc_contains_machine:

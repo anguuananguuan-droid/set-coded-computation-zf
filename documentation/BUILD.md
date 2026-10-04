@@ -27,7 +27,7 @@ The sessions are ordered as follows:
 ZF
 └── Turing_Machines_ZF   machines, coding, arithmetic, workspace preservation
     └── Turing_CH       invariance and the conditional EPQ connection
-        └── Turing_Models   finite witnesses in transitive ZFC models
+        └── Turing_Models   finite witnesses and arithmetic formulas in transitive ZFC models
 ```
 
 `Turing_CH` imports AFP theories. `Turing_Models` extends its heap so that

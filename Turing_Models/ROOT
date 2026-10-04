@@ -3,3 +3,4 @@ session Turing_Models = Turing_CH +
   options [timeout=300]
   theories
     Turing_Model_Witnesses
+    Turing_Arithmetic_Truth
