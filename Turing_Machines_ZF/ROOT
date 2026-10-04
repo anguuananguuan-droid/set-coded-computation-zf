@@ -26,5 +26,6 @@ session Turing_Machines_ZF = ZF +
     Turing_Arithmetic
     Turing_Realisation
     Turing_Context
+    Turing_Workspace
     Turing_Transformations_Primrec
     Turing_Primrec_Reduction
