@@ -104,6 +104,17 @@ proof -
   show "M_trancl(##A)" by unfold_locales
 qed
 
+lemma transitive_zfc_M_ZF2_trans:
+  assumes model: "transitive_zfc_model(A)"
+  shows "M_ZF2_trans(A)"
+proof -
+  from model have zf: "A \<Turnstile> ZF"
+    unfolding transitive_zfc_model_def ZFC_def by auto
+  interpret Z: M_ZF A by (rule M_satT_imp_M_ZF[OF zf])
+  interpret T: M_ZF1_trans A by (rule transitive_zfc_M_ZF1_trans[OF model])
+  show ?thesis by unfold_locales
+qed
+
 theorem transitive_zfc_contains_machine:
   "\<lbrakk>transitive_zfc_model(A); P \<in> machine\<rbrakk> \<Longrightarrow> P \<in> A"
   using M_trivial.tm_machine_closed[OF transitive_zfc_M_trivial] by simp

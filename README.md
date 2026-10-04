@@ -25,7 +25,7 @@ a binary alphabet, and finite deterministic control.
 | Concrete copying, addition, constants, successor, and arbitrary projections | [Arithmetic](Turing_Machines_ZF/Turing_Arithmetic.thy) · [Realisation](Turing_Machines_ZF/Turing_Realisation.thy) |
 | Arbitrary finite executions can be isolated from saved data by explicit blank buffers | [Workspace preservation](Turing_Machines_ZF/Turing_Workspace.thy) |
 | Every transitive ZFC set model contains the machines, configurations, and finite halting certificates | [Model witnesses](Turing_Models/Turing_Model_Witnesses.thy) |
-| Natural-number domain, zero, successor, order, and restricted quantifiers have verified model satisfaction rules | [Arithmetic formulas](Turing_Models/Turing_Arithmetic_Truth.thy) |
+| Natural-number domain, zero, successor, order, addition, multiplication, and restricted quantifiers have verified model satisfaction rules | [Arithmetic formulas](Turing_Models/Turing_Arithmetic_Truth.thy) |
 | A uniform-truth sentence, disjoined with a fixed non-invariant sentence, tests invariance | [CH application](Turing_CH/Turing_CH.thy) |
 
 The source contains no `sorry`, added axioms, or custom proof oracles. The
@@ -61,14 +61,14 @@ AFP's CH independence results to obtain a non-invariant sentence, assuming a
 countable transitive model of ZFC exists. It now also proves that finite
 computation witnesses belong to every such transitive model. A direct arithmetic
 route has begun with satisfaction rules for the natural-number domain, basic
-relations, and restricted quantifiers.
+relations, addition, multiplication, and restricted quantifiers.
 
 Three substantial steps remain:
 
 1. General machine realisation of primitive-recursive composition and recursion.
 2. An internal halting formula with a satisfaction-adequacy theorem and effective formula coding.
-3. Addition and multiplication formulas, effective translation of arbitrary
-   arithmetic sentences, and the non-arithmeticality argument.
+3. A recursive syntax and effective translation for arbitrary arithmetic
+   sentences, followed by the non-arithmeticality argument.
 
 The arithmetic route can advance independently of a universal machine. Its
 current formula fragment is not yet an effective translation of all arithmetic.

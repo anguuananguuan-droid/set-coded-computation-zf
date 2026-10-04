@@ -51,7 +51,7 @@ non-arithmetical index-set conclusion of the EPQ.
 | I.11 | [`Turing_Primrec_Reduction.thy`](../Turing_Machines_ZF/Turing_Primrec_Reduction.thy) | Primitive-recursive reductions and their machine-realisation interface | Implemented; the required realiser remains open |
 | II | [`Turing_CH.thy`](../Turing_CH/Turing_CH.thy) | Uniform-truth disjunction principle and conditional halting/nonhalting equivalences | General principle proved; halting instances remain conditional |
 | III.1 | [Turing_Model_Witnesses.thy](../Turing_Models/Turing_Model_Witnesses.thy) | Machines, configurations, and finite halting certificates belong to every transitive ZFC model | Closure and external witness equivalence proved |
-| III.1a | [Turing_Arithmetic_Truth.thy](../Turing_Models/Turing_Arithmetic_Truth.thy) | Standard naturals, zero, successor, order, and restricted quantifiers agree with model satisfaction | Verified first-order fragment; addition, multiplication, and full translation open |
+| III.1a | [Turing_Arithmetic_Truth.thy](../Turing_Models/Turing_Arithmetic_Truth.thy) | Standard naturals, zero, successor, order, addition, multiplication, and restricted quantifiers agree with model satisfaction | Verified first-order fragment; full syntax translation open |
 | III.2 | [Technical note](../papers/TURING_INTERNALISATION.md) | Internal halting formula and adequacy | Specified, not implemented |
 
 The checked source dependencies are
@@ -413,10 +413,11 @@ is still external: it is not yet a formula interpreted by `sats`.
 
 `Turing_Arithmetic_Truth.thy` starts a separate route to the EPQ conclusion.
 It proves satisfaction equivalences for the standard-natural-number domain,
-zero, successor, order, and quantifiers explicitly restricted to natural numbers
-in every transitive ZFC set model. These are basic syntax and semantic lemmas;
-addition and multiplication, an effective translation for arbitrary arithmetic
-syntax, and the reduction itself remain to be built. This route does not need
+zero, successor, order, addition, multiplication, and quantifiers explicitly
+restricted to natural numbers in every transitive ZFC set model. These are
+basic syntax and semantic lemmas; a recursive source syntax, an effective
+translation for arbitrary arithmetic sentences, and the reduction itself
+remain to be built. This route does not need
 the unfinished universal-machine/compiler result as a premise.
 
 ### Invariance interface

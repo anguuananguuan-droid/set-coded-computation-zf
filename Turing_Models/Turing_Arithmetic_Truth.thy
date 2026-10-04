@@ -58,6 +58,40 @@ theorem sats_arith_less:
   shows "sats(A,Member(i,j),env) \<longleftrightarrow> nth(i,env) < nth(j,env)"
   using env i j x y by (simp add: lt_def)
 
+theorem sats_arith_add:
+  assumes model: "transitive_zfc_model(A)" and env: "env \<in> list(A)"
+    and i: "i \<in> nat" and j: "j \<in> nat" and k: "k \<in> nat"
+    and x: "nth(i,env) \<in> nat" and y: "nth(j,env) \<in> nat"
+    and z: "nth(k,env) \<in> nat"
+  shows "sats(A,is_cadd_fm(i,j,k),env) \<longleftrightarrow>
+    nth(k,env) = nth(i,env) #+ nth(j,env)"
+proof -
+  interpret A: M_ZF2_trans A by (rule transitive_zfc_M_ZF2_trans[OF model])
+  have xm: "nth(i,env) \<in> A" using A.nat_into_M[OF x] by simp
+  have ym: "nth(j,env) \<in> A" using A.nat_into_M[OF y] by simp
+  have zm: "nth(k,env) \<in> A" using A.nat_into_M[OF z] by simp
+  have zeroA: "0 \<in> A" by (rule A.zero_in_M)
+  show ?thesis using env i j k x y xm ym zm zeroA
+    by (simp add: sats_is_cadd_fm A.is_cadd_iff A.nat_cadd_rel_eq_add)
+qed
+
+theorem sats_arith_multiply:
+  assumes model: "transitive_zfc_model(A)" and env: "env \<in> list(A)"
+    and i: "i \<in> nat" and j: "j \<in> nat" and k: "k \<in> nat"
+    and x: "nth(i,env) \<in> nat" and y: "nth(j,env) \<in> nat"
+    and z: "nth(k,env) \<in> nat"
+  shows "sats(A,is_cmult_fm(i,j,k),env) \<longleftrightarrow>
+    nth(k,env) = nth(i,env) #* nth(j,env)"
+proof -
+  interpret A: M_ZF2_trans A by (rule transitive_zfc_M_ZF2_trans[OF model])
+  have xm: "nth(i,env) \<in> A" using A.nat_into_M[OF x] by simp
+  have ym: "nth(j,env) \<in> A" using A.nat_into_M[OF y] by simp
+  have zm: "nth(k,env) \<in> A" using A.nat_into_M[OF z] by simp
+  have zeroA: "0 \<in> A" by (rule A.zero_in_M)
+  show ?thesis using env i j k x y xm ym zm zeroA
+    by (simp add: sats_is_cmult_fm A.is_cmult_iff A.nat_cmult_rel_eq_mult)
+qed
+
 definition arith_exists_fm :: "i \<Rightarrow> i" where
   "arith_exists_fm(p) \<equiv> Exists(And(nat_member_fm(0),p))"
 
