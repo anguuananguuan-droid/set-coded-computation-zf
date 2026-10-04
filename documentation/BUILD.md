@@ -1,7 +1,7 @@
 # Reproducing the proofs
 
 The supported environment is **Isabelle2025-2** with **AFP 2026-02-06**.
-The machine session uses only Isabelle/ZF. The model-theoretic sessions also
+The independent computation session uses only Isabelle/ZF. The model-theoretic sessions also
 need the AFP entry `Independence_CH` and its dependencies.
 
 ## Local build
@@ -10,7 +10,7 @@ Install [Isabelle2025-2](https://isabelle.in.tum.de/website-Isabelle2025-2/)
 for your platform and put its `bin` directory on your path. From this repository:
 
 ```sh
-isabelle build -v -D Turing_Machines_ZF
+isabelle build -v -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
 ```
 
 For the complete development, extract the
@@ -25,7 +25,8 @@ The sessions are ordered as follows:
 
 ```text
 ZF
-└── Turing_Machines_ZF   machines, coding, arithmetic, workspace preservation
+└── Set_Coded_Computation_ZF   machine semantics, coding, evaluator, diagonalisation, workspace
+    └── Turing_Machines_ZF     programs and primitive-recursive certificates
     └── Turing_CH       invariance and the conditional EPQ connection
         └── Turing_Models   finite witnesses and arithmetic formulas in transitive ZFC models
 ```

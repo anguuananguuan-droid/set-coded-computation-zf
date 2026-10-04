@@ -185,4 +185,27 @@ next
   show ?case by (auto intro: le_trans)
 qed
 
+lemma half_tape_eq_blank_repeat:
+  assumes n: "n \<in> nat"
+  shows "half_tape_eq(repeat(blank_symbol,n),[])"
+  using n
+proof (induct n rule: nat_induct)
+  case 0 then show ?case by simp
+next
+  case (succ n)
+  from half_tape_eq_Cons[OF succ.hyps(2), of blank_symbol]
+    half_tape_eq_blank
+  show ?case by (auto intro: half_tape_eq_trans)
+qed
+
+
+lemma half_tape_eq_append:
+  "\<lbrakk>xs \<in> list(symbol); half_tape_eq(ys,zs)\<rbrakk> \<Longrightarrow> half_tape_eq(xs @ ys,xs @ zs)"
+  by (induct xs rule: list.induct) (auto intro: half_tape_eq_Cons)
+
+lemma half_tape_eq_trailing_blank:
+  "xs \<in> list(symbol) \<Longrightarrow> half_tape_eq(xs @ [blank_symbol],xs)"
+  using half_tape_eq_append[OF _ half_tape_eq_blank] by auto
+
+
 end

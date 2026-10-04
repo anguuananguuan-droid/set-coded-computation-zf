@@ -1,0 +1,15 @@
+session Set_Coded_Computation_ZF = ZF +
+  description "
+    Set-coded Turing-machine semantics, numbering, evaluation,
+    transformations, and diagonalisation in Isabelle/ZF.
+  "
+  options [timeout=300]
+  theories
+    Turing_Machine
+    Turing_Tape
+    Turing_Coding
+    Turing_Code_Operations
+    Turing_Evaluator
+    Turing_Decidability
+    Turing_Rejection
+    Turing_Workspace

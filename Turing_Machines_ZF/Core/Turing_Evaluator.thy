@@ -5,7 +5,7 @@
 section \<open>Numeric Evaluation\<close>
 
 theory Turing_Evaluator
-  imports Turing_Primrec
+  imports Turing_Code_Operations
 begin
 
 subsection \<open>Configuration Codes\<close>

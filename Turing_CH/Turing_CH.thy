@@ -6,7 +6,7 @@ section \<open>Halting and ZFC-Invariance\<close>
 
 theory Turing_CH
   imports
-    "Turing_Machines_ZF.Turing_Coding"
+    "Set_Coded_Computation_ZF.Turing_Coding"
     "Independence_CH.Definitions_Main"
 begin
 

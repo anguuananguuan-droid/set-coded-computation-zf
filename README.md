@@ -9,6 +9,12 @@ A formal study of binary Turing machines inside Zermelo–Fraenkel set theory.
 The project starts with finite instruction tables and works toward a connection
 between machine execution and truth across transitive models of ZFC.
 
+The independent `Set_Coded_Computation_ZF` session contains the machine
+semantics, tape observation, coding, numeric evaluator, concrete self-halting
+diagonalisation, and bounded workspace theorem. The larger
+`Turing_Machines_ZF` session retains program constructions and
+primitive-recursive certificates for ongoing research.
+
 It grew out of an [EPQ paper](papers/EPQ.pdf) about mathematical discovery and
 model invariance. The paper's final argument is the research target; its full
 formalisation remains open.
@@ -20,10 +26,10 @@ a binary alphabet, and finite deterministic control.
 
 | Result | Where to look |
 | :--- | :--- |
-| Natural-number machine coding and a numeric evaluator with exact simulation theorems | [Coding](Turing_Machines_ZF/Turing_Coding.thy) · [Evaluation](Turing_Machines_ZF/Turing_Evaluator.thy) |
-| Self-input halting is undecidable, proved using a concrete machine transformation | [Transformations](Turing_Machines_ZF/Turing_Transformations.thy) |
+| Natural-number machine coding and a numeric evaluator with exact simulation theorems | [Coding](Turing_Machines_ZF/Core/Turing_Coding.thy) · [Evaluation](Turing_Machines_ZF/Core/Turing_Evaluator.thy) |
+| Self-input halting is undecidable, proved using a concrete machine transformation | [Rejection transformation](Turing_Machines_ZF/Core/Turing_Rejection.thy) |
 | Concrete copying, addition, constants, successor, and arbitrary projections | [Arithmetic](Turing_Machines_ZF/Turing_Arithmetic.thy) · [Realisation](Turing_Machines_ZF/Turing_Realisation.thy) |
-| Arbitrary finite executions can be isolated from saved data by explicit blank buffers | [Workspace preservation](Turing_Machines_ZF/Turing_Workspace.thy) |
+| Arbitrary finite executions can be isolated from saved data by explicit blank buffers | [Workspace preservation](Turing_Machines_ZF/Core/Turing_Workspace.thy) |
 | Every transitive ZFC set model contains the machines, configurations, and finite halting certificates | [Model witnesses](Turing_Models/Turing_Model_Witnesses.thy) |
 | Natural-number domain, zero, successor, order, addition, multiplication, and restricted quantifiers have verified model satisfaction rules | [Arithmetic formulas](Turing_Models/Turing_Arithmetic_Truth.thy) |
 | A uniform-truth sentence, disjoined with a fixed non-invariant sentence, tests invariance | [CH application](Turing_CH/Turing_CH.thy) |
@@ -39,7 +45,7 @@ required literal equality of finite lists. Since the machine cannot delete
 represented cells, that contract ruled out every output shorter than its input.
 The repaired definition compares tape contents, treating unrepresented cells
 as blank. It supports erasure and preserves the head-alignment requirement.
-See [tape equivalence](Turing_Machines_ZF/Turing_Tape.thy).
+See [tape equivalence](Turing_Machines_ZF/Core/Turing_Tape.thy).
 
 **Correct output does not guarantee safe storage.** A program can compute
 identity on an otherwise blank tape and still erase data placed to its left.
@@ -78,15 +84,15 @@ machine nor the EPQ's full final theorem is claimed here.
 
 ## Read and run
 
-- **Start with the model:** [Turing_Machine.thy](Turing_Machines_ZF/Turing_Machine.thy).
+- **Start with the model:** [Turing_Machine.thy](Turing_Machines_ZF/Core/Turing_Machine.thy).
 - **Follow a concrete calculation:** [copying](Turing_Machines_ZF/Turing_Copy.thy), then [addition and doubling](Turing_Machines_ZF/Turing_Arithmetic.thy).
-- **Inspect the newest proofs:** [workspace preservation](Turing_Machines_ZF/Turing_Workspace.thy) and [model witnesses](Turing_Models/Turing_Model_Witnesses.thy).
+- **Inspect the newest proofs:** [workspace preservation](Turing_Machines_ZF/Core/Turing_Workspace.thy) and [model witnesses](Turing_Models/Turing_Model_Witnesses.thy).
 - **Go deeper:** [development guide](documentation/DEVELOPMENT.md), [research review](papers/REVIEW_AND_ROADMAP.md), and [internalisation specification](papers/TURING_INTERNALISATION.md).
 
 With [Isabelle2025-2](https://isabelle.in.tum.de/website-Isabelle2025-2/) installed:
 
 ```sh
-isabelle build -D Turing_Machines_ZF
+isabelle build -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
 ```
 
 For the model-theoretic sessions, add the AFP snapshot dated **6 February 2026**:

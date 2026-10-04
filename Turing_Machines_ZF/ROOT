@@ -1,19 +1,11 @@
-session Turing_Machines_ZF = ZF +
-  description "
-    Set-coded Turing-machine semantics, numbering, evaluation,
-    transformations, and diagonalisation in Isabelle/ZF.
-  "
+session Turing_Machines_ZF = Set_Coded_Computation_ZF +
+  description "Extended machine constructions and primitive-recursive certificates."
   options [timeout=300]
   sessions
     "ZF-Induct"
   theories
-    Turing_Machine
-    Turing_Tape
-    Turing_Coding
     Turing_Primrec
-    Turing_Evaluator
     Turing_Evaluator_Primrec
-    Turing_Decidability
     Turing_Transformations
     Turing_Composition
     Turing_Reduction
@@ -26,6 +18,5 @@ session Turing_Machines_ZF = ZF +
     Turing_Arithmetic
     Turing_Realisation
     Turing_Context
-    Turing_Workspace
     Turing_Transformations_Primrec
     Turing_Primrec_Reduction

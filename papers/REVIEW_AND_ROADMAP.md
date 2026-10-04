@@ -58,13 +58,13 @@ README 中的 Wetzel 类比也需要准确：[Paulson 的论文](https://arxiv.o
 
 | 模块 | 已有/本次结果 | 尚缺什么 |
 | --- | --- | --- |
-| [Turing_Machine](../Turing_Machines_ZF/Turing_Machine.thy) | 合法纸带与指令、一步/有限运行、停机与有限运行等价 | 与其他教材表示的显式模拟尚未提供 |
-| [Turing_Tape](../Turing_Machines_ZF/Turing_Tape.thy)（新增） | 忽略末端空白的配置等价、任意步保持、列表跨度不减 | 如需商集形式的数学纸带，可由此继续；当前接口无需先构造商集 |
-| [Turing_Coding](../Turing_Machines_ZF/Turing_Coding.thy) | 自然数配对、列表编码、机器编号、全自然数解码 | 数字编号本身不提供通用机器 |
+| [Turing_Machine](../Turing_Machines_ZF/Core/Turing_Machine.thy) | 合法纸带与指令、一步/有限运行、停机与有限运行等价 | 与其他教材表示的显式模拟尚未提供 |
+| [Turing_Tape](../Turing_Machines_ZF/Core/Turing_Tape.thy)（新增） | 忽略末端空白的配置等价、任意步保持、列表跨度不减 | 如需商集形式的数学纸带，可由此继续；当前接口无需先构造商集 |
+| [Turing_Coding](../Turing_Machines_ZF/Core/Turing_Coding.thy) | 自然数配对、列表编码、机器编号、全自然数解码 | 数字编号本身不提供通用机器 |
 | [Turing_Primrec](../Turing_Machines_ZF/Turing_Primrec.thy) | 对象层 `prim_rec` 的算术、配对和列表证书 | 这些是集合函数证书，尚不是有限机器程序 |
-| [Turing_Evaluator](../Turing_Machines_ZF/Turing_Evaluator.thy) | 数值一步和有限步与集合机器精确交换 | 实际执行求值器的有限机器 |
+| [Turing_Evaluator](../Turing_Machines_ZF/Core/Turing_Evaluator.thy) | 数值一步和有限步与集合机器精确交换 | 实际执行求值器的有限机器 |
 | [Turing_Evaluator_Primrec](../Turing_Machines_ZF/Turing_Evaluator_Primrec.thy) | 有界停机谓词的原始递归证书 | 内部一阶公式及满足关系对应 |
-| [Turing_Decidability](../Turing_Machines_ZF/Turing_Decidability.thy) | 判定语义、对角语言；自停机的抽象变换接口 | 半判定/可枚举集合的完整统一接口 |
+| [Turing_Decidability](../Turing_Machines_ZF/Core/Turing_Decidability.thy) | 判定语义、对角语言；自停机的抽象变换接口 | 半判定/可枚举集合的完整统一接口 |
 | [Turing_Transformations](../Turing_Machines_ZF/Turing_Transformations.thy) | 具体拒绝变换解释该接口，无条件自停机不可判定；有限输入硬接线 | 通用函数实现 |
 | [Turing_Transformations_Primrec](../Turing_Machines_ZF/Turing_Transformations_Primrec.thy) | 数字硬接线与语义构造相等，原始递归多一归约 | 这张数字映射的机器实现 |
 | [Turing_Composition](../Turing_Machines_ZF/Turing_Composition.thy) | 同时处理显式与缺省停机的双向顺序交接 | 更一般的循环、分支和参数保存基础 |

@@ -90,19 +90,6 @@ next
   from run lists show ?case by simp
 qed
 
-lemma half_tape_eq_blank_repeat:
-  assumes n: "n \<in> nat"
-  shows "half_tape_eq(repeat(blank_symbol,n),[])"
-  using n
-proof (induct n rule: nat_induct)
-  case 0 then show ?case by simp
-next
-  case (succ n)
-  from half_tape_eq_Cons[OF succ.hyps(2), of blank_symbol]
-    half_tape_eq_blank
-  show ?case by (auto intro: half_tape_eq_trans)
-qed
-
 theorem zero_computes:
   assumes n: "n \<in> nat"
   shows "computes_number(zero_machine,n,0)"

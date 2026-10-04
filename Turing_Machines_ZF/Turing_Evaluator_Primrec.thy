@@ -5,7 +5,7 @@
 section \<open>Primitive-Recursive Evaluation\<close>
 
 theory Turing_Evaluator_Primrec
-  imports Turing_Evaluator
+  imports "Set_Coded_Computation_ZF.Turing_Evaluator" Turing_Primrec
 begin
 
 subsection \<open>Tape Inspection\<close>

@@ -5,7 +5,7 @@
 section \<open>Finite Workspaces and Protected Contexts\<close>
 
 theory Turing_Workspace
-  imports Turing_Context
+  imports Turing_Tape
 begin
 
 text \<open>A frame appends saved data beyond both ends of a finite workspace.

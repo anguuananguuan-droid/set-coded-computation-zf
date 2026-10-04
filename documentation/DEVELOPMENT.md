@@ -8,6 +8,11 @@ This repository contains a set-coded operational semantics for deterministic
 binary Turing machines in Isabelle/ZF and a conditional application to
 invariance across transitive set models of ZFC.
 
+The independently buildable `Set_Coded_Computation_ZF` session contains eight
+theories under `Turing_Machines_ZF/Core`. The original
+`Turing_Machines_ZF` session extends it with program and primitive-recursive
+work; `Turing_CH` and `Turing_Models` remain separate applications.
+
 Substantive use of generative AI during development is documented in the
 [AI assistance disclosure](../AI_USAGE.md).
 
@@ -31,14 +36,16 @@ non-arithmetical index-set conclusion of the EPQ.
 
 | Module | Source | Result | Status |
 | --- | --- | --- | --- |
-| I.1 | [`Turing_Machine.thy`](../Turing_Machines_ZF/Turing_Machine.thy) | Set-coded operational semantics | Implemented |
-| I.1a | [`Turing_Tape.thy`](../Turing_Machines_ZF/Turing_Tape.thy) | Tape-content equivalence and finite-step congruence | Implemented |
-| I.2 | [`Turing_Coding.thy`](../Turing_Machines_ZF/Turing_Coding.thy) | Set-theoretic machine numbering | Implemented |
+| I.1 | [`Turing_Machine.thy`](../Turing_Machines_ZF/Core/Turing_Machine.thy) | Set-coded operational semantics | Implemented |
+| I.1a | [`Turing_Tape.thy`](../Turing_Machines_ZF/Core/Turing_Tape.thy) | Tape-content equivalence and finite-step congruence | Implemented |
+| I.2 | [`Turing_Coding.thy`](../Turing_Machines_ZF/Core/Turing_Coding.thy) | Set-theoretic machine numbering | Implemented |
+| I.2a | [`Turing_Code_Operations.thy`](../Turing_Machines_ZF/Core/Turing_Code_Operations.thy) | Pure operations on pair and list codes, separated from PR certificates | Implemented |
 | I.3 | [`Turing_Primrec.thy`](../Turing_Machines_ZF/Turing_Primrec.thy) | Primitive-recursive arithmetic, pairing, and coded lists | Implemented |
-| I.4 | [`Turing_Evaluator.thy`](../Turing_Machines_ZF/Turing_Evaluator.thy) | Numeric evaluator and semantic simulation | Implemented |
+| I.4 | [`Turing_Evaluator.thy`](../Turing_Machines_ZF/Core/Turing_Evaluator.thy) | Numeric evaluator and semantic simulation | Implemented |
 | I.5 | [`Turing_Evaluator_Primrec.thy`](../Turing_Machines_ZF/Turing_Evaluator_Primrec.thy) | Primitive-recursive evaluator certificates | Implemented through bounded blank-input halting |
-| I.6 | [`Turing_Decidability.thy`](../Turing_Machines_ZF/Turing_Decidability.thy) | Decision semantics and diagonal languages | Implemented |
-| I.7 | [`Turing_Transformations.thy`](../Turing_Machines_ZF/Turing_Transformations.thy) | Rejection transform, self-halting undecidability, and semantic input hardwiring | Implemented |
+| I.6 | [`Turing_Decidability.thy`](../Turing_Machines_ZF/Core/Turing_Decidability.thy) | Decision semantics and diagonal languages | Implemented |
+| I.7 | [`Turing_Transformations.thy`](../Turing_Machines_ZF/Turing_Transformations.thy) | Input loading, state shifting, and semantic input hardwiring | Implemented in the extended session |
+| I.7a | [`Turing_Rejection.thy`](../Turing_Machines_ZF/Core/Turing_Rejection.thy) | Concrete rejection transform and unconditional self-halting undecidability | Independent core session |
 | I.8 | [`Turing_Transformations_Primrec.thy`](../Turing_Machines_ZF/Turing_Transformations_Primrec.thy) | Primitive-recursive natural-code hardwiring | Implemented |
 | I.9 | [`Turing_Composition.thy`](../Turing_Machines_ZF/Turing_Composition.thy) | Sequential machine composition and bidirectional termination semantics | Implemented |
 | I.10 | [`Turing_Reduction.thy`](../Turing_Machines_ZF/Turing_Reduction.thy) | Canonical numerical computation and machine many-one reductions | Implemented |
@@ -47,7 +54,7 @@ non-arithmetical index-set conclusion of the EPQ.
 | I.10c | [`Turing_Copy.thy`](../Turing_Machines_ZF/Turing_Copy.thy) and [`Turing_Arithmetic.thy`](../Turing_Machines_ZF/Turing_Arithmetic.thy) | Binary copying, addition, and a machine realising `pr_double` | Implemented |
 | I.10d | [`Turing_Storage.thy`](../Turing_Machines_ZF/Turing_Storage.thy) and [`Turing_Projection.thy`](../Turing_Machines_ZF/Turing_Projection.thy) | Argument erasure, all projections, and list-based successor | Implemented, including empty and short argument lists |
 | I.10e | [`Turing_Realisation.thy`](../Turing_Machines_ZF/Turing_Realisation.thy) and [`Turing_Context.thy`](../Turing_Machines_ZF/Turing_Context.thy) | All constant functions, unary-interface bridge, and workspace counterexample | Basis implemented; general `COMP` and `PREC` closure open |
-| I.10f | [Turing_Workspace.thy](../Turing_Machines_ZF/Turing_Workspace.thy) | Exact preservation of arbitrary saved tape data through bounded executions | Implemented; the time bound is supplied |
+| I.10f | [Turing_Workspace.thy](../Turing_Machines_ZF/Core/Turing_Workspace.thy) | Exact preservation of arbitrary saved tape data through bounded executions | Implemented; the time bound is supplied |
 | I.11 | [`Turing_Primrec_Reduction.thy`](../Turing_Machines_ZF/Turing_Primrec_Reduction.thy) | Primitive-recursive reductions and their machine-realisation interface | Implemented; the required realiser remains open |
 | II | [`Turing_CH.thy`](../Turing_CH/Turing_CH.thy) | Uniform-truth disjunction principle and conditional halting/nonhalting equivalences | General principle proved; halting instances remain conditional |
 | III.1 | [Turing_Model_Witnesses.thy](../Turing_Models/Turing_Model_Witnesses.thy) | Machines, configurations, and finite halting certificates belong to every transitive ZFC model | Closure and external witness equivalence proved |
@@ -57,15 +64,15 @@ non-arithmetical index-set conclusion of the EPQ.
 The checked source dependencies are
 
 ```text
-ZF -> Turing_Machine -> Turing_Coding
-                   -> Turing_Tape
+ZF -> Turing_Machine -> Turing_Coding -> Turing_Code_Operations -> Turing_Evaluator
+                   -> Turing_Tape -> Turing_Workspace
+Turing_Coding -> Turing_Decidability -> Turing_Rejection
 
-Turing_Coding + ZF-Induct.Primrec
-  -> Turing_Primrec -> Turing_Evaluator -> Turing_Evaluator_Primrec
+Turing_Code_Operations + ZF-Induct.Primrec
+  -> Turing_Primrec
+Turing_Evaluator + Turing_Primrec -> Turing_Evaluator_Primrec
 
-Turing_Coding
-  -> Turing_Decidability -> Turing_Transformations
-  -> Turing_Composition
+Turing_Rejection -> Turing_Transformations -> Turing_Composition
 Turing_Composition + Turing_Tape -> Turing_Reduction
 Turing_Reduction + ZF-Induct.Primrec -> Turing_Basic
 Turing_Basic -> Turing_Programs -> Turing_Arguments

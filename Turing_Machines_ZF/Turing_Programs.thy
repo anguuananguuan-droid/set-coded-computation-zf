@@ -116,14 +116,6 @@ next
   qed
 qed
 
-lemma half_tape_eq_append:
-  "\<lbrakk>xs \<in> list(symbol); half_tape_eq(ys,zs)\<rbrakk> \<Longrightarrow> half_tape_eq(xs @ ys,xs @ zs)"
-  by (induct xs rule: list.induct) (auto intro: half_tape_eq_Cons)
-
-lemma half_tape_eq_trailing_blank:
-  "xs \<in> list(symbol) \<Longrightarrow> half_tape_eq(xs @ [blank_symbol],xs)"
-  using half_tape_eq_append[OF _ half_tape_eq_blank] by auto
-
 definition computes_tape :: "[i,i,i] \<Rightarrow> o" where
   "computes_tape(M,x,y) \<equiv> M \<in> machine \<and> x \<in> list(symbol) \<and>
     y \<in> list(symbol) \<and> (\<exists>k\<in>nat.
