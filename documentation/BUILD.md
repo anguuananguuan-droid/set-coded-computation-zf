@@ -17,7 +17,7 @@ For the complete development, extract the
 [fixed AFP snapshot](https://isa-afp.org/release/afp-2026-02-06.tar.gz) and register it:
 
 ```sh
-isabelle components -u /absolute/path/to/afp-2026-02-06
+isabelle components -u /absolute/path/to/afp-2026-02-06/thys
 isabelle build -v -D .
 ```
 
@@ -45,7 +45,7 @@ heap; use `-c` when a clean rebuild of the selected sessions is required.
 ## Continuous integration
 
 The [GitHub Actions workflow](../.github/workflows/isabelle.yml) runs all three
-sessions on Ubuntu 24.04. It caches the downloaded distributions, checks local
+sessions on Ubuntu 24.04, using GitHub actions pinned to release commits. It caches the downloaded distributions, checks local
 Markdown links and scans project theories for proof escapes, then runs the
 complete Isabelle build. Build logs are attached to each run. The scan is a
 small repository check; the Isabelle kernel is responsible for proof checking.

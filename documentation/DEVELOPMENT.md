@@ -493,7 +493,7 @@ Module II also requires the AFP release for Isabelle2025-2. This repository
 was built against the AFP snapshot dated 2026-02-06.
 
 ```bash
-isabelle components -u /absolute/path/to/afp-2026-02-06
+isabelle components -u /absolute/path/to/afp-2026-02-06/thys
 isabelle build -D .
 ```
 

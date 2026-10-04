@@ -15,7 +15,7 @@ if [[ ! -x Isabelle2025-2/bin/isabelle ]]; then
   rm isabelle.tar.gz
 fi
 
-if [[ ! -f afp-2026-02-06/ROOTS ]]; then
+if [[ ! -f afp-2026-02-06/thys/ROOTS ]]; then
   curl --fail --location --retry 3 \
     https://isa-afp.org/release/afp-2026-02-06.tar.gz \
     --output afp.tar.gz

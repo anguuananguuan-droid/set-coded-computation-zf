@@ -17,25 +17,25 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Check source and documentation
         run: python3 scripts/check_repository.py
       - name: Cache pinned dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .ci-deps
           key: linux-isabelle2025-2-afp2026-02-06-${{ hashFiles('scripts/install-ci.sh') }}
       - name: Install Isabelle and AFP
         run: bash scripts/install-ci.sh "$GITHUB_WORKSPACE/.ci-deps"
       - name: Register AFP
-        run: .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/afp-2026-02-06"
+        run: .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/afp-2026-02-06/thys"
       - name: Check all proofs
         run: |
           set -o pipefail
           .ci-deps/Isabelle2025-2/bin/isabelle build -v -j 1 -o threads=2 -o timeout=1800 -D . 2>&1 | tee "$RUNNER_TEMP/isabelle-build.log"
       - name: Save build log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: isabelle-build-log
           path: ${{ runner.temp }}/isabelle-build.log

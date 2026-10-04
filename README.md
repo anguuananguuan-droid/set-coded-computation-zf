@@ -85,7 +85,7 @@ isabelle build -D Turing_Machines_ZF
 For the model-theoretic sessions, add the AFP snapshot dated **6 February 2026**:
 
 ```sh
-isabelle components -u /absolute/path/to/afp-2026-02-06
+isabelle components -u /absolute/path/to/afp-2026-02-06/thys
 isabelle build -D .
 ```
 

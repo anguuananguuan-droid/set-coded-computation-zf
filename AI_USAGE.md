@@ -16,9 +16,8 @@ These contributions should not be described as proofs written solely by the
 human author.
 
 Since August 2026, the author has also authorised autonomous implementation
-and verification. A passing build or a published commit does not establish
-that the author has reviewed every line or can independently reproduce every proof.
-No blanket claim of line-by-line human review is made for these increments.
+and verification. The commit history records these increments.
+A passing build is not a record of line-by-line human review.
 
 Earlier work included comments from Anthropic Claude supplied by the author.
 The [August disclosure](documentation/history/AI_ASSISTANCE_2026-08.md) retains
