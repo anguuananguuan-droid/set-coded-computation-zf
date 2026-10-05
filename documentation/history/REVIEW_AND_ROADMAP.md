@@ -58,24 +58,24 @@ README 中的 Wetzel 类比也需要准确：[Paulson 的论文](https://arxiv.o
 
 | 模块 | 已有/本次结果 | 尚缺什么 |
 | --- | --- | --- |
-| [Turing_Machine](../Turing_Machines_ZF/Core/Turing_Machine.thy) | 合法纸带与指令、一步/有限运行、停机与有限运行等价 | 与其他教材表示的显式模拟尚未提供 |
-| [Turing_Tape](../Turing_Machines_ZF/Core/Turing_Tape.thy)（新增） | 忽略末端空白的配置等价、任意步保持、列表跨度不减 | 如需商集形式的数学纸带，可由此继续；当前接口无需先构造商集 |
-| [Turing_Coding](../Turing_Machines_ZF/Core/Turing_Coding.thy) | 自然数配对、列表编码、机器编号、全自然数解码 | 数字编号本身不提供通用机器 |
-| [Turing_Primrec](../Turing_Machines_ZF/Turing_Primrec.thy) | 对象层 `prim_rec` 的算术、配对和列表证书 | 这些是集合函数证书，尚不是有限机器程序 |
-| [Turing_Evaluator](../Turing_Machines_ZF/Core/Turing_Evaluator.thy) | 数值一步和有限步与集合机器精确交换 | 实际执行求值器的有限机器 |
-| [Turing_Evaluator_Primrec](../Turing_Machines_ZF/Turing_Evaluator_Primrec.thy) | 有界停机谓词的原始递归证书 | 内部一阶公式及满足关系对应 |
-| [Turing_Decidability](../Turing_Machines_ZF/Core/Turing_Decidability.thy) | 判定语义、对角语言；自停机的抽象变换接口 | 半判定/可枚举集合的完整统一接口 |
-| [Turing_Transformations](../Turing_Machines_ZF/Turing_Transformations.thy) | 具体拒绝变换解释该接口，无条件自停机不可判定；有限输入硬接线 | 通用函数实现 |
-| [Turing_Transformations_Primrec](../Turing_Machines_ZF/Turing_Transformations_Primrec.thy) | 数字硬接线与语义构造相等，原始递归多一归约 | 这张数字映射的机器实现 |
-| [Turing_Composition](../Turing_Machines_ZF/Turing_Composition.thy) | 同时处理显式与缺省停机的双向顺序交接 | 更一般的循环、分支和参数保存基础 |
-| [Turing_Reduction](../Turing_Machines_ZF/Turing_Reduction.thy)（修复） | 内容等价下的数值输出、唯一性、归约闭包 | 由足够一般的程序编译器提供实现见证 |
-| [Turing_Basic](../Turing_Machines_ZF/Turing_Basic.thy)（新增） | 恒等、后继、归零的具体有限机器 | 后续基础程序已见下列新增模块；一般组合与原始递归闭包仍缺 |
-| [Turing_Programs](../Turing_Machines_ZF/Turing_Programs.thy) / [Turing_Arguments](../Turing_Machines_ZF/Turing_Arguments.thy) | 有限执行路径、纸带计算与顺序组合、多参数编码及内容等价下的唯一性 | 已满足下一层基础程序所需接口 |
-| [Turing_Copy](../Turing_Machines_ZF/Turing_Copy.thy) / [Turing_Arithmetic](../Turing_Machines_ZF/Turing_Arithmetic.thy) | 八状态复制机、九状态加法机；具体机器实现 `pr_double` | 一般参数表复制、一般函数组合 |
-| [Turing_Storage](../Turing_Machines_ZF/Turing_Storage.thy) / [Turing_Projection](../Turing_Machines_ZF/Turing_Projection.thy) | 擦除参数表、删除首参数、任意下标投影、库中完整 `SC` 的机器实现 | 保存参数时执行子程序的保护定理 |
-| [Turing_Realisation](../Turing_Machines_ZF/Turing_Realisation.thy) / [Turing_Context](../Turing_Machines_ZF/Turing_Context.thy) | 所有常数函数、多参数到一元接口桥梁；无自动工作区保护的反例 | `COMP`、`PREC` 的编译构造与正确性 |
-| [Turing_Primrec_Reduction](../Turing_Machines_ZF/Turing_Primrec_Reduction.thy) | 自停机到空输入停机的 PR 归约；保留实际机器实现前提 | 消去该前提，得到无条件空输入停机不可判定 |
-| [Turing_CH](../Turing_CH/Turing_CH.thy)（扩充） | CH 非不变性；统一真值经析取转成不变性；停机与非停机两侧条件结论 | 具体内化、有效公式编码、算术真理层 |
+| [Turing_Machine](../../Turing_Machines_ZF/Core/Turing_Machine.thy) | 合法纸带与指令、一步/有限运行、停机与有限运行等价 | 与其他教材表示的显式模拟尚未提供 |
+| [Turing_Tape](../../Turing_Machines_ZF/Core/Turing_Tape.thy)（新增） | 忽略末端空白的配置等价、任意步保持、列表跨度不减 | 如需商集形式的数学纸带，可由此继续；当前接口无需先构造商集 |
+| [Turing_Coding](../../Turing_Machines_ZF/Core/Turing_Coding.thy) | 自然数配对、列表编码、机器编号、全自然数解码 | 数字编号本身不提供通用机器 |
+| [Turing_Primrec](../../Turing_Machines_ZF/Turing_Primrec.thy) | 对象层 `prim_rec` 的算术、配对和列表证书 | 这些是集合函数证书，尚不是有限机器程序 |
+| [Turing_Evaluator](../../Turing_Machines_ZF/Core/Turing_Evaluator.thy) | 数值一步和有限步与集合机器精确交换 | 实际执行求值器的有限机器 |
+| [Turing_Evaluator_Primrec](../../Turing_Machines_ZF/Turing_Evaluator_Primrec.thy) | 有界停机谓词的原始递归证书 | 内部一阶公式及满足关系对应 |
+| [Turing_Decidability](../../Turing_Machines_ZF/Core/Turing_Decidability.thy) | 判定语义、对角语言；自停机的抽象变换接口 | 半判定/可枚举集合的完整统一接口 |
+| [Turing_Transformations](../../Turing_Machines_ZF/Turing_Transformations.thy) | 具体拒绝变换解释该接口，无条件自停机不可判定；有限输入硬接线 | 通用函数实现 |
+| [Turing_Transformations_Primrec](../../Turing_Machines_ZF/Turing_Transformations_Primrec.thy) | 数字硬接线与语义构造相等，原始递归多一归约 | 这张数字映射的机器实现 |
+| [Turing_Composition](../../Turing_Machines_ZF/Turing_Composition.thy) | 同时处理显式与缺省停机的双向顺序交接 | 更一般的循环、分支和参数保存基础 |
+| [Turing_Reduction](../../Turing_Machines_ZF/Turing_Reduction.thy)（修复） | 内容等价下的数值输出、唯一性、归约闭包 | 由足够一般的程序编译器提供实现见证 |
+| [Turing_Basic](../../Turing_Machines_ZF/Turing_Basic.thy)（新增） | 恒等、后继、归零的具体有限机器 | 后续基础程序已见下列新增模块；一般组合与原始递归闭包仍缺 |
+| [Turing_Programs](../../Turing_Machines_ZF/Turing_Programs.thy) / [Turing_Arguments](../../Turing_Machines_ZF/Turing_Arguments.thy) | 有限执行路径、纸带计算与顺序组合、多参数编码及内容等价下的唯一性 | 已满足下一层基础程序所需接口 |
+| [Turing_Copy](../../Turing_Machines_ZF/Turing_Copy.thy) / [Turing_Arithmetic](../../Turing_Machines_ZF/Turing_Arithmetic.thy) | 八状态复制机、九状态加法机；具体机器实现 `pr_double` | 一般参数表复制、一般函数组合 |
+| [Turing_Storage](../../Turing_Machines_ZF/Turing_Storage.thy) / [Turing_Projection](../../Turing_Machines_ZF/Turing_Projection.thy) | 擦除参数表、删除首参数、任意下标投影、库中完整 `SC` 的机器实现 | 保存参数时执行子程序的保护定理 |
+| [Turing_Realisation](../../Turing_Machines_ZF/Turing_Realisation.thy) / [Turing_Context](../../Turing_Machines_ZF/Turing_Context.thy) | 所有常数函数、多参数到一元接口桥梁；无自动工作区保护的反例 | `COMP`、`PREC` 的编译构造与正确性 |
+| [Turing_Primrec_Reduction](../../Turing_Machines_ZF/Turing_Primrec_Reduction.thy) | 自停机到空输入停机的 PR 归约；保留实际机器实现前提 | 消去该前提，得到无条件空输入停机不可判定 |
+| [Turing_CH](../../Turing_CH/Turing_CH.thy)（扩充） | CH 非不变性；统一真值经析取转成不变性；停机与非停机两侧条件结论 | 具体内化、有效公式编码、算术真理层 |
 
 没有找到原有 theory 中的 `sorry`、额外 `axiomatization` 或 oracle。存在两个有意公开的 locale：拒绝变换接口已由具体机器解释；`halting_sentence` 尚未由具体公式解释。二者不能一概写成“假设已经消去”。
 

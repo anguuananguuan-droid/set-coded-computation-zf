@@ -1,7 +1,7 @@
 session Set_Coded_Computation_ZF = ZF +
   description "
-    Set-coded Turing-machine semantics, numbering, evaluation,
-    transformations, and diagonalisation in Isabelle/ZF.
+    Set-coded Turing-machine semantics, tape observation, numbering,
+    numeric evaluation, self-halting undecidability, and bounded workspaces.
   "
   options [timeout=300]
   theories

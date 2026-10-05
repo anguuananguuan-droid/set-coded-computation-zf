@@ -1,0 +1,166 @@
+THEORY AND RESULT INDEX
+
+1 Scope
+
+This index describes the current source structure. The independent computation
+session is the principal development. Extended programs and model theoretic
+applications are retained as research. Historical plans do not define current
+completion status. The exact assumptions of each result remain in its theory
+statement.
+
+2 Independent computation
+
+2.1 Machine semantics
+
+Turing_Machines_ZF/Core/Turing_Machine.thy imports ZF. A machine is a finite
+list of instructions, each carrying an action and a next state. States 1 and 0
+are initial and final. An absent instruction performs no tape action and
+enters the final state. Turing_Machine.halts_on_iff_finite_run identifies
+halting with a finite execution certificate. The model uses five separate
+actions, writing blank, writing one, moving left, moving right, and doing
+nothing. No simulation theorem relating this instruction format to another
+format is claimed.
+
+2.2 Tape observation
+
+Turing_Machines_ZF/Core/Turing_Tape.thy imports Turing_Machine. Tape
+equivalence compares represented contents with blank cells beyond each finite
+list. It preserves the position relative to the head.
+Turing_Tape.steps_config_eq proves that execution preserves configuration
+equivalence. Literal equality of lists is not the numerical output interface
+used by the extended program session.
+
+2.3 Coding
+
+Turing_Machines_ZF/Core/Turing_Coding.thy imports Turing_Machine. It encodes
+pairs, natural number lists, instructions, and machines.
+Turing_Coding.machine_numbering_bij identifies machines with canonical machine
+codes. Turing_Coding.decode_machine_surj gives a total decoder onto machines.
+Invalid action fields are mapped to the default instruction.
+
+Turing_Machines_ZF/Core/Turing_Code_Operations.thy imports Turing_Coding. It
+provides pair projections and operations on coded lists. These are
+mathematical definitions and equations. Their primitive recursive certificates
+belong to the extended session.
+
+2.4 Numeric evaluation
+
+Turing_Machines_ZF/Core/Turing_Evaluator.thy imports Turing_Code_Operations.
+Turing_Evaluator.code_step_correct relates one coded step to one machine step
+for every natural machine code and well formed configuration.
+Turing_Evaluator.code_steps_correct lifts the result to finite iteration.
+Numeric evaluation does not itself construct a finite universal machine.
+
+2.5 Decision and diagonalisation
+
+Turing_Machines_ZF/Core/Turing_Decidability.thy imports Turing_Coding. It
+defines unary input, acceptance, rejection, decision, and the self halting
+set. The halting_diagonal locale assumes a rejection transformation. Its
+theorem is conditional on that interface.
+
+Turing_Machines_ZF/Core/Turing_Rejection.thy imports Turing_Decidability. It
+constructs the finite rejection transformation and discharges the locale
+assumptions. Turing_Rejection.self_halting_not_tm_decidable is the
+unconditional theorem for the defined machine model. Neither the numeric
+evaluator nor the workspace theorem is a premise of this diagonal argument.
+
+2.6 Bounded workspace
+
+Turing_Machines_ZF/Core/Turing_Workspace.thy imports Turing_Tape.
+Turing_Workspace.steps_preserve_frame proves exact correspondence with saved
+lists appended beyond a workspace of sufficient length.
+Turing_Workspace.bounded_workspace_simulation supplies blank padding and
+observational agreement with the unpadded run.
+Turing_Workspace.bounded_workspace_history covers every prefix within the
+supplied bound. This is a locality theorem, not a prediction of running time
+or a general compiler.
+
+3 Extended machine research
+
+3.1 Arithmetic certificates
+
+Turing_Primrec imports Turing_Code_Operations and ZF-Induct.Primrec.
+Turing_Evaluator_Primrec imports Turing_Evaluator and Turing_Primrec. Their
+primitive recursive witnesses certify arithmetic and finite numeric
+evaluation. They do not provide finite machine implementations of all
+certified functions.
+
+3.2 Transformations and reduction
+
+Turing_Transformations imports Turing_Rejection and constructs input loading
+and hardwiring. Turing_Composition imports Turing_Transformations and proves
+sequential execution. Turing_Reduction imports Turing_Composition and
+Turing_Tape and defines numerical output by configuration equivalence.
+Turing_Reduction.tm_many_one_decidable proves decision closure under
+explicitly realised reductions.
+
+Turing_Transformations_Primrec imports Turing_Transformations and
+Turing_Evaluator_Primrec. Turing_Primrec_Reduction imports Turing_Reduction
+and Turing_Transformations_Primrec. The natural code hardwiring map is
+primitive recursive.
+Turing_Primrec_Reduction.self_hardwire_realiser_imp_blank_halting_undecidable
+still requires a machine realising that map. No unconditional blank input
+undecidability theorem is inferred from it.
+
+3.3 Concrete programs
+
+Turing_Basic imports Turing_Reduction and ZF-Induct.Primrec. Turing_Programs
+imports Turing_Basic. Turing_Arguments imports Turing_Programs. Turing_Storage
+imports Turing_Arguments and is imported by Turing_Projection. Turing_Copy
+also imports Turing_Arguments. Turing_Arithmetic imports Turing_Copy and
+Turing_Primrec. Turing_Realisation imports Turing_Projection and
+Turing_Arithmetic. These theories construct erasure, successor, copying,
+addition, doubling, constants, and projections. General COMP and PREC
+compilation remains open.
+
+Turing_Context imports Turing_Realisation.
+Turing_Context.numerical_realisation_does_not_imply_frame shows that a correct
+numerical realiser can erase saved data outside its ordinary blank input
+context. This counterexample remains in the extended session. The independent
+workspace theorem does not import it.
+
+All sixteen theories in this section are in Turing_Machines_ZF outside Core.
+Their session extends Set_Coded_Computation_ZF and declares ZF-Induct as an
+additional dependency.
+
+4 Model theoretic research
+
+Turing_CH/Turing_CH.thy imports the core coding theory and
+Independence_CH.Definitions_Main. Turing_CH.uniform_or_invariant_iff proves a
+disjunction principle for a sentence whose truth is uniform across the
+specified models. CH supplies a fixed noninvariant sentence under the
+assumption that a countable transitive ZFC set model exists. The
+halting_sentence locale assumes sats_halt_fm_iff. That assumption has not been
+replaced by a constructed formula and an adequacy proof.
+
+Turing_Models/Turing_Model_Witnesses.thy imports Turing_CH. It proves that
+finite machines, configurations, and canonical traces belong to every
+transitive ZFC set model.
+Turing_Model_Witnesses.transitive_zfc_halting_witness_iff uses the external
+finite_run predicate. Model membership of a trace does not establish the
+correctness of an internal formula.
+
+Turing_Models/Turing_Arithmetic_Truth.thy imports Turing_Model_Witnesses. It
+proves satisfaction rules for the natural number domain, zero, successor,
+order, addition, multiplication, and restricted quantification. Recursive
+arithmetic syntax, an effective translation of arbitrary sentences, and the
+final nonarithmeticality reduction remain open.
+
+5 Boundaries and provenance
+
+The core has eight theories. The extended machine session has sixteen. The CH
+session has one and the model session has two. All twenty seven project
+theories are registered exactly once in the four ROOT files. ROOTS records
+their session directories.
+
+The EPQ endpoint requires an effective reduction from true arithmetic to codes
+of sentences invariant across transitive ZFC set models, under the stated
+model existence assumption. The direct arithmetic route need not depend on
+universal machine construction. It is outside the independent TM session and
+is not a completed repository result.
+
+Prior technical reviews and internalisation proposals are retained in
+documentation/history. They record earlier source states and may contain
+superseded dependency paths. Source definitions and this current index take
+precedence for navigation. The historical account remains available for
+examination.

@@ -1,0 +1,307 @@
+INDEPENDENT CORE
+
+isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+
+Session Pure/Pure
+Session FOL/FOL
+Session FOL/ZF (main timing)
+Session Unsorted/Set_Coded_Computation_ZF
+Cleaned Set_Coded_Computation_ZF
+Running Set_Coded_Computation_ZF ...
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Machine
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Coding
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Tape
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Workspace
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Code_Operations
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Decidability
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Evaluator
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Rejection
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Machine 100% (0.187s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Tape 100% (0.093s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Coding 100% (0.077s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Code_Operations 100% (0.039s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Evaluator 100% (0.110s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Decidability 100% (0.044s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Rejection 100% (0.140s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Workspace 100% (0.072s cumulated time)
+Timing Set_Coded_Computation_ZF (2 threads, 0.705s elapsed time, 1.307s cpu time, 0.139s GC time, factor 1.85)
+Finished Set_Coded_Computation_ZF (0:00:02 elapsed time)
+
+Finished at Mon Oct 5 13:12:09 GMT+8 2026
+0:00:05 elapsed time
+
+COMPLETE REPOSITORY
+
+isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -D .
+
+Session Pure/Pure
+Session FOL/FOL
+Session FOL/ZF (main timing)
+Session Unsorted/Set_Coded_Computation_ZF
+Session FOL/ZF-Constructible
+Session AFP/Delta_System_Lemma (AFP)
+Session AFP/Transitive_Models (AFP)
+Session AFP/Independence_CH (AFP)
+Session Unsorted/Turing_CH
+Session Unsorted/Turing_Models
+Session FOL/ZF-Induct
+Session Unsorted/Turing_Machines_ZF
+Cleaned Set_Coded_Computation_ZF
+Cleaned Turing_CH
+Cleaned Turing_Models
+Cleaned Turing_Machines_ZF
+Building Set_Coded_Computation_ZF ...
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Machine
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Coding
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Tape
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Workspace
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Code_Operations
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Decidability
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Evaluator
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Rejection
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Machine 100% (0.172s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Tape 100% (0.082s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Coding 100% (0.074s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Code_Operations 100% (0.042s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Evaluator 100% (0.102s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Decidability 100% (0.033s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Rejection 100% (0.183s cumulated time)
+Set_Coded_Computation_ZF: theory Set_Coded_Computation_ZF.Turing_Workspace 100% (0.069s cumulated time)
+Timing Set_Coded_Computation_ZF (2 threads, 0.686s elapsed time, 1.278s cpu time, 0.135s GC time, factor 1.86)
+Finished Set_Coded_Computation_ZF (0:00:01 elapsed time)
+Building Turing_CH ...
+Turing_CH: theory ZF-Constructible.MetaExists
+Turing_CH: theory ZF-Constructible.Formula
+Turing_CH: theory ZF-Constructible.Normal
+Turing_CH: theory Delta_System_Lemma.ZF_Library
+Turing_CH: theory Transitive_Models.Utils
+Turing_CH: theory Transitive_Models.Nat_Miscellanea
+Turing_CH: theory Transitive_Models.Synthetic_Definition
+Turing_CH: theory Transitive_Models.ZF_Miscellanea
+Turing_CH: theory Transitive_Models.Renaming
+Turing_CH: theory ZF-Constructible.Reflection
+Turing_CH: theory Transitive_Models.Renaming_Auto
+Turing_CH: theory ZF-Constructible.Relative
+Turing_CH: theory Independence_CH.Forcing_Notions
+Turing_CH: theory Transitive_Models.M_Basic_No_Repl
+Turing_CH: theory ZF-Constructible.L_axioms
+Turing_CH: theory ZF-Constructible.Wellorderings
+Turing_CH: theory ZF-Constructible.WFrec
+Turing_CH: theory ZF-Constructible.WF_absolute
+Turing_CH: theory Transitive_Models.Eclose_Absolute
+Turing_CH: theory ZF-Constructible.Rank
+Turing_CH: theory Transitive_Models.Datatype_absolute
+Turing_CH: theory ZF-Constructible.Normal 100% (0.207s cumulated time)
+Turing_CH: theory ZF-Constructible.MetaExists 100% (0.015s cumulated time)
+Turing_CH: theory Transitive_Models.Utils 100% (0.025s cumulated time)
+Turing_CH: theory Transitive_Models.Synthetic_Definition 100% (0.115s cumulated time)
+Turing_CH: theory Transitive_Models.Renaming_Auto 100% (0.034s cumulated time)
+Turing_CH: theory Transitive_Models.Internalize
+Turing_CH: theory Transitive_Models.Recursion_Thms
+Turing_CH: theory Independence_CH.Edrel
+Turing_CH: theory ZF-Constructible.Separation
+Turing_CH: theory Transitive_Models.Rec_Separation
+Turing_CH: theory Transitive_Models.Satisfies_absolute
+Turing_CH: theory Transitive_Models.DPow_absolute
+Turing_CH: theory Transitive_Models.Internalizations
+Turing_CH: theory Transitive_Models.Least
+Turing_CH: theory Transitive_Models.Higher_Order_Constructs
+Turing_CH: theory Transitive_Models.Relativization
+Turing_CH: theory Transitive_Models.Discipline_Base
+Turing_CH: theory Transitive_Models.Arities
+Turing_CH: theory Transitive_Models.Discipline_Function
+Turing_CH: theory Independence_CH.FrecR
+Turing_CH: theory Transitive_Models.Discipline_Cardinal
+Turing_CH: theory Transitive_Models.Univ_Relative
+Turing_CH: theory Independence_CH.FrecR_Arities
+Turing_CH: theory Transitive_Models.Lambda_Replacement
+Turing_CH: theory Delta_System_Lemma.ZF_Library 100% (1.677s cumulated time)
+Turing_CH: theory ZF-Constructible.Formula 100% (0.570s cumulated time)
+Turing_CH: theory Transitive_Models.Nat_Miscellanea 100% (0.160s cumulated time)
+Turing_CH: theory Transitive_Models.Relativization 100% (0.282s cumulated time)
+Turing_CH: theory Transitive_Models.ZF_Miscellanea 100% (0.396s cumulated time)
+Turing_CH: theory Transitive_Models.FiniteFun_Relative
+Turing_CH: theory Transitive_Models.Cardinal_Relative
+Turing_CH: theory Transitive_Models.CardinalArith_Relative
+Turing_CH: theory Transitive_Models.Aleph_Relative
+Turing_CH: theory Transitive_Models.Cardinal_AC_Relative
+Turing_CH: theory ZF-Constructible.Relative 100% (1.502s cumulated time)
+Turing_CH: theory ZF-Constructible.Reflection 100% (0.137s cumulated time)
+Turing_CH: theory Transitive_Models.Renaming 100% (0.902s cumulated time)
+Turing_CH: theory Independence_CH.Fm_Definitions
+Turing_CH: theory Transitive_Models.ZF_Library_Relative
+Turing_CH: theory Transitive_Models.Replacement_Lepoll
+Turing_CH: theory Transitive_Models.Cardinal_Library_Relative
+Turing_CH: theory Transitive_Models.Delta_System_Relative
+Turing_CH: theory Independence_CH.Internal_ZFC_Axioms
+Turing_CH: theory Independence_CH.Interface
+Turing_CH: theory Transitive_Models.Partial_Functions_Relative
+Turing_CH: theory Independence_CH.Cohen_Posets_Relative
+Turing_CH: theory Transitive_Models.Pointed_DC_Relative
+Turing_CH: theory Independence_CH.Separation_Instances
+Turing_CH: theory Independence_CH.Separation_Rename
+Turing_CH: theory Independence_CH.Replacement_Instances
+Turing_CH: theory Independence_CH.Forcing_Notions 100% (0.514s cumulated time)
+Turing_CH: theory ZF-Constructible.Wellorderings 100% (0.279s cumulated time)
+Turing_CH: theory ZF-Constructible.WFrec 100% (0.235s cumulated time)
+Turing_CH: theory ZF-Constructible.WF_absolute 100% (0.248s cumulated time)
+Turing_CH: theory Transitive_Models.M_Basic_No_Repl 100% (0.353s cumulated time)
+Turing_CH: theory Transitive_Models.Eclose_Absolute 100% (0.354s cumulated time)
+Turing_CH: theory ZF-Constructible.L_axioms 100% (0.569s cumulated time)
+Turing_CH: theory ZF-Constructible.Rank 100% (0.703s cumulated time)
+Turing_CH: theory Transitive_Models.Recursion_Thms 100% (0.192s cumulated time)
+Turing_CH: theory Transitive_Models.Datatype_absolute 100% (0.293s cumulated time)
+Turing_CH: theory ZF-Constructible.Separation 100% (0.165s cumulated time)
+Turing_CH: theory Transitive_Models.Internalize 100% (0.434s cumulated time)
+Turing_CH: theory Transitive_Models.Rec_Separation 100% (0.276s cumulated time)
+Turing_CH: theory Transitive_Models.Satisfies_absolute 100% (0.644s cumulated time)
+Turing_CH: theory Independence_CH.Edrel 100% (0.872s cumulated time)
+Turing_CH: theory Independence_CH.ZF_Trans_Interpretations
+Turing_CH: theory Independence_CH.Forcing_Data
+Turing_CH: theory Independence_CH.Forces_Definition
+Turing_CH: theory Transitive_Models.DPow_absolute 100% (0.432s cumulated time)
+Turing_CH: theory Transitive_Models.Internalizations 100% (0.170s cumulated time)
+Turing_CH: theory Transitive_Models.Least 100% (0.235s cumulated time)
+Turing_CH: theory Transitive_Models.Higher_Order_Constructs 100% (0.186s cumulated time)
+Turing_CH: theory Transitive_Models.Discipline_Base 100% (0.819s cumulated time)
+Turing_CH: theory Transitive_Models.Arities 100% (0.284s cumulated time)
+Turing_CH: theory Independence_CH.Names
+Turing_CH: theory Independence_CH.Extensionality_Axiom
+Turing_CH: theory Independence_CH.Forcing_Theorems
+Turing_CH: theory Independence_CH.Foundation_Axiom
+Turing_CH: theory Independence_CH.Pairing_Axiom
+Turing_CH: theory Independence_CH.Proper_Extension
+Turing_CH: theory Independence_CH.Union_Axiom
+Turing_CH: theory Independence_CH.Infinity_Axiom
+Turing_CH: theory Independence_CH.Succession_Poset
+Turing_CH: theory Independence_CH.Ordinals_In_MG
+Turing_CH: theory Independence_CH.Separation_Axiom
+Turing_CH: theory Independence_CH.Replacement_Axiom
+Turing_CH: theory Independence_CH.Powerset_Axiom
+Turing_CH: theory Independence_CH.Choice_Axiom
+Turing_CH: theory Independence_CH.Forcing_Main
+Turing_CH: theory Independence_CH.Cardinal_Preservation
+Turing_CH: theory Independence_CH.Not_CH
+Turing_CH: theory Independence_CH.Kappa_Closed_Notions
+Turing_CH: theory Independence_CH.CH
+Turing_CH: theory Independence_CH.Absolute_Versions
+Turing_CH: theory Independence_CH.Definitions_Main
+Turing_CH: theory Turing_CH.Turing_CH
+Turing_CH: theory Transitive_Models.Discipline_Function 100% (8.168s cumulated time)
+Turing_CH: theory Transitive_Models.Discipline_Cardinal 100% (0.298s cumulated time)
+Turing_CH: theory Transitive_Models.Univ_Relative 100% (0.691s cumulated time)
+Turing_CH: theory Independence_CH.FrecR 100% (0.941s cumulated time)
+Turing_CH: theory Independence_CH.FrecR_Arities 100% (0.066s cumulated time)
+Turing_CH: theory Transitive_Models.Lambda_Replacement 100% (9.639s cumulated time)
+Turing_CH: theory Transitive_Models.Cardinal_Relative 100% (3.087s cumulated time)
+Turing_CH: theory Transitive_Models.FiniteFun_Relative 100% (0.457s cumulated time)
+Turing_CH: theory Transitive_Models.CardinalArith_Relative 100% (2.556s cumulated time)
+Turing_CH: theory Transitive_Models.Aleph_Relative 100% (0.843s cumulated time)
+Turing_CH: theory Transitive_Models.Cardinal_AC_Relative 100% (0.687s cumulated time)
+Turing_CH: theory Transitive_Models.ZF_Library_Relative 100% (2.970s cumulated time)
+Turing_CH: theory Transitive_Models.Replacement_Lepoll 100% (1.630s cumulated time)
+Turing_CH: theory Transitive_Models.Cardinal_Library_Relative 100% (4.586s cumulated time)
+Turing_CH: theory Transitive_Models.Delta_System_Relative 100% (1.874s cumulated time)
+Turing_CH: theory Independence_CH.Fm_Definitions 100% (9.187s cumulated time)
+Turing_CH: theory Independence_CH.Internal_ZFC_Axioms 100% (0.343s cumulated time)
+Turing_CH: theory Transitive_Models.Partial_Functions_Relative 100% (1.374s cumulated time)
+Turing_CH: theory Independence_CH.Cohen_Posets_Relative 100% (3.037s cumulated time)
+Turing_CH: theory Independence_CH.Interface 100% (7.187s cumulated time)
+Turing_CH: theory Independence_CH.Separation_Instances 100% (0.435s cumulated time)
+Turing_CH: theory Transitive_Models.Pointed_DC_Relative 100% (2.806s cumulated time)
+Turing_CH: theory Independence_CH.Separation_Rename 100% (0.536s cumulated time)
+Turing_CH: theory Independence_CH.Replacement_Instances 100% (9.461s cumulated time)
+Turing_CH: theory Independence_CH.ZF_Trans_Interpretations 100% (2.107s cumulated time)
+Turing_CH: theory Independence_CH.Forcing_Data 100% (0.523s cumulated time)
+Turing_CH: theory Independence_CH.Forces_Definition 100% (8.394s cumulated time)
+Turing_CH: theory Independence_CH.Names 100% (1.148s cumulated time)
+Turing_CH: theory Independence_CH.Extensionality_Axiom 100% (0.093s cumulated time)
+Turing_CH: theory Independence_CH.Pairing_Axiom 100% (0.105s cumulated time)
+Turing_CH: theory Independence_CH.Union_Axiom 100% (0.441s cumulated time)
+Turing_CH: theory Independence_CH.Foundation_Axiom 100% (0.059s cumulated time)
+Turing_CH: theory Independence_CH.Infinity_Axiom 100% (0.120s cumulated time)
+Turing_CH: theory Independence_CH.Proper_Extension 100% (0.145s cumulated time)
+Turing_CH: theory Independence_CH.Succession_Poset 100% (0.858s cumulated time)
+Turing_CH: theory Independence_CH.Forcing_Theorems 100% (9.382s cumulated time)
+Turing_CH: theory Independence_CH.Ordinals_In_MG 100% (0.055s cumulated time)
+Turing_CH: theory Independence_CH.Separation_Axiom 100% (2.844s cumulated time)
+Turing_CH: theory Independence_CH.Powerset_Axiom 100% (0.372s cumulated time)
+Turing_CH: theory Independence_CH.Replacement_Axiom 100% (0.612s cumulated time)
+Turing_CH: theory Independence_CH.Choice_Axiom 100% (0.577s cumulated time)
+Turing_CH: theory Independence_CH.Forcing_Main 100% (0.765s cumulated time)
+Turing_CH: theory Independence_CH.Cardinal_Preservation 100% (2.174s cumulated time)
+Turing_CH: theory Independence_CH.Not_CH 100% (5.348s cumulated time)
+Turing_CH: theory Independence_CH.Kappa_Closed_Notions 100% (3.848s cumulated time)
+Turing_CH: theory Independence_CH.CH 100% (1.371s cumulated time)
+Turing_CH: theory Independence_CH.Absolute_Versions 100% (0.170s cumulated time)
+Turing_CH: theory Independence_CH.Definitions_Main 100% (0.105s cumulated time)
+Turing_CH: theory Turing_CH.Turing_CH 100% (0.136s cumulated time)
+Timing Turing_CH (2 threads, 80.357s elapsed time, 135.532s cpu time, 10.259s GC time, factor 1.69)
+Finished Turing_CH (0:01:21 elapsed time, 0:02:17 cpu time, factor 1.68)
+Running Turing_Machines_ZF ...
+Turing_Machines_ZF: theory ZF-Induct.Primrec
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Transformations
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Primrec
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Composition
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Reduction
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Evaluator_Primrec
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Basic
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Programs
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Arguments
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Copy
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Storage
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Arithmetic
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Projection
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Transformations_Primrec
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Realisation
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Context
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Primrec_Reduction
+Turing_Machines_ZF: theory ZF-Induct.Primrec 100% (0.122s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Primrec 100% (0.084s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Evaluator_Primrec 100% (0.113s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Transformations 100% (0.200s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Composition 100% (0.094s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Reduction 100% (0.112s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Basic 100% (0.034s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Programs 100% (0.048s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Arguments 100% (0.028s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Storage 100% (0.054s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Projection 100% (0.076s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Copy 100% (0.062s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Arithmetic 100% (0.063s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Realisation 100% (0.024s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Context 100% (0.036s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Transformations_Primrec 100% (0.129s cumulated time)
+Turing_Machines_ZF: theory Turing_Machines_ZF.Turing_Primrec_Reduction 100% (0.017s cumulated time)
+Timing Turing_Machines_ZF (2 threads, 1.389s elapsed time, 2.104s cpu time, 0.183s GC time, factor 1.51)
+Finished Turing_Machines_ZF (0:00:01 elapsed time)
+Running Turing_Models ...
+Turing_Models: theory Turing_Models.Turing_Model_Witnesses
+Turing_Models: theory Turing_Models.Turing_Arithmetic_Truth
+Turing_Models: theory Turing_Models.Turing_Model_Witnesses 100% (0.196s cumulated time)
+Turing_Models: theory Turing_Models.Turing_Arithmetic_Truth 100% (0.123s cumulated time)
+Timing Turing_Models (2 threads, 0.217s elapsed time, 0.363s cpu time, 0.037s GC time, factor 1.67)
+Finished Turing_Models (0:00:00 elapsed time)
+
+Finished at Mon Oct 5 13:15:07 GMT+8 2026
+0:01:30 elapsed time, 0:02:21 cpu time, factor 1.56
+
+FINAL SOURCE CHECK
+
+isabelle build -v -j 1 -o threads=2 -o timeout=1800 -D .
+
+Session Pure/Pure
+Session FOL/FOL
+Session FOL/ZF (main timing)
+Session Unsorted/Set_Coded_Computation_ZF
+Session FOL/ZF-Constructible
+Session AFP/Delta_System_Lemma (AFP)
+Session AFP/Transitive_Models (AFP)
+Session AFP/Independence_CH (AFP)
+Session Unsorted/Turing_CH
+Session Unsorted/Turing_Models
+Session FOL/ZF-Induct
+Session Unsorted/Turing_Machines_ZF
+
+Finished at Mon Oct 5 13:15:53 GMT+8 2026
+0:00:02 elapsed time

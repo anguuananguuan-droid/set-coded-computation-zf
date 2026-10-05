@@ -1,5 +1,5 @@
 session Turing_Models = Turing_CH +
-  description "Finite computation witnesses in transitive ZFC set models."
+  description "Finite computation witnesses and arithmetic formulas in transitive ZFC set models."
   options [timeout=300]
   theories
     Turing_Model_Witnesses

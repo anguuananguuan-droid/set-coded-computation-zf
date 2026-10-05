@@ -1,0 +1,84 @@
+SET CODED COMPUTATION IN ISABELLE ZF
+
+Tang Ziyi
+
+1 Scope
+
+This repository formalises deterministic binary Turing machines in
+Isabelle/ZF. The independent session Set_Coded_Computation_ZF contains machine
+semantics, observational tape equivalence, natural number coding, numeric
+evaluation, self input halting undecidability, and bounded workspace
+preservation.
+
+The machines have one tape, finite control, and five actions. Finite lists
+represent a tape with blank cells beyond the represented ends. The definitions
+and theorems are in Turing_Machines_ZF/Core. This session depends only on
+Isabelle/ZF.
+
+2 Results
+
+Turing_Rejection.self_halting_not_tm_decidable proves that no machine in the
+model decides whether a decoded machine halts on the unary representation of
+its own code. Its rejection transformation is a concrete finite instruction
+table.
+
+Turing_Evaluator.code_step_correct and Turing_Evaluator.code_steps_correct
+relate numeric evaluation to the machine semantics. The evaluator is a
+mathematical function on codes. A universal machine implementing it has not
+been constructed.
+
+Turing_Tape.steps_config_eq preserves equality of represented contents under
+execution. Turing_Workspace.bounded_workspace_history proves that a supplied
+number of blank buffer cells protects saved data through every execution
+prefix within that number of steps. The theorem does not compute a bound on
+halting time.
+
+The theory map, assumptions, and research boundaries are recorded in
+documentation/DEVELOPMENT.txt.
+
+3 Build
+
+Install Isabelle2025-2. From the repository root, run the following command.
+
+    isabelle build -v -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+
+The full repository contains four sessions. The extended machine session
+includes concrete programs and primitive recursive certificates. Turing_CH and
+Turing_Models contain separate model theoretic research and require AFP
+2026-02-06. Complete reproduction instructions and dependency checksums are in
+documentation/BUILD.txt.
+
+4 Research boundary
+
+General machine compilation for primitive recursive composition and recursion
+remains open. The internal halting formula is still an assumed interface in
+Turing_CH. The arithmetic formulas do not yet form a complete effective
+translation of arithmetic syntax. These are outside the independent
+computation session.
+
+The motivating EPQ paper is papers/EPQ.pdf. Its final reduction to model
+invariant sentences has not been fully formalised. Historical reviews and
+design notes are indexed in documentation/history/README. Current instructions
+and review records are in documentation/records.
+
+5 Attribution and rights
+
+The five action machine design follows the operational model of the AFP entry
+Universal Turing Machine, formalised in Isabelle/HOL. This development proves
+its results in Isabelle/ZF and does not inherit that entry's universality
+theorem. The model theoretic research uses the AFP entry Independence of the
+Continuum Hypothesis.
+
+Tang Ziyi formulated the research question and wrote the original EPQ argument
+and initial formalisation. Subsequent definitions, theorem statements, proofs,
+and repository engineering include substantial AI assistance, recorded in
+AI_USAGE.txt. Automated checks do not constitute independent expert review or
+establish novelty.
+
+Sources and documentation are distributed under LICENSE, the BSD 3 Clause
+License. The EPQ paper is copyright 2026 Tang Ziyi, all rights reserved.
+CITATION.cff identifies the repository for citation. Cite the source revision
+used.
+
+https://www.isa-afp.org/entries/Universal_Turing_Machine.html
+https://www.isa-afp.org/entries/Independence_CH.html

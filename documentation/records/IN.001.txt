@@ -1,0 +1,40 @@
+REPOSITORY AUDIT AND ORGANISATION
+
+IN.001
+5 October 2026
+Authority Tang Ziyi
+Prepared by OpenAI Codex
+
+1 Mission
+
+Audit and organise the public repository around its actual mathematical
+content. The independent TM development is the principal entry point. Extended
+machine constructions and model theoretic work remain identifiable research.
+Public records must distinguish established results from assumptions and
+unfinished obligations.
+
+2 Baseline and boundary
+
+The baseline is e85583541f9f86409d7538004a230c26636a20c8. The scope includes
+every versioned theory, session declaration, current public document,
+historical record, and repository script. Private ignored material is outside
+the scope. The EPQ manuscript and license wording remain source records.
+
+The collaboration standard remains a candidate and is not adopted by this
+instruction. The operative requirements for this mission are the authorised
+repository audit, plain text public documentation, precise claims, visible
+historical provenance, and verification of the resulting source state.
+
+3 Acceptance conditions
+
+The homepage identifies the independent computation session and its limits.
+Current documentation matches the actual session and theory dependencies.
+Historical reviews remain retrievable and are not represented as current
+specifications. All project theories remain registered, public document
+references resolve, and the independent core and complete repository build
+successfully.
+
+Routine document revision, path migration, source checks, and removal of
+unnecessary build dependencies are within scope. A change to a mathematical
+definition, theorem claim, license, or attribution requires a separately
+identified justification.

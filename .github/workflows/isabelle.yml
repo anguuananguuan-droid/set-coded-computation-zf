@@ -29,6 +29,10 @@ jobs:
           key: linux-isabelle2025-2-afp2026-02-06-${{ hashFiles('scripts/install-ci.sh') }}
       - name: Install Isabelle and AFP
         run: bash scripts/install-ci.sh "$GITHUB_WORKSPACE/.ci-deps"
+      - name: Check independent computation session
+        run: |
+          set -o pipefail
+          .ci-deps/Isabelle2025-2/bin/isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF 2>&1 | tee "$RUNNER_TEMP/isabelle-core.log"
       - name: Register AFP
         run: .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/afp-2026-02-06/thys"
       - name: Check all proofs
@@ -40,5 +44,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: isabelle-build-log
-          path: ${{ runner.temp }}/isabelle-build.log
+          path: |
+            ${{ runner.temp }}/isabelle-core.log
+            ${{ runner.temp }}/isabelle-build.log
           if-no-files-found: ignore

@@ -1,0 +1,35 @@
+HISTORICAL RECORDS
+
+1 Status
+
+These documents record earlier development states. They are preserved for
+provenance and are not current specifications or evidence of independent
+expert review. Current source structure and result boundaries are in
+documentation/DEVELOPMENT.txt, with paths stated relative to the repository
+root.
+
+The August reports predate the repair of literal list equality in the
+numerical output contract. The October audit predates the independent core
+extraction. In the repository organisation revision, their prose is preserved
+and relative link destinations are updated for moved documents.
+
+2 Records
+
+RV-IN-ISABELLE-ZF-WEEKLY-2026-08-03.md records the August development review.
+RV-IN-TM-ZF-001-2026-08-03-CODE-HARDWIRING.md records natural code hardwiring.
+RV-IN-TM-ZF-001-2026-08-03-SEQUENTIAL-REDUCTIONS.md records the earlier
+reduction interface. AI_ASSISTANCE_2026-08.md contains the historical AI
+disclosure.
+
+REVIEW_AND_ROADMAP.md records the September semantic review and later updates
+through 4 October. FULL_TECHNICAL_AUDIT_2026-10-04.md examines baseline
+3a454f76d417e2cd133c5398aabb2c1d29269315. TURING_INTERNALISATION.md records
+the unfinished internal formula design and alternative routes.
+
+3 Source of record
+
+The versions before repository organisation remain available at commit
+e85583541f9f86409d7538004a230c26636a20c8. Formatting and language in these
+historical documents are retained rather than rewritten to imitate the current
+document standard. A historical completion claim does not override the
+assumptions of a theorem or the current open obligations.

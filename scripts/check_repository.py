@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Check public Markdown links and reject proof escapes in project theories."""
+"""Check document paths, session membership, and the independent core boundary.
+
+The proof token scan is deliberately conservative. Isabelle remains the proof
+checker. Session parsing covers this repository's plain ROOT theory lists.
+"""
 
 from pathlib import Path
 import re
@@ -13,11 +17,55 @@ names = subprocess.check_output(
 ).decode().split("\0")
 errors = []
 files = sorted({ROOT / name for name in names if name and (ROOT / name).is_file()})
+theories = {path for path in files if path.suffix == ".thy"}
+members = {}
+for directory in (ROOT / "ROOTS").read_text().splitlines():
+    if not directory.strip():
+        continue
+    session_root = ROOT / directory / "ROOT"
+    if not session_root.is_file():
+        errors.append(f"ROOTS: missing session declaration {directory}/ROOT")
+        continue
+    source = session_root.read_text()
+    blocks = re.findall(r"^  theories\s*\n((?:    \S+[^\n]*\n?)*)", source, re.M)
+    for block in blocks:
+        for name in block.split():
+            path = session_root.parent / f"{name}.thy"
+            members.setdefault(path, []).append(directory)
+            if path not in theories:
+                errors.append(f"{directory}/ROOT: missing public theory {name}")
+for path in sorted(theories):
+    if len(members.get(path, [])) != 1:
+        errors.append(f"{path.relative_to(ROOT)}: expected exactly one session registration")
+
+core = ROOT / "Turing_Machines_ZF/Core"
+core_theories = {path.stem for path in theories if path.parent == core}
+if not re.search(r"session Set_Coded_Computation_ZF = ZF \+", (core / "ROOT").read_text()):
+    errors.append("Core/ROOT: independent session must extend ZF")
+for path in sorted(theories):
+    source = path.read_text()
+    header = re.search(r"\btheory\s+(\w+)\s+imports\s+(.*?)\s+begin\b", source, re.S)
+    if not header or header.group(1) != path.stem:
+        errors.append(f"{path.relative_to(ROOT)}: theory header does not match filename")
+    elif path.parent == core:
+        for imported in header.group(2).split():
+            if imported.strip('"') not in core_theories | {"ZF"}:
+                errors.append(f"{path.relative_to(ROOT)}: noncore import {imported}")
+
 for path in files:
-    if path.suffix not in {".md", ".thy"}:
+    if path.suffix not in {".md", ".txt", ".thy"} and path.name != "README":
         continue
     source = path.read_text()
     relative = path.relative_to(ROOT)
+    # Current plain text documents use repository relative paths. Historical
+    # Markdown retains document relative links, checked separately below.
+    if path.suffix == ".txt" or path.name == "README":
+        for match in re.finditer(
+            r"\b(?:Turing_Machines_ZF|Turing_CH|Turing_Models|documentation|papers|scripts)"
+            r"/[A-Za-z0-9_./-]+\.(?:thy|txt|md|pdf|py|sh)\b", source
+        ):
+            if not (ROOT / match.group()).is_file():
+                errors.append(f"{relative}: missing source reference {match.group()}")
     if path.suffix == ".thy":
         for match in re.finditer(r"\b(sorry|oops|axiomatization|oracle|skip_proof|quick_and_dirty)\b", source):
             line = source.count("\n", 0, match.start()) + 1
@@ -35,4 +83,5 @@ for path in files:
 
 if errors:
     raise SystemExit("\n".join(errors))
-print("Public Markdown links and theory proof-escape scan passed.")
+print(f"Checked {len(theories)} theories in {len(set(d for ds in members.values() for d in ds))} sessions.")
+print("Document paths, session membership, core imports, and proof token scan passed.")

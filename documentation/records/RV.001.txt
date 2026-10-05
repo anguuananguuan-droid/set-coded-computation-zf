@@ -1,0 +1,97 @@
+REPOSITORY AUDIT AND ORGANISATION
+
+RV.001
+5 October 2026
+Instruction IN.001
+Reviewer OpenAI Codex
+Disposition Checks passed, human acceptance not recorded
+
+1 Examined state
+
+The baseline is e85583541f9f86409d7538004a230c26636a20c8. The public main
+branch matched that revision when fetched for this audit. Its existing Linux
+build was successful in GitHub Actions run 37203543619. That run establishes
+the baseline result, not the result of this revision.
+
+All twenty seven versioned project theories were inventoried by session,
+imports, definitions, and principal results. Review concentrated on the
+machine semantics, tape observation, evaluation correspondence, concrete
+diagonalisation, bounded workspace contract, and assumptions of the model
+interfaces. The remaining proof scripts were checked mechanically by
+rebuilding. This is an interface and repository audit, not a new independent
+proof of every theorem or a review of the EPQ manuscript's mathematical
+argument.
+
+2 Findings
+
+The independent session already contained eight theories, but the public
+documents mixed its results with unfinished extensions. The development guide
+retained a false dependency from Turing_Context to Turing_Workspace. The build
+guide described three sessions despite four ROOT declarations. Turing_CH
+inherited the entire extended machine session although its own imports
+required only core coding and AFP theories.
+
+The concrete self halting theorem uses machine coding, decision semantics, and
+the rejection transformation. Numeric evaluation and bounded workspace
+preservation are separate results. In the extended development, primitive
+recursive certification does not supply a general machine compiler. In the
+model application, sats_halt_fm_iff remains a locale assumption. Finite trace
+membership and the arithmetic formula fragment do not discharge that
+assumption or complete the EPQ reduction.
+
+3 Changes
+
+The homepage now identifies the independent computation session and its scope.
+The current theory index follows actual imports and states the open
+interfaces. The build instructions enumerate four sessions and distinguish
+independent and complete builds. Current public documents use plain text with
+numbered sections. The AI contribution disclosure retains its substantive
+attribution and verification limits.
+
+Three retrospective reviews and design notes were moved from papers to
+documentation/history. All seven historical documents retain their prose. Only
+relative link targets were adjusted for the new locations and document names.
+The versions before migration remain available at the baseline commit. The
+papers directory now contains the EPQ manuscript.
+
+Turing_CH now extends Set_Coded_Computation_ZF directly. Session descriptions
+were corrected. CI now builds the independent core before registering AFP and
+then checks the full repository. The repository checker validates theory
+registration, filename agreement, the core import boundary, and plain text
+source references in addition to the existing Markdown link and proof token
+checks.
+
+4 Evidence
+
+All twenty seven theory files, LICENSE, CITATION.cff, and papers/EPQ.pdf are
+byte identical to the baseline. The source manifest in
+documentation/records/RV.001.sources.txt identifies the final theories and
+session declarations. Its SHA256 is
+752e88e247be1e8517043c5e514f43f91426b16fe2ba31d2582edb266987e339. The manifest
+consists of SHA256 file digests and repository relative paths in lexical
+order.
+
+Isabelle2025-2 on macOS arm64 completed a clean independent core build with
+exit status 0. A clean build of all four local sessions completed with exit
+status 0 in 90 seconds, reusing installed external dependencies. A final build
+after the session description edits returned exit status 0 and reused the
+unchanged proof products. The captured output is
+documentation/records/RV.001.build.log. Only the local environment preamble is
+omitted from each transcript.
+
+The repository checker passed on the final public file set. In an isolated
+temporary repository it also rejected five deliberately invalid cases, a
+missing plain text reference, a proof escape token, a broken Markdown link, an
+unregistered theory, and a core import from outside its permitted dependency
+boundary. Historical prose equivalence was checked after removing link
+destination differences. Whitespace checks passed.
+
+5 Remaining boundary
+
+No mathematical definition or theorem was changed. This revision adds no
+compiler, universal machine, internal halting formula, or completed EPQ
+reduction. It makes no claim of novelty, AFP acceptance, or independent expert
+review. The general human AI collaboration standard remains an unpublished
+candidate and is not installed as repository policy by this audit.
+
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/37203543619
