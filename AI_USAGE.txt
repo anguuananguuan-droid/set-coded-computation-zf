@@ -1,0 +1,44 @@
+AI ASSISTANCE
+
+1 Contributions
+
+Tang Ziyi formulated the research question, developed the EPQ argument, and
+wrote and tested the initial Isabelle formalisation. The use of Isabelle/ZF
+and the separation between machine computation and model theoretic application
+follow the author's direction.
+
+OpenAI Codex made substantial contributions to retained definitions, theorem
+statements, proof scripts, documentation, and build infrastructure. These
+include machine coding, numeric evaluation, diagonalisation, reductions, the
+numerical output repair, concrete programs, workspace preservation, and model
+witnesses. This work must not be represented as proof scripts written solely
+by the human author.
+
+The author has authorised autonomous implementation and verification since
+August 2026. Git records implementation increments. A passing build is not
+evidence of line by line human review.
+
+2 Verification
+
+Isabelle checks derivability from the definitions and assumptions in the
+source. Testing, semantic review, and independent expert review are distinct
+activities. The repaired output contract and the workspace counterexample
+illustrate why a checked proof can still depend on an unsuitable
+specification.
+
+Neither automated builds nor AI review establish novelty, independent expert
+endorsement, or completion of the EPQ theorem. A specific claim of human
+review requires its own record.
+
+3 Historical disclosure
+
+Earlier work included comments from Anthropic Claude supplied by the author.
+The detailed disclosure is retained in
+documentation/history/AI_ASSISTANCE_2026-08.md. Its completion claims refer to
+an earlier development stage and must be read with the subsequent correction
+of the numerical output contract.
+
+The EPQ paper was not changed by the September and October proof developments.
+Its historical disclosure records AI assisted criticism, editing, and
+preparation of the repository copy following the author's original question
+and manuscript.
