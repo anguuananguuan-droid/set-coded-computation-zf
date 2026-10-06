@@ -1,0 +1,44 @@
+PUBLIC EXPLANATION AND NAVIGATION
+
+RV.002
+6 October 2026
+Prepared by OpenAI Codex
+
+1 Examined state
+
+The baseline is 99928611260423caf6aed70f5f709ca3a82117c4. The independent
+computation session contains eight theories. The remaining nineteen theories
+belong to three research sessions. The baseline build passed in GitHub
+Actions run 37267217820.
+
+2 Changes
+
+The homepage now gives the mathematical scope before the source identifiers
+and provides links to the core, reproduction instructions, and further
+research. Numbered headings remain intelligible in plain text and support
+navigation when rendered on GitHub.
+
+The former theory index is replaced by documentation/COMPUTATION.md and
+documentation/RESEARCH.md. The computation note explains an instruction
+table, finite tape observation, coding, the rejection construction, and
+bounded workspace preservation. It separates the three proof branches and
+links all eight core theories. The research note links the remaining
+nineteen theories and identifies their open compiler and formula interfaces.
+
+The development record index now links the historical reports and revision
+evidence. Earlier records retain their contents. This revision supersedes
+the document layout described in RV.001.
+
+3 Verification
+
+The repository checker passed. All twenty seven theory files are linked
+from the computation and research notes. The eight direct imports printed
+in the computation note match the theory headers. Document paths and
+whitespace checks passed. The examples and main claims were checked against
+their source definitions and theorem assumptions.
+
+All theory files, session declarations, license text, citation metadata,
+the EPQ paper, AI attribution, and prior audit records are unchanged from
+the baseline. This revision makes no new mathematical claim. Proof build
+results for the revision are recorded in the GitHub Actions run associated
+with its Git commit. The baseline run above applies only to the baseline.
