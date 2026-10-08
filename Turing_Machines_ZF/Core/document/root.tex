@@ -1,0 +1,85 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{isabelle,isabellesym}
+\usepackage{pdfsetup}
+
+\urlstyle{rm}
+\isabellestyle{it}
+
+\begin{document}
+
+\title{Set-Coded Computation in Isabelle/ZF}
+\author{Tang Ziyi}
+\maketitle
+
+\begin{abstract}
+We formalise deterministic binary Turing machines as sets in Isabelle/ZF.
+Finite instruction tables determine execution on a tape represented by two
+finite lists. We prove that equality of observed tape contents is preserved
+by execution, construct natural-number codes for machines and configurations,
+and prove a numerical evaluator correct for any finite number of steps.
+A concrete finite rejection transformation yields the undecidability of
+self-input halting in this machine model. We also prove that an explicitly
+supplied blank buffer protects saved tape data through every prefix of a
+bounded execution. Numeric evaluation is a mathematical function on codes;
+the entry does not construct a universal Turing machine.
+\end{abstract}
+
+\tableofcontents
+
+\section{Scope and representation}
+The machine instruction format follows the five-action operational design of
+the Isabelle/HOL AFP entry \emph{Universal Turing Machine}~\cite{afp-utm}.
+Here machines, configurations, and finite runs are sets in Isabelle/ZF.
+An instruction separately writes a symbol, moves the head, or leaves the tape
+unchanged, then selects the next control state. The final state is absorbing;
+an absent instruction enters it without changing the tape.
+
+The two finite tape lists represent a blank-ended tape. Literal list equality
+distinguishes representations that have the same observed contents, such as a
+list ending in one blank and the same list without that blank. The entry
+therefore defines equality by the symbols observed at every position relative
+to the head and proves that execution respects it. This is also necessary for
+the numerical output interpretation in the separate research development.
+
+The machine numbering and numerical evaluator are proved correct as set
+functions. The undecidability proof uses a different branch of the development.
+It supplies the finite rejection transformation required by the diagonal
+argument, rather than assuming that transformation exists. The workspace
+theorem is a third branch. It protects data appended outside an explicitly
+bounded region without predicting the duration of a program. Neither the
+evaluator nor the workspace theorem is used by the diagonal proof.
+
+The formalisation is motivated in part by the classical question of machine
+computability and its limits~\cite{turing1937}. The results below concern the
+machine model defined here. No equivalence theorem with another machine
+formalisation, general compiler, or universal-machine theorem is asserted.
+
+\input{session}
+
+\section*{Development provenance}
+Tang Ziyi formulated the research question and wrote the initial Isabelle
+formalisation. Subsequent definitions, theorem statements, proofs, and
+repository engineering include substantial assistance from OpenAI Codex.
+The proof document reports the scope of the checked source, not an independent
+expert assessment of the definitions or the novelty of the results.
+
+\begin{thebibliography}{9}
+
+\bibitem{afp-utm}
+Jian Xu, Xingyuan Zhang, Christian Urban, Sebastiaan J. C. Joosten, and
+Franz Regensburger.
+\emph{Universal Turing Machine}.
+Archive of Formal Proofs, 2019, revised 2022.
+\url{https://isa-afp.org/entries/Universal_Turing_Machine.html}.
+
+\bibitem{turing1937}
+Alan M. Turing.
+On computable numbers, with an application to the Entscheidungsproblem.
+\emph{Proceedings of the London Mathematical Society}, series 2, volume 42,
+pages 230--265, 1937.
+\url{https://doi.org/10.1112/plms/s2-42.1.230}.
+
+\end{thebibliography}
+
+\end{document}

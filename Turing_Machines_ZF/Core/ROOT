@@ -1,3 +1,5 @@
+chapter AFP
+
 session Set_Coded_Computation_ZF = ZF +
   description "
     Set-coded Turing-machine semantics, tape observation, numbering,
@@ -13,3 +15,5 @@ session Set_Coded_Computation_ZF = ZF +
     Turing_Decidability
     Turing_Rejection
     Turing_Workspace
+  document_files
+    "root.tex"
