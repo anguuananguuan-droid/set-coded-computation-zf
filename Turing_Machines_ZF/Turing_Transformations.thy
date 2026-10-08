@@ -21,7 +21,7 @@ lemma write_symbol_type [TC]:
 
 lemma update_write_symbol:
   assumes scanned: "b \<in> symbol"
-  shows "update(write_symbol(b),\<langle>l,r\<rangle>) =
+  shows "tm_update(write_symbol(b),\<langle>l,r\<rangle>) =
     \<langle>l,Cons(b,tl(r))\<rangle>"
   using scanned unfolding write_symbol_def symbol_def by auto
 
@@ -38,7 +38,7 @@ consts action_semantics :: "i \<Rightarrow> i"
 primrec
   "action_semantics([]) = id(tape)"
   "action_semantics(Cons(a,A)) =
-    (\<lambda>t\<in>tape. action_semantics(A)`update(a,t))"
+    (\<lambda>t\<in>tape. action_semantics(A)`tm_update(a,t))"
 
 definition execute_actions :: "[i,i] \<Rightarrow> i" where
   "execute_actions(A,t) \<equiv> action_semantics(A)`t"
@@ -55,14 +55,14 @@ next
   note current_action = Cons.hyps(1)
   note tail_actions = Cons.hyps(2)
   note semantics_IH = Cons.hyps(3)
-  have "(\<lambda>t\<in>tape. action_semantics(A)`update(a,t))
+  have "(\<lambda>t\<in>tape. action_semantics(A)`tm_update(a,t))
       \<in> tape \<rightarrow> tape"
   proof (rule lam_type)
     fix t
     assume tape: "t \<in> tape"
-    from tape have "update(a,t) \<in> tape"
-      by (rule update_type)
-    with semantics_IH show "action_semantics(A)`update(a,t) \<in> tape"
+    from tape have "tm_update(a,t) \<in> tape"
+      by (rule tm_update_type)
+    with semantics_IH show "action_semantics(A)`tm_update(a,t) \<in> tape"
       by (rule apply_type)
   qed
   then show ?case by simp
@@ -76,8 +76,8 @@ lemma execute_actions_Nil [simp]:
 lemma execute_actions_Cons [simp]:
   assumes tape: "t \<in> tape"
   shows "execute_actions(Cons(a,A),t) =
-    execute_actions(A,update(a,t))"
-  using tape update_type[OF tape]
+    execute_actions(A,tm_update(a,t))"
+  using tape tm_update_type[OF tape]
   unfolding execute_actions_def by simp
 
 lemma execute_actions_type [TC]:
@@ -342,7 +342,7 @@ lemma step_compiled_action:
     and tape: "t \<in> tape"
   shows "step(P @ compile_actions(Cons(a,A),succ(i)) @ N,
       \<langle>succ(i),t\<rangle>) =
-    \<langle>succ(succ(i)),update(a,t)\<rangle>"
+    \<langle>succ(succ(i)),tm_update(a,t)\<rangle>"
 proof -
   from scan_type[OF tape] have scanned: "scan(t) \<in> symbol" .
   from fetch_compiled_action[
@@ -392,13 +392,13 @@ next
   from index prefix prefix_length instruction have extended_length:
     "length(?P) = 2 #* succ(i)"
     by simp
-  from tape have updated_tape: "update(a,t) \<in> tape"
-    by (rule update_type)
+  from tape have updated_tape: "tm_update(a,t) \<in> tape"
+    by (rule tm_update_type)
   from step_compiled_action[
       OF index prefix prefix_length current_action tail_actions suffix tape]
   have first_step:
     "step(?M,\<langle>succ(i),t\<rangle>) =
-      \<langle>succ(succ(i)),update(a,t)\<rangle>" .
+      \<langle>succ(succ(i)),tm_update(a,t)\<rangle>" .
   have machine_shape:
     "?M = ?P @ compile_actions(A,succ(succ(i))) @ N"
     using index prefix extended_prefix by (simp add: app_assoc)
@@ -406,9 +406,9 @@ next
       OF next_index extended_prefix extended_length updated_tape]
   have tail_execution:
     "steps(?P @ compile_actions(A,succ(succ(i))) @ N,
-      \<langle>succ(succ(i)),update(a,t)\<rangle>,length(A)) =
+      \<langle>succ(succ(i)),tm_update(a,t)\<rangle>,length(A)) =
       \<langle>succ(succ(i) #+ length(A)),
-        execute_actions(A,update(a,t))\<rangle>" .
+        execute_actions(A,tm_update(a,t))\<rangle>" .
   from tail_actions have tail_length: "length(A) \<in> nat"
     by typecheck
   have split_execution:

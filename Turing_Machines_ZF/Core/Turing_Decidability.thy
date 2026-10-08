@@ -36,6 +36,11 @@ qed
 
 subsection \<open>Halting and Output\<close>
 
+text \<open>Output is the symbol scanned when the machine reaches the final
+state. Scanning 1 means acceptance and scanning 0 means rejection. This
+convention differs from output specifications that require a canonical
+literal tape or a numeral remaining on the tape.\<close>
+
 definition yields :: "[i,i,i] \<Rightarrow> o" where
   "yields(M,x,b) \<equiv>
     M \<in> machine \<and>
@@ -228,6 +233,11 @@ lemma blank_halting_iff:
   using natural unfolding blank_halting_def by simp
 
 subsection \<open>Self-Halting\<close>
+
+text \<open>The self-halting set uses the total machine decoder and the
+unary input for its own code. The locale halting_diagonal separates the
+diagonal argument from the construction of a machine that halts exactly
+when another machine rejects. Turing_Rejection supplies that machine.\<close>
 
 definition self_halting :: i where
   "self_halting \<equiv>

@@ -100,6 +100,14 @@ natural number of steps. `code_halts_at_correct` then relates the numeric
 final state test to the machine's final state. These are exact equalities
 for the stored configurations, including their finite lists.
 
+[Turing_Primrec.thy](../Turing_Machines_ZF/Core/Turing_Primrec.thy) gives
+primitive-recursive certificates for the numerical pairing and list-code
+operations. [Turing_Evaluator_Primrec.thy](../Turing_Machines_ZF/Core/Turing_Evaluator_Primrec.thy)
+certifies one-step and bounded finite-step evaluation. For example,
+`pr_code_steps_in_prim_rec` proves membership in the formal class of
+primitive-recursive functions, and `pr_code_steps_apply` identifies the
+certificate's output with `code_steps`.
+
 The evaluator is a mathematical function on numbers. The development has
 not constructed a finite Turing machine that implements it. Such a
 construction would be an additional universality result.
@@ -170,7 +178,7 @@ tape, since the frame can contain nonblank data.
 
 ## 6 Dependencies and scope
 
-The eight theories form one independent
+The ten theories form one independent
 [session](../Turing_Machines_ZF/Core/ROOT). Within that session, the direct
 imports are as follows. Each line names a theory followed by its import.
 
@@ -179,7 +187,9 @@ Turing_Machine            ZF
 Turing_Tape               Turing_Machine
 Turing_Coding             Turing_Machine
 Turing_Code_Operations    Turing_Coding
+Turing_Primrec            Turing_Code_Operations, ZF-Induct.Primrec
 Turing_Evaluator          Turing_Code_Operations
+Turing_Evaluator_Primrec  Turing_Evaluator, Turing_Primrec
 Turing_Decidability       Turing_Coding
 Turing_Rejection          Turing_Decidability
 Turing_Workspace          Turing_Tape
@@ -193,7 +203,8 @@ of machine and tape semantics. Neither is a premise of the diagonal proof.
 The five action instruction format follows the operational model of the
 AFP entry
 [Universal Turing Machine](https://www.isa-afp.org/entries/Universal_Turing_Machine.html).
-The core imports only Isabelle/ZF and its own theories. It does not inherit
+The core imports Isabelle/ZF, its bundled ZF-Induct session, and its own
+theories. It does not inherit
 the HOL entry's universality theorem. No simulation theorem between this
 instruction format and a different machine format is claimed.
 

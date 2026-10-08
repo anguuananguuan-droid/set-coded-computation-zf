@@ -3,13 +3,15 @@ Set_Coded_Computation_ZF
 
 1 SCOPE
 
-The submission unit is Turing_Machines_ZF/Core. Its eight theories depend on
-Isabelle/ZF alone. The remaining three repository sessions are research
+The submission unit is Turing_Machines_ZF/Core. Its ten theories depend on
+Isabelle/ZF and the Isabelle distribution's ZF-Induct session. The remaining
+three repository sessions are research
 extensions. They are not part of the candidate entry.
 
 The principal result is the undecidability of self-input halting for the
-defined machine model. A numerical finite-step evaluator and a bounded
-workspace theorem are independent companion results. No universal machine,
+defined machine model. A primitive-recursive certificate for numerical
+finite-step evaluation and a bounded workspace theorem are independent
+companion results. No universal machine,
 general compiler, primitive-recursive completeness theorem, or conclusion
 about set-theoretic truth is claimed.
 
@@ -31,7 +33,7 @@ proof build does not verify PDF generation if LuaLaTeX is absent.
 3 SUBMISSION UNIT
 
 Run scripts/package-afp-entry.sh with an optional output archive path. The
-archive contains only the ROOT file, eight theories, document/root.tex, and
+archive contains only the ROOT file, ten theories, document/root.tex, and
 LICENSE. The package excludes the unfinished research extensions and private
 working documents. Inspect the archive before submission.
 

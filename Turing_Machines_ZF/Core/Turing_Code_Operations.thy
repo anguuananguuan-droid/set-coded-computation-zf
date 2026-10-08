@@ -8,6 +8,11 @@ theory Turing_Code_Operations
   imports Turing_Coding
 begin
 
+text \<open>The operations below act directly on natural-number codes.
+Their correctness lemmas relate them to pairing and list operations after
+decoding. The arithmetic definitions are also used by the
+primitive-recursive certificates.\<close>
+
 consts pair_diagonal :: "i \<Rightarrow> i"
 
 primrec

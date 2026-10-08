@@ -49,7 +49,7 @@ for path in sorted(theories):
         errors.append(f"{path.relative_to(ROOT)}: theory header does not match filename")
     elif path.parent == core:
         for imported in header.group(2).split():
-            if imported.strip('"') not in core_theories | {"ZF"}:
+            if imported.strip('"') not in core_theories | {"ZF", "ZF-Induct.Primrec"}:
                 errors.append(f"{path.relative_to(ROOT)}: noncore import {imported}")
 
 for path in files:
@@ -59,7 +59,8 @@ for path in files:
     relative = path.relative_to(ROOT)
     # Current plain text documents use repository relative paths. Historical
     # Markdown retains document relative links, checked separately below.
-    if path.suffix == ".txt" or path.name == "README":
+    # A source manifest records paths at an older revision, not live links.
+    if (path.suffix == ".txt" and not path.name.endswith(".sources.txt")) or path.name == "README":
         for match in re.finditer(
             r"\b(?:Turing_Machines_ZF|Turing_CH|Turing_Models|documentation|papers|scripts)"
             r"/[A-Za-z0-9_./-]+\.(?:thy|txt|md|pdf|py|sh)\b", source

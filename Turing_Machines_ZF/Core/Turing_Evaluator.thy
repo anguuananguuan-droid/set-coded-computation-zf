@@ -10,6 +10,12 @@ begin
 
 subsection \<open>Configuration Codes\<close>
 
+text \<open>The evaluator computes a configuration code from a machine
+number and a configuration code. Its correctness theorems compare exact
+encoded configurations, including their finite tape lists. At this stage
+the evaluator is a set-theoretic function; primitive-recursive certificates
+for the numerical operations follow in Turing_Evaluator_Primrec.\<close>
+
 definition encode_tape :: "i \<Rightarrow> i" where
   "encode_tape(t) \<equiv>
     pair_code(nat_list_encode(fst(t)),nat_list_encode(snd(t)))"
@@ -192,7 +198,7 @@ qed
 
 theorem code_update_encode:
   assumes tape: "t \<in> tape"
-  shows "code_update(a,encode_tape(t)) = encode_tape(update(a,t))"
+  shows "code_update(a,encode_tape(t)) = encode_tape(tm_update(a,t))"
 proof -
   from tape have left_symbols: "fst(t) \<in> list(symbol)"
     and right_symbols: "snd(t) \<in> list(symbol)"
@@ -208,7 +214,7 @@ proof -
   from right have right_tail: "tl(snd(t)) \<in> list(nat)"
     by (rule tl_type)
   show ?thesis
-    unfolding code_update_def update_def encode_tape_def
+    unfolding code_update_def tm_update_def encode_tape_def
     using encode_tape_left_code[OF tape] encode_tape_right_code[OF tape]
       code_head_encode[OF left] code_head_encode[OF right]
       code_tail_encode[OF left] code_tail_encode[OF right]
@@ -417,7 +423,7 @@ proof -
     "pair_right_code(code_fetch(e,fst(c),scan(snd(c)))) = snd(?ins)"
     by simp
   have "code_step(e,encode_configuration(c)) =
-      pair_code(snd(?ins),encode_tape(update(fst(?ins),snd(c))))"
+      pair_code(snd(?ins),encode_tape(tm_update(fst(?ins),snd(c))))"
     unfolding code_step_def Let_def
     using encode_configuration_state[OF configuration]
       encode_configuration_tape[OF configuration]

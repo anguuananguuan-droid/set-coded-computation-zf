@@ -6,9 +6,15 @@ section \<open>Primitive-Recursive Coding\<close>
 
 theory Turing_Primrec
   imports
-    "Set_Coded_Computation_ZF.Turing_Code_Operations"
+    Turing_Code_Operations
     "ZF-Induct.Primrec"
 begin
+
+text \<open>This theory constructs primitive-recursive numerical operations
+for pairing and finite-list codes. Each certificate consists of a member of
+prim_rec and an application theorem identifying its value with the
+corresponding code operation. These results do not construct a Turing
+machine that implements the operations.\<close>
 
 subsection \<open>Composition and Projection\<close>
 

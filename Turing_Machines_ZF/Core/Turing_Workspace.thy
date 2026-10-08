@@ -30,10 +30,10 @@ lemma frame_config_state [simp]: "fst(frame_config(c,L,R)) = fst(c)"
 lemma update_frame_interior:
   assumes l: "l \<in> list(symbol)" and r: "r \<in> list(symbol)"
     and left: "l \<noteq> []" and right: "r \<noteq> []"
-  shows "update(a,\<langle>l @ L,r @ R\<rangle>) =
-    \<langle>fst(update(a,\<langle>l,r\<rangle>)) @ L,snd(update(a,\<langle>l,r\<rangle>)) @ R\<rangle>"
+  shows "tm_update(a,\<langle>l @ L,r @ R\<rangle>) =
+    \<langle>fst(tm_update(a,\<langle>l,r\<rangle>)) @ L,snd(tm_update(a,\<langle>l,r\<rangle>)) @ R\<rangle>"
   using l r left right
-  by (erule_tac a=l in list.cases; erule_tac a=r in list.cases; auto simp add: update_def)
+  by (erule_tac a=l in list.cases; erule_tac a=r in list.cases; auto simp add: tm_update_def)
 
 lemma step_frame_interior:
   assumes c: "c \<in> configuration"
@@ -59,11 +59,11 @@ lemma margin_nonempty:
 lemma update_margin:
   assumes l: "l \<in> list(symbol)" and r: "r \<in> list(symbol)"
     and n: "n \<in> nat" and left: "succ(n) \<le> length(l)" and right: "succ(n) \<le> length(r)"
-  shows "n \<le> length(fst(update(a,\<langle>l,r\<rangle>))) \<and>
-    n \<le> length(snd(update(a,\<langle>l,r\<rangle>)))"
+  shows "n \<le> length(fst(tm_update(a,\<langle>l,r\<rangle>))) \<and>
+    n \<le> length(snd(tm_update(a,\<langle>l,r\<rangle>)))"
   using l r n left right
   by (erule_tac a=l in list.cases; erule_tac a=r in list.cases;
-      auto simp add: update_def intro: le_trans leI)
+      auto simp add: tm_update_def intro: le_trans leI)
 
 lemma step_margin:
   assumes c: "c \<in> configuration" and n: "n \<in> nat"
@@ -138,10 +138,7 @@ proof -
   from c have l: "fst(snd(c)) \<in> list(symbol)" and r: "snd(snd(c)) \<in> list(symbol)"
     unfolding configuration_def tape_def by auto
   have bound: "\<And>k. k \<in> nat \<Longrightarrow> n \<le> k #+ n"
-  proof -
-    fix k assume "k \<in> nat"
-    then show "n \<le> k #+ n" by (induct k rule: nat_induct) (auto simp add: n le_succ_iff)
-  qed
+    using n by (rule add_le_self2)
   show ?thesis unfolding workspace_margin_def pad_config_def frame_config_def
     using l r n by (simp add: length_repeat bound)
 qed

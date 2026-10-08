@@ -61,7 +61,7 @@ Isabelle/ZF
 
 [`Turing_Coding.thy`](../../Turing_Machines_ZF/Core/Turing_Coding.thy) 逐层构造自然数配对、自然数列表、指令及机器代码；证明编码/解码互逆所需的类型与等式。`decode_machine` 对所有自然数代码给出合法机器，避免对角化时遇到非法代码的空洞。该编号是集合函数层的数学编号，不是通用机器。
 
-[`Turing_Evaluator.thy`](../../Turing_Machines_ZF/Core/Turing_Evaluator.thy) 为纸带和配置赋数值代码，定义代码层的扫描、更新、取指、一步与有限步函数。`code_step_correct`、`code_steps_correct` 将数值运算与原机器运行交换；末段把代码层有界停机测试与外部停机事实接通。[`Turing_Primrec.thy`](../../Turing_Machines_ZF/Turing_Primrec.thy) 与 [`Turing_Evaluator_Primrec.thy`](../../Turing_Machines_ZF/Turing_Evaluator_Primrec.thy) 为配对、列表及代码层有限求值建立 Isabelle/ZF 对象层 `prim_rec` 证书。这些证书仍不能自动产生执行该函数的有限指令表，更不能自动产生 ZF 内部的 `formula`。
+[`Turing_Evaluator.thy`](../../Turing_Machines_ZF/Core/Turing_Evaluator.thy) 为纸带和配置赋数值代码，定义代码层的扫描、更新、取指、一步与有限步函数。`code_step_correct`、`code_steps_correct` 将数值运算与原机器运行交换；末段把代码层有界停机测试与外部停机事实接通。[`Turing_Primrec.thy`](../../Turing_Machines_ZF/Core/Turing_Primrec.thy) 与 [`Turing_Evaluator_Primrec.thy`](../../Turing_Machines_ZF/Core/Turing_Evaluator_Primrec.thy) 为配对、列表及代码层有限求值建立 Isabelle/ZF 对象层 `prim_rec` 证书。这些证书仍不能自动产生执行该函数的有限指令表，更不能自动产生 ZF 内部的 `formula`。
 
 [`Turing_Decidability.thy`](../../Turing_Machines_ZF/Core/Turing_Decidability.thy) 明确定义机器的接受、拒绝与判定，以及对角拒绝语言、自输入停机集合、空输入停机集合。对角拒绝不可判定先由编号和自指矛盾得到。随后现已拆出的 [`Turing_Rejection.thy`](../../Turing_Machines_ZF/Core/Turing_Rejection.thy) 构造具体的拒绝变换：改写原机器到终态的行为并附加检查控制，证明它在输入上的停机恰对应原机拒绝，从而消去 `halting_diagonal` 的抽象变换前提，得到**无条件的本模型自输入停机不可判定**。
 

@@ -3,15 +3,20 @@ chapter AFP
 session Set_Coded_Computation_ZF = ZF +
   description "
     Set-coded Turing-machine semantics, tape observation, numbering,
-    numeric evaluation, self-halting undecidability, and bounded workspaces.
+    primitive-recursive numeric evaluation, self-halting undecidability,
+    and bounded workspaces.
   "
   options [timeout=300]
+  sessions
+    "ZF-Induct"
   theories
     Turing_Machine
     Turing_Tape
     Turing_Coding
     Turing_Code_Operations
+    Turing_Primrec
     Turing_Evaluator
+    Turing_Evaluator_Primrec
     Turing_Decidability
     Turing_Rejection
     Turing_Workspace
