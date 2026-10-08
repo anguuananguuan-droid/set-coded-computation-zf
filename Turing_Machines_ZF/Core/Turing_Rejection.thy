@@ -8,6 +8,14 @@ theory Turing_Rejection
   imports Turing_Decidability
 begin
 
+text \<open>Given a machine M, the construction reserves a fresh control
+state above the states and instruction slots used by M. Transitions that
+would terminate M enter that state. A blank scanned there terminates the
+new machine; a 1 makes it loop. The projection lemmas relate runs of the
+new machine to runs of M, including termination caused by a missing
+instruction. The final theorem instantiates the diagonal argument with this
+explicit finite instruction list.\<close>
+
 subsection \<open>Control-State Bounds\<close>
 
 consts control_bound :: "i \<Rightarrow> i"
@@ -155,7 +163,7 @@ proof (cases "slot(q,b) < length(M)")
   from machine_M have control: "control_bound(M) \<in> nat"
     by (rule control_bound_type)
   from state control have natural: "q \<in> nat"
-    by (blast intro: Ord_trans Ord_nat)
+    by (blast intro: Ord_trans)
   from slot_type[OF natural scanned] have slot_natural:
     "slot(q,b) \<in> nat" .
   from nth_in_set_of_list[OF instructions slot_natural True]
@@ -362,7 +370,7 @@ proof (cases rule: natE)
 next
   case (succ r)
   from earlier succ have state: "q \<in> nat"
-    by (blast intro: Ord_trans Ord_nat)
+    by (blast intro: Ord_trans)
   from earlier succ have state_le: "q \<le> r"
     by (auto simp add: le_iff intro: ltI nat_into_Ord)
   from mult_le_mono1[OF state_le succ(1), of 2]
@@ -384,7 +392,7 @@ proof -
   from machine_M have control: "control_bound(M) \<in> nat"
     by (rule control_bound_type)
   from state control have state_natural: "q \<in> nat"
-    by (blast intro: Ord_trans Ord_nat)
+    by (blast intro: Ord_trans)
   from state have below_or_control:
     "q \<in> control_bound(M) \<or> q = control_bound(M)"
     by auto
@@ -474,7 +482,7 @@ proof -
   from machine_M have control: "control_bound(M) \<in> nat"
     by (rule control_bound_type)
   from state control have natural: "q \<in> nat"
-    by (blast intro: Ord_trans Ord_nat)
+    by (blast intro: Ord_trans)
   from slot_type[OF natural scanned] have slot_natural:
     "slot(q,b) \<in> nat" .
   from state have bounded:
@@ -676,7 +684,7 @@ proof -
   from fetch_rejecting_checker[OF machine_M scanned] cases
   show ?thesis
     unfolding step_def Let_def erase_configuration_def erase_state_def
-      update_def
+      tm_update_def
     by auto
 qed
 
@@ -900,7 +908,7 @@ proof -
       from fetch_rejecting_checker[OF machine_M scanned_type]
         scanned_cases True representation next_final control_nonfinal
       show ?thesis
-        unfolding step_def Let_def update_def by auto
+        unfolding step_def Let_def tm_update_def by auto
     next
       case control_False: False
       from state_bounded control_False have below: "q \<in> ?k"
@@ -1033,7 +1041,7 @@ proof -
       \<langle>nop,final_state\<rangle>"
     by simp
   from blank checker_fetch show ?thesis
-    unfolding step_def Let_def update_def by simp
+    unfolding step_def Let_def tm_update_def by simp
 qed
 
 lemma rejecting_machine_halts_imp_yields_blank:

@@ -3,7 +3,7 @@ session Turing_CH = Set_Coded_Computation_ZF +
     A conditional connection between halting and invariance across
     transitive models of ZFC.
   "
-  options [timeout=300]
+  options [timeout=900]
   sessions
     Independence_CH
   theories

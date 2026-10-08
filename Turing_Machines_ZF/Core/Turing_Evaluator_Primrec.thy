@@ -5,8 +5,13 @@
 section \<open>Primitive-Recursive Evaluation\<close>
 
 theory Turing_Evaluator_Primrec
-  imports "Set_Coded_Computation_ZF.Turing_Evaluator" Turing_Primrec
+  imports Turing_Evaluator Turing_Primrec
 begin
+
+text \<open>The one-step evaluator and its finite iteration have
+primitive-recursive certificates. An application theorem identifies the iteration certificate with
+the numerical evaluator at every natural time bound.
+This is a result about numerical evaluation, not a universal machine.\<close>
 
 subsection \<open>Tape Inspection\<close>
 

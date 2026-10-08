@@ -11,16 +11,18 @@ whether the encoded machine halts on that same code.
 
 The independent library also gives a natural number encoding of machines and
 configurations, with a numeric evaluator proved to reproduce execution.
+Operations on codes and finite-step evaluation have primitive-recursive
+certificates in Isabelle/ZF.
 Two further results concern the finite representation of the tape. Adding
 trailing blanks preserves its observed contents, and a supplied blank buffer
 protects saved data during a bounded number of steps.
 
 [Computation in Isabelle/ZF](documentation/COMPUTATION.md) explains the model
 through a small machine, then develops the coding, diagonal argument, and
-tape results. Each result is linked to its source. The eight theory files
+tape results. Each result is linked to its source. The ten theory files
 form the session
 [Set_Coded_Computation_ZF](Turing_Machines_ZF/Core/ROOT), which depends only
-on Isabelle/ZF.
+on Isabelle/ZF and its bundled ZF-Induct session.
 
 ## 2 Verification
 

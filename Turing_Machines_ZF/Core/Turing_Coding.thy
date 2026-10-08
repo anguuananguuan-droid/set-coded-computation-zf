@@ -10,6 +10,10 @@ begin
 
 subsection \<open>Natural Pairing\<close>
 
+text \<open>The pairing code enumerates diagonals of nat times nat. The
+inverse follows the same diagonals by iteration; the two directions are
+proved inverse on natural numbers.\<close>
+
 consts triangle :: "i \<Rightarrow> i"
 
 primrec
@@ -511,6 +515,11 @@ qed
 
 subsection \<open>Instruction Streams\<close>
 
+text \<open>An instruction code whose action field is outside the five valid
+actions decodes to a no-op instruction targeting the final state. Thus
+decoding is defined for every natural number. The canonical codes are
+identified separately.\<close>
+
 definition encode_instruction :: "i \<Rightarrow> i" where
   "encode_instruction(ins) \<equiv> pair_code(fst(ins),snd(ins))"
 
@@ -664,6 +673,11 @@ next
 qed
 
 subsection \<open>Machine Numbers\<close>
+
+text \<open>Machines are encoded as finite lists of instruction numbers.
+Canonical codes give a bijection with machines, while the total decoder
+also accepts noncanonical natural numbers. The latter convention lets the
+self-halting predicate quantify over all natural numbers.\<close>
 
 definition encode_machine :: "i \<Rightarrow> i" where
   "encode_machine(M) \<equiv> nat_list_encode(machine_code_list(M))"

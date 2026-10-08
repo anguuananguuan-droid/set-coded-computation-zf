@@ -4,8 +4,6 @@ session Turing_Machines_ZF = Set_Coded_Computation_ZF +
   sessions
     "ZF-Induct"
   theories
-    Turing_Primrec
-    Turing_Evaluator_Primrec
     Turing_Transformations
     Turing_Composition
     Turing_Reduction

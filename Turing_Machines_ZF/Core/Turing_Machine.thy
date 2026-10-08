@@ -10,6 +10,13 @@ begin
 
 subsection \<open>Machine Representation\<close>
 
+text \<open>A machine is a finite instruction list. An instruction contains an
+action number and a next-state number. Actions 0 and 1 write symbols, 2 and
+3 move the head, and 4 leaves the tape unchanged. State 1 is initial and
+state 0 is final. The named actions, states, and symbols are input
+abbreviations for these natural numbers; printed propositions may show the
+numbers instead of their names.\<close>
+
 definition symbol :: i where
   "symbol \<equiv> 2"
 
@@ -82,6 +89,11 @@ lemma tapeD:
 
 subsection \<open>Tape Semantics\<close>
 
+text \<open>The left list begins with the cell immediately left of the head;
+the right list begins with the scanned cell. Cells beyond either finite list
+are blank. This representation uses the Isabelle/ZF equations hd([]) = 0
+and nth(n,[]) = 0, with blank symbol 0.\<close>
+
 definition scan :: "i \<Rightarrow> i" where
   "scan(t) \<equiv> hd(snd(t))"
 
@@ -104,8 +116,8 @@ lemma scan_pair [simp]:
   "scan(\<langle>l,r\<rangle>) = hd(r)"
   unfolding scan_def by simp
 
-definition update :: "[i,i] \<Rightarrow> i" where
-  "update(a,t) \<equiv>
+definition tm_update :: "[i,i] \<Rightarrow> i" where
+  "tm_update(a,t) \<equiv>
     if a = write_blank then
       \<langle>fst(t),Cons(blank_symbol,tl(snd(t)))\<rangle>
     else if a = write_one then
@@ -116,9 +128,9 @@ definition update :: "[i,i] \<Rightarrow> i" where
       \<langle>Cons(hd(snd(t)),fst(t)),tl(snd(t))\<rangle>
     else t"
 
-lemma update_type [TC]:
+lemma tm_update_type [TC]:
   assumes tape: "t \<in> tape"
-  shows "update(a,t) \<in> tape"
+  shows "tm_update(a,t) \<in> tape"
 proof -
   from tape
   have left: "fst(t) \<in> list(symbol)"
@@ -133,36 +145,40 @@ proof -
   from right have right_tail: "tl(snd(t)) \<in> list(symbol)"
     by (rule tl_type)
   show ?thesis
-    unfolding update_def
+    unfolding tm_update_def
     using tape left right left_head right_head left_tail right_tail
-    by (auto intro: tapeI)
+    by auto
 qed
 
 lemma update_write_blank [simp]:
-  "update(write_blank,t) =
+  "tm_update(write_blank,t) =
     \<langle>fst(t),Cons(blank_symbol,tl(snd(t)))\<rangle>"
-  unfolding update_def by simp
+  unfolding tm_update_def by simp
 
 lemma update_write_one [simp]:
-  "update(write_one,t) =
+  "tm_update(write_one,t) =
     \<langle>fst(t),Cons(one_symbol,tl(snd(t)))\<rangle>"
-  unfolding update_def by simp
+  unfolding tm_update_def by simp
 
 lemma update_move_left [simp]:
-  "update(move_left,t) =
+  "tm_update(move_left,t) =
     \<langle>tl(fst(t)),Cons(hd(fst(t)),snd(t))\<rangle>"
-  unfolding update_def by simp
+  unfolding tm_update_def by simp
 
 lemma update_move_right [simp]:
-  "update(move_right,t) =
+  "tm_update(move_right,t) =
     \<langle>Cons(hd(snd(t)),fst(t)),tl(snd(t))\<rangle>"
-  unfolding update_def by simp
+  unfolding tm_update_def by simp
 
 lemma update_nop [simp]:
-  "update(nop,t) = t"
-  unfolding update_def by simp
+  "tm_update(nop,t) = t"
+  unfolding tm_update_def by simp
 
 subsection \<open>One-Step Semantics\<close>
+
+text \<open>For a nonfinal state q and scanned symbol b, the instruction slot
+is 2 * pred(q) + b. A missing slot enters the final state without changing
+the tape. The final state is absorbing.\<close>
 
 definition slot :: "[i,i] \<Rightarrow> i" where
   "slot(q,b) \<equiv> 2 #* pred(q) #+ b"
@@ -210,7 +226,7 @@ lemma fetch_out_of_range [simp]:
 definition step :: "[i,i] \<Rightarrow> i" where
   "step(M,c) \<equiv>
     let ins = fetch(M,fst(c),scan(snd(c)))
-    in \<langle>snd(ins),update(fst(ins),snd(c))\<rangle>"
+    in \<langle>snd(ins),tm_update(fst(ins),snd(c))\<rangle>"
 
 lemma step_type [TC]:
   assumes machine: "M \<in> machine"
@@ -231,7 +247,7 @@ qed
 lemma step_pair [simp]:
   "step(M,\<langle>q,t\<rangle>) =
     \<langle>snd(fetch(M,q,scan(t))),
-      update(fst(fetch(M,q,scan(t))),t)\<rangle>"
+      tm_update(fst(fetch(M,q,scan(t))),t)\<rangle>"
   unfolding step_def Let_def by simp
 
 lemma step_final [simp]:
@@ -250,6 +266,11 @@ proof -
 qed
 
 subsection \<open>Finite Computations\<close>
+
+text \<open>A finite run is a set-theoretic function on succ(n). The following equivalence theorem
+identifies such a run with n iterations of the step
+function. This witness form is used when finite computations are considered
+inside set-theoretic models.\<close>
 
 definition steps :: "[i,i,i] \<Rightarrow> i" where
   "steps(M,c,n) \<equiv> (\<lambda>x. step(M,x))^n (c)"
@@ -394,7 +415,7 @@ proof
     fix k
     assume within: "k \<in> succ(n)"
     with time have natural: "k \<in> nat"
-      by (blast intro: Ord_trans Ord_nat)
+    by (blast intro: Ord_trans)
     from natural within show "r`k = steps(M,c,k)"
     proof (induct k rule: nat_induct)
       case 0

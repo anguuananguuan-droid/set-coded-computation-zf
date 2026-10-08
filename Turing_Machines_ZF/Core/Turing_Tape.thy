@@ -8,8 +8,10 @@ theory Turing_Tape
   imports Turing_Machine
 begin
 
-text \<open>A finite list represents an infinite blank-ended half-tape. Equality
-of represented contents must therefore ignore trailing blanks. No instruction
+text \<open>A finite list represents an infinite blank-ended half-tape. The
+Isabelle/ZF function nth returns 0 beyond the end of the list, matching the
+blank symbol. Equality of represented contents must therefore ignore trailing
+blanks. No instruction
 is added to the machine: this relation is used only to observe its output.\<close>
 
 definition half_tape_eq :: "[i,i] \<Rightarrow> o" where
@@ -90,7 +92,7 @@ lemma tape_eq_scan: "tape_eq(t,u) \<Longrightarrow> scan(t) = scan(u)"
 
 lemma tape_eq_update:
   assumes eq: "tape_eq(t,u)"
-  shows "tape_eq(update(a,t),update(a,u))"
+  shows "tape_eq(tm_update(a,t),tm_update(a,u))"
 proof -
   from eq have t: "t \<in> tape" and u: "u \<in> tape"
     and left: "half_tape_eq(fst(t),fst(u))"
@@ -101,11 +103,11 @@ proof -
     and tails: "half_tape_eq(tl(fst(t)),tl(fst(u)))"
       "half_tape_eq(tl(snd(t)),tl(snd(u)))"
     by (auto intro: half_tape_eq_hd half_tape_eq_tl)
-  from update_type[OF t] update_type[OF u]
+  from tm_update_type[OF t] tm_update_type[OF u]
   show ?thesis
     unfolding tape_eq_def
     using left right heads tails
-    by (auto simp add: update_def intro: half_tape_eq_Cons)
+    by (auto simp add: tm_update_def intro: half_tape_eq_Cons)
 qed
 
 definition config_eq :: "[i,i] \<Rightarrow> o" where
@@ -150,18 +152,18 @@ theorem steps_config_eq:
   shows "config_eq(steps(M,c,n),steps(M,d,n))"
   using n by (induct n rule: nat_induct) (auto intro: eq step_config_eq[OF M])
 
-subsection \<open>Why Literal Output Equality Is Too Strong\<close>
+subsection \<open>Tape Span and Trailing Blanks\<close>
 
 definition tape_span :: "i \<Rightarrow> i" where
   "tape_span(t) \<equiv> length(fst(t)) #+ length(snd(t))"
 
 lemma update_span_mono:
   assumes t: "t \<in> tape"
-  shows "tape_span(t) \<le> tape_span(update(a,t))"
+  shows "tape_span(t) \<le> tape_span(tm_update(a,t))"
 proof -
   from tapeD[OF t] have l: "fst(t) \<in> list(symbol)" and r: "snd(t) \<in> list(symbol)" .
   from l r show ?thesis
-    unfolding tape_span_def update_def
+    unfolding tape_span_def tm_update_def
     by (erule_tac a="fst(t)" in list.cases;
         erule_tac a="snd(t)" in list.cases;
         auto simp add: add_commute)

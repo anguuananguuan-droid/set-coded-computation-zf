@@ -10,20 +10,11 @@ open interfaces. The assumptions of each theorem are recorded in its source.
 ## 2 Machine programs
 
 The session [Turing_Machines_ZF](../Turing_Machines_ZF/ROOT) extends the
-independent library and uses the bundled ZF-Induct session. Its sixteen
-theories concern arithmetic certificates, machine transformations, and
+independent library and uses the bundled ZF-Induct session. Its fourteen
+theories concern machine transformations and
 concrete programs.
 
-### 2.1 Arithmetic certificates
-
-[Turing_Primrec](../Turing_Machines_ZF/Turing_Primrec.thy) proves primitive
-recursive certificates for the numeric coding operations.
-[Turing_Evaluator_Primrec](../Turing_Machines_ZF/Turing_Evaluator_Primrec.thy)
-extends these certificates to finite numeric evaluation. Membership in the
-formal class of primitive recursive functions does not itself supply a
-finite machine implementing the function.
-
-### 2.2 Transformations and reductions
+### 2.1 Transformations and reductions
 
 [Turing_Transformations](../Turing_Machines_ZF/Turing_Transformations.thy)
 constructs input loading and hardwiring.
@@ -39,7 +30,7 @@ certify the natural code hardwiring map as primitive recursive. The theorem
 `self_hardwire_realiser_imp_blank_halting_undecidable` still assumes a machine
 implementing that map. It is a conditional result about blank input halting.
 
-### 2.3 Concrete programs
+### 2.2 Concrete programs
 
 [Turing_Basic](../Turing_Machines_ZF/Turing_Basic.thy) and
 [Turing_Programs](../Turing_Machines_ZF/Turing_Programs.thy) provide basic
@@ -103,8 +94,8 @@ nonarithmeticality theorem have not been fully formalised here. A direct
 arithmetic translation need not pass through a universal machine, but it
 still requires a complete translation and its satisfaction proof.
 
-The repository contains twenty seven theories in four sessions, eight in
-the independent library, sixteen in the extended machine session, one in
+The repository contains twenty seven theories in four sessions, ten in
+the independent library, fourteen in the extended machine session, one in
 Turing_CH, and two in Turing_Models.
 [Reproduction instructions](BUILD.txt) cover all four.
 [Development records](history/README.md) retain earlier claims in their
