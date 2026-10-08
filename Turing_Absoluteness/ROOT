@@ -1,0 +1,7 @@
+session Turing_Absoluteness = Turing_Models +
+  options [timeout=600]
+  theories
+    Turing_Absoluteness_Pilot
+    Turing_Absoluteness_Corollaries
+    Turing_Decidable_Sets
+    Proof_Checks
