@@ -1,0 +1,45 @@
+AFP CANDIDATE
+Set_Coded_Computation_ZF
+
+1 SCOPE
+
+The submission unit is Turing_Machines_ZF/Core. Its eight theories depend on
+Isabelle/ZF alone. The remaining three repository sessions are research
+extensions. They are not part of the candidate entry.
+
+The principal result is the undecidability of self-input halting for the
+defined machine model. A numerical finite-step evaluator and a bounded
+workspace theorem are independent companion results. No universal machine,
+general compiler, primitive-recursive completeness theorem, or conclusion
+about set-theoretic truth is claimed.
+
+2 VERIFICATION
+
+Use Isabelle2025-2. From the repository root, run
+
+isabelle build -v -c -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+
+For the proof document, install LuaLaTeX and run
+
+isabelle build -v -c -o browser_info -o document=pdf \
+  -o 'document_variants=document:outline=/proof,/ML' \
+  -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+
+The GitHub Actions workflow runs both commands and retains the PDF. A local
+proof build does not verify PDF generation if LuaLaTeX is absent.
+
+3 SUBMISSION UNIT
+
+Run scripts/package-afp-entry.sh with an optional output archive path. The
+archive contains only the ROOT file, eight theories, document/root.tex, and
+LICENSE. The package excludes the unfinished research extensions and private
+working documents. Inspect the archive before submission.
+
+4 REVIEW BOUNDARY
+
+The Isabelle/HOL AFP entry Universal Turing Machine is the source for the
+five-action operational design. This candidate contributes a set-coded
+Isabelle/ZF development with a finite-list tape observation interface and a
+concrete diagonal argument in that model. It does not establish priority over
+other ZF formalizations or an equivalence with the HOL model. External review
+is needed to judge suitability and novelty for AFP.

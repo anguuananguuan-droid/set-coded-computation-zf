@@ -39,6 +39,15 @@ jobs:
         run: |
           set -o pipefail
           .ci-deps/Isabelle2025-2/bin/isabelle build -v -j 1 -o threads=2 -o timeout=1800 -D . 2>&1 | tee "$RUNNER_TEMP/isabelle-build.log"
+      - name: Install document tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-luatex texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+      - name: Build AFP proof document
+        run: |
+          set -o pipefail
+          .ci-deps/Isabelle2025-2/bin/isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$RUNNER_TEMP/afp-document" -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF 2>&1 | tee "$RUNNER_TEMP/isabelle-document.log"
+          test -s "$RUNNER_TEMP/afp-document/document.pdf"
       - name: Save build log
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -47,4 +56,12 @@ jobs:
           path: |
             ${{ runner.temp }}/isabelle-core.log
             ${{ runner.temp }}/isabelle-build.log
+            ${{ runner.temp }}/isabelle-document.log
           if-no-files-found: ignore
+      - name: Save AFP proof document
+        if: success()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: set-coded-computation-zf-proof-document
+          path: ${{ runner.temp }}/afp-document/document.pdf
+          if-no-files-found: error

@@ -33,6 +33,8 @@ isabelle build -v -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
 
 [Build instructions](documentation/BUILD.txt) specify the environment and
 commands for both the independent library and the complete repository.
+[AFP candidate](documentation/AFP.txt) records the submission scope, proof
+document command, and archive contents.
 [GitHub Actions](https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/workflows/isabelle.yml)
 checks the independent library and all four project sessions. Each run
 identifies the source revision and retains its build logs.
