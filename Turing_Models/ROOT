@@ -4,3 +4,4 @@ session Turing_Models = Turing_CH +
   theories
     Turing_Model_Witnesses
     Turing_Arithmetic_Truth
+    Turing_Halting_Index
