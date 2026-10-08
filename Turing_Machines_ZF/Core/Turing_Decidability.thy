@@ -235,9 +235,9 @@ lemma blank_halting_iff:
 subsection \<open>Self-Halting\<close>
 
 text \<open>The self-halting set uses the total machine decoder and the
-unary input for its own code. The locale halting_diagonal separates the
+unary input for its own code. The diagonal locale separates the
 diagonal argument from the construction of a machine that halts exactly
-when another machine rejects. Turing_Rejection supplies that machine.\<close>
+when another machine rejects. The next theory supplies that machine.\<close>
 
 definition self_halting :: i where
   "self_halting \<equiv>

@@ -9,8 +9,8 @@ theory Turing_Evaluator_Primrec
 begin
 
 text \<open>The one-step evaluator and its finite iteration have
-primitive-recursive certificates. In particular, pr_code_steps_apply
-identifies the certificate with code_steps at every natural time bound.
+primitive-recursive certificates. An application theorem identifies the iteration certificate with
+the numerical evaluator at every natural time bound.
 This is a result about numerical evaluation, not a universal machine.\<close>
 
 subsection \<open>Tape Inspection\<close>

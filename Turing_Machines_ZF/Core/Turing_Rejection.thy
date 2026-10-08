@@ -13,7 +13,7 @@ state above the states and instruction slots used by M. Transitions that
 would terminate M enter that state. A blank scanned there terminates the
 new machine; a 1 makes it loop. The projection lemmas relate runs of the
 new machine to runs of M, including termination caused by a missing
-instruction. The final theorem instantiates halting_diagonal with this
+instruction. The final theorem instantiates the diagonal argument with this
 explicit finite instruction list.\<close>
 
 subsection \<open>Control-State Bounds\<close>

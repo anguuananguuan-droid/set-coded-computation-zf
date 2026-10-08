@@ -267,8 +267,8 @@ qed
 
 subsection \<open>Finite Computations\<close>
 
-text \<open>A finite run is a set-theoretic function on succ(n). The theorem
-finite_run_iff_steps identifies such a run with n iterations of the step
+text \<open>A finite run is a set-theoretic function on succ(n). The following equivalence theorem
+identifies such a run with n iterations of the step
 function. This witness form is used when finite computations are considered
 inside set-theoretic models.\<close>
 

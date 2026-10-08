@@ -14,7 +14,7 @@ text \<open>The evaluator computes a configuration code from a machine
 number and a configuration code. Its correctness theorems compare exact
 encoded configurations, including their finite tape lists. At this stage
 the evaluator is a set-theoretic function; primitive-recursive certificates
-for the numerical operations follow in Turing_Evaluator_Primrec.\<close>
+for the numerical operations follow in the next theory.\<close>
 
 definition encode_tape :: "i \<Rightarrow> i" where
   "encode_tape(t) \<equiv>
