@@ -1,68 +1,70 @@
 REPRODUCTION
 
-1 Environment
+1 ENVIRONMENT
 
 The supported release is Isabelle2025-2. Set_Coded_Computation_ZF uses
-Isabelle/ZF and the bundled ZF-Induct session. Turing_CH and Turing_Models
-require the AFP snapshot dated 6 February
-2026.
+Isabelle/ZF and the bundled ZF-Induct session. Set_Coded_Invariance_ZF and
+the model extensions use the AFP snapshot dated 6 February 2026.
 
 https://isabelle.in.tum.de/website-Isabelle2025-2/
 https://isa-afp.org/release/afp-2026-02-06.tar.gz
 
-2 Independent computation session
+2 INDEPENDENT COMPUTATION SESSION
 
 Run from the repository root with Isabelle on the executable search path.
 
-    isabelle build -v -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
-
-For a fresh build of that session, clearing its existing build product first.
-
     isabelle build -v -c -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
 
-3 Complete repository
+3 INVARIANCE SESSION AND COMPLETE REPOSITORY
 
 Extract the AFP snapshot and register its theory directory. Replace the
 example absolute path with the actual path.
 
     isabelle components -u /absolute/path/to/afp-2026-02-06/thys
+    isabelle build -v -c -d Turing_Machines_ZF/Core -D Set_Coded_Invariance_ZF Set_Coded_Invariance_ZF
     isabelle build -v -D .
 
-The four local sessions are Set_Coded_Computation_ZF, Turing_Machines_ZF,
-Turing_CH, and Turing_Models. Turing_Machines_ZF and Turing_CH each extend
-Set_Coded_Computation_ZF. Turing_Models extends Turing_CH. The CH research
-does not depend on the extended machine programs.
+The five local sessions are Set_Coded_Computation_ZF, Turing_Machines_ZF,
+Set_Coded_Invariance_ZF, Turing_Models, and Turing_Absoluteness. The first
+depends only on Isabelle/ZF. The invariance session extends it and uses
+Independence_CH. Turing_Models extends the invariance session. The extended
+machine-program session is separate.
 
-The computation sessions have a 300-second timeout. Turing_CH has a
-900-second timeout because its Isabelle/ZF and AFP imports are rechecked
-inside that session. A slower machine may require fewer parallel workers
-and a longer timeout. The following command clears and
-rebuilds the selected local sessions while reusing unchanged external
-dependencies.
+A slower machine may require fewer parallel workers and a longer timeout.
+The following command clears and rebuilds the selected local sessions while
+reusing unchanged external dependencies.
 
     isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -D .
 
 A successful build returns exit status 0. Without the clearing option,
-Isabelle may reuse unchanged local session products. Neither mode establishes
-that the definitions express an intended informal theorem.
+Isabelle may reuse unchanged session products. Neither mode establishes that
+the definitions express an intended informal theorem.
 
-4 Repository checks
+4 REPOSITORY CHECKS
 
 The repository check validates local document references, session theory
 membership, the independent core import boundary, and the absence of selected
-proof escape tokens. It is a source check, not an Isabelle parser or a proof
-checker.
+proof escape tokens. It is a source check, not a proof checker.
 
     python3 scripts/check_repository.py
     git diff --check
 
-5 Continuous integration
+5 PROOF DOCUMENTS
 
-The workflow in .github/workflows/isabelle.yml first checks the repository,
-then builds the independent core before registering AFP, and finally builds
-all four sessions. The Linux distributions are installed by
-scripts/install-ci.sh. Actions are pinned to commit identifiers and build logs
-are attached to each run.
+With LuaLaTeX installed, build the computation and invariance documents.
+
+    isabelle build -v -c -o document=pdf -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+    isabelle build -v -c -o document=pdf -d Turing_Machines_ZF/Core -D Set_Coded_Invariance_ZF Set_Coded_Invariance_ZF
+
+Local proof builds without LuaLaTeX do not verify document generation. The
+GitHub Actions workflow installs TeX and checks both PDFs.
+
+6 CONTINUOUS INTEGRATION
+
+The workflow in .github/workflows/isabelle.yml checks the repository, builds
+the independent core before registering AFP, and builds all five sessions.
+The Linux distributions are installed by scripts/install-ci.sh. Actions are
+pinned to commit identifiers and build logs are attached to each run.
 
 The following SHA256 values are used by the installer.
 
@@ -72,9 +74,9 @@ Isabelle2025-2_linux.tar.gz
 afp-2026-02-06.tar.gz
     b059edd46073479ee8dde45004c2346a7365e5d94cded49d27257cfea66c8879
 
-The Isabelle checksum is published in its distribution index. The AFP checksum
-identifies the snapshot used by this project. Dependencies are downloaded
-separately and are not redistributed in the repository.
+The Isabelle checksum is published in its distribution index. The AFP
+checksum identifies the snapshot used by this project. Dependencies are
+downloaded separately and are not redistributed in the repository.
 
 https://isabelle.in.tum.de/website-Isabelle2025-2/dist/index.html
 https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/workflows/isabelle.yml

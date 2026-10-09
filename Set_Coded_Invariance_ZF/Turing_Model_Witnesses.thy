@@ -5,7 +5,7 @@
 section \<open>Finite Computation Witnesses in Transitive Models\<close>
 
 theory Turing_Model_Witnesses
-  imports "Turing_CH.Turing_CH"
+  imports Turing_CH
 begin
 
 text \<open>Finite machines and their finite execution traces belong to every

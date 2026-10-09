@@ -8,20 +8,10 @@ theory Turing_Primrec_Reduction
   imports
     Turing_Reduction
     Turing_Transformations_Primrec
+    "Set_Coded_Computation_ZF.Turing_Primrec_Reductions"
 begin
 
 subsection \<open>Primitive-Recursive Many-One Reduction\<close>
-
-definition pr_reduces :: "[i,i,i] \<Rightarrow> o" where
-  "pr_reduces(f,A,B) \<equiv>
-    f \<in> prim_rec \<and>
-    A \<subseteq> nat \<and>
-    B \<subseteq> nat \<and>
-    (\<forall>n\<in>nat. n \<in> A \<longleftrightarrow> f`[n] \<in> B)"
-
-definition pr_many_one_reducible :: "[i,i] \<Rightarrow> o" where
-  "pr_many_one_reducible(A,B) \<equiv>
-    \<exists>f. pr_reduces(f,A,B)"
 
 lemma realised_pr_reduction:
   assumes realisation: "tm_realises_unary(M,f)"

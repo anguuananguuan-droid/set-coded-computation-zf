@@ -3,9 +3,10 @@
 ## 1 Scope
 
 The independent computation library is described in
-[Computation in Isabelle/ZF](COMPUTATION.md). The following three sessions
-extend the repository beyond that library. They contain proved results and
-open interfaces. The assumptions of each theorem are recorded in its source.
+[Computation in Isabelle/ZF](COMPUTATION.md). The invariance session proves
+the effective self-halting reductions. The three remaining sessions contain
+machine-program and model-theoretic extensions. The assumptions of each
+theorem are recorded in its source.
 
 ## 2 Machine programs
 
@@ -57,28 +58,27 @@ saved cell in a larger context. This counterexample explains why numerical
 correctness alone is insufficient for safe storage during composition.
 The independent workspace theorem does not depend on these program theories.
 
-## 3 Models and internal formulas
+## 3 Invariance of set-theoretic sentences
 
-The session [Turing_CH](../Turing_CH/ROOT) extends the independent library
-and uses the AFP entry
+The session [Set_Coded_Invariance_ZF](../Set_Coded_Invariance_ZF/ROOT) extends
+the independent library and uses the AFP entry
 [Independence of the Continuum Hypothesis](https://www.isa-afp.org/entries/Independence_CH.html).
-Its [theory](../Turing_CH/Turing_CH.thy) proves `uniform_or_invariant_iff`, a
-disjunction principle for a sentence whose truth is uniform across the
-specified models. Assuming a countable transitive ZFC set model exists, CH
-provides a fixed sentence whose truth differs between such models.
+[Turing_CH](../Set_Coded_Invariance_ZF/Turing_CH.thy) defines invariance across
+all transitive ZFC set models and proves the disjunction principle.
+[Turing_Halting_Formula](../Set_Coded_Invariance_ZF/Turing_Halting_Formula.thy)
+constructs the internal halting formula and proves its satisfaction theorem.
+[Turing_Halting_Sentences](../Set_Coded_Invariance_ZF/Turing_Halting_Sentences.thy)
+closes the formula with machine and input names.
 
-The locale `halting_sentence` assumes `sats_halt_fm_iff`, the correspondence
-between an internal formula's satisfaction and external machine halting.
-The formula and its correctness proof have not been constructed. Results
-using this locale remain conditional on that interface.
+[Turing_Formula_Coding](../Set_Coded_Invariance_ZF/Turing_Formula_Coding.thy)
+gives an injective natural-number code for formulas.
+[Turing_Effective_Invariance](../Set_Coded_Invariance_ZF/Turing_Effective_Invariance.thy)
+proves that the two maps from a machine code to an invariant-sentence code
+are primitive recursive and gives the two many-one reductions under a
+countable transitive model assumption. The target is the full set of codes
+of invariant closed sentences, not only the constructed sentence family.
 
-The session [Turing_Models](../Turing_Models/ROOT) extends Turing_CH.
-[Turing_Model_Witnesses](../Turing_Models/Turing_Model_Witnesses.thy) proves
-that finite machines, configurations, and canonical traces belong to every
-transitive ZFC set model. Its halting witness theorem uses the external
-predicate `finite_run`. Membership of a trace in a model does not prove
-correctness of an internal formula describing that trace.
-
+The session [Turing_Models](../Turing_Models/ROOT) extends this development.
 [Turing_Arithmetic_Truth](../Turing_Models/Turing_Arithmetic_Truth.thy) proves
 satisfaction rules for the natural number domain, zero, successor, order,
 addition, multiplication, and restricted quantification. A recursive
@@ -87,16 +87,13 @@ sentences remain open.
 
 ## 4 EPQ boundary
 
-The [EPQ paper](../papers/EPQ.pdf) motivates an effective reduction from true
-arithmetic to codes of sentences invariant across transitive ZFC set models,
-under a model existence assumption. That reduction and the resulting
-nonarithmeticality theorem have not been fully formalised here. A direct
-arithmetic translation need not pass through a universal machine, but it
-still requires a complete translation and its satisfaction proof.
+The [EPQ paper](../papers/EPQ.pdf) motivates a reduction from true arithmetic
+to codes of sentences invariant across transitive ZFC set models. The
+repository proves the self-halting and nonhalting reductions; it does not yet
+prove the general arithmetic-truth reduction or the resulting
+nonarithmeticality statement. It also does not prove that every primitive
+recursive map is implemented by the repository's Turing-machine model.
 
-The repository contains twenty seven theories in four sessions, ten in
-the independent library, fourteen in the extended machine session, one in
-Turing_CH, and two in Turing_Models.
-[Reproduction instructions](BUILD.txt) cover all four.
+[Reproduction instructions](BUILD.txt) cover the five local sessions.
 [Development records](history/README.md) retain earlier claims in their
 historical context.

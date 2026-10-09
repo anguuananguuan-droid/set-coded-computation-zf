@@ -1,0 +1,72 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{isabelle,isabellesym}
+\usepackage{pdfsetup}
+\hypersetup{hidelinks}
+
+\urlstyle{rm}
+\isabellestyle{it}
+
+\begin{document}
+
+\title{Effective Reductions to Sentence Invariance in Isabelle/ZF}
+\author{Tang Ziyi}
+\maketitle
+
+\begin{abstract}
+Let $I$ be the natural-number codes of closed set-theoretic formulas whose
+truth value agrees across all transitive set models of ZFC. Assuming a
+countable transitive model of ZFC exists, we construct primitive-recursive
+reductions from both self-input halting and its complement to $I$.
+The proof gives an injective numerical code for Isabelle/ZF formulas,
+primitive-recursive certificates for the two syntax transformations, and
+an internal halting sentence whose satisfaction agrees with finite machine
+execution in every transitive ZFC model. The fixed sentence used to witness
+non-invariance is the continuum hypothesis; its two model witnesses follow
+from the AFP formalisation of its independence.
+\end{abstract}
+
+\tableofcontents
+
+\section{Statement and dependencies}
+The machine semantics and its self-input halting theorem come from
+\emph{Set-Coded Computation in Isabelle/ZF}. The present entry uses the AFP
+development \emph{The Independence of the Continuum Hypothesis in
+Isabelle/ZF} for models that disagree on CH. Invariance quantifies over all
+transitive set models of ZFC. The countable transitive model assumption is
+needed to produce the disagreement witnesses; it is not needed for the
+absoluteness direction of the halting sentence.
+
+The target set contains only codes of well-formed closed formulas. A
+constructor-tagged pairing code is proved injective on formulas. The two
+reducing functions are proved members of Isabelle/ZF's class
+\texttt{prim\_rec}, with application equations identifying their values
+with the codes of the intended sentences. Their finite-list component uses
+a bounded reverse traversal of the machine code.
+
+The entry proves primitive-recursive many-one reductions. It does not
+identify every primitive-recursive function with a machine in the specific
+Turing model of the preceding entry.
+
+\input{session}
+
+\section*{Development provenance}
+Tang Ziyi formulated the research question and wrote the initial
+formalisation. Subsequent definitions, proofs, and repository engineering
+include substantial assistance from OpenAI Codex.
+
+\begin{thebibliography}{9}
+
+\bibitem{afp-ch}
+\emph{The Independence of the Continuum Hypothesis in Isabelle/ZF}.
+Archive of Formal Proofs.
+\url{https://isa-afp.org/entries/Independence_CH.html}.
+
+\bibitem{afp-core}
+Tang Ziyi.
+\emph{Set-Coded Computation in Isabelle/ZF}.
+Companion formal development, source repository.
+
+\end{thebibliography}
+
+\end{document}

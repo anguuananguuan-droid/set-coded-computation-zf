@@ -1,5 +1,5 @@
 theory Turing_Decidable_Sets
-  imports Turing_Absoluteness_Corollaries
+  imports "Set_Coded_Invariance_ZF.Turing_Halting_Sentences"
 begin
 
 text \<open>Main result: every Turing-decidable set of natural numbers belongs to

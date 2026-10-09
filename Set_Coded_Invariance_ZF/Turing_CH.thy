@@ -56,9 +56,9 @@ proof -
     by blast
 qed
 
-text \<open>This is the semantic core of EPQ Section V. The stable sentence
-may express halting, nonhalting, or arbitrary arithmetic truth. Effective
-syntax translation and satisfaction adequacy remain separate obligations.\<close>
+text \<open>A sentence with uniform truth across the models can be combined
+with any sentence on which the models disagree. The result is invariant
+exactly when the uniform truth value holds.\<close>
 
 lemma uniform_or_invariant_iff:
   assumes stable: "\<phi> \<in> formula" and stable_closed: "arity(\<phi>) = 0"

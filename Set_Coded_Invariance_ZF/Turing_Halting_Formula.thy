@@ -1,11 +1,9 @@
-(*  Title:      Turing_Absoluteness_Pilot.thy
-    Purpose:    Pilot for an AFP entry "Absoluteness of Turing computation
-                for transitive models of ZFC" on top of the session
-                Set_Coded_Computation_ZF.
+(*  Title:      Turing_Halting_Formula.thy
+    Author:     Tang Ziyi
 *)
 
-theory Turing_Absoluteness_Pilot
-  imports "Turing_Models.Turing_Arithmetic_Truth"
+theory Turing_Halting_Formula
+  imports Turing_Nat_Membership
 begin
 
 text \<open>This theory constructs an explicit first-order formula \<open>halt_fm\<close> of

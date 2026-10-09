@@ -1,0 +1,21 @@
+chapter AFP
+
+session Set_Coded_Invariance_ZF = Set_Coded_Computation_ZF +
+  description "Primitive-recursive reductions to invariance of set-coded sentences."
+  options [timeout=600]
+  sessions
+    Independence_CH
+  theories
+    Turing_CH
+    Turing_Model_Witnesses
+    Turing_Nat_Membership
+    Turing_Halting_Formula
+    Turing_Halting_Sentences
+    Turing_Formula_Coding
+    Turing_Invariance_Codes
+    Turing_Syntax_Primrec
+    Turing_Name_Primrec
+    Turing_Machine_Name_Primrec
+    Turing_Effective_Invariance
+  document_files
+    "root.tex"

@@ -1,6 +1,6 @@
-theory Turing_Absoluteness_Corollaries
+theory Turing_Halting_Sentences
   imports
-    Turing_Absoluteness_Pilot
+    Turing_Halting_Formula
     "Set_Coded_Computation_ZF.Turing_Rejection"
 begin
 
@@ -170,7 +170,8 @@ corollary transitive_models_agree_on_halting:
   shows "(A, [] \<Turnstile> halt_sentence(P,x)) \<longleftrightarrow> (B, [] \<Turnstile> halt_sentence(P,x))"
   using sats_halt_sentence_iff assms by blast
 
-text \<open>The interface assumed in the session Turing_CH is now discharged.\<close>
+text \<open>The following interpretation discharges the abstract halting
+interface using the closed sentence constructed above.\<close>
 
 interpretation blank_halting_sentence: halting_sentence "\<lambda>e. halt_sentence(decode_machine(e),[])"
 proof

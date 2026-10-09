@@ -2,9 +2,21 @@
 set -euo pipefail
 
 repository=$(cd "$(dirname "$0")/.." && pwd)
-entry=Set_Coded_Computation_ZF
-source_dir="$repository/Turing_Machines_ZF/Core"
-destination=${1:-"$repository/$entry.tar.gz"}
+case ${1:-core} in
+  core)
+    entry=Set_Coded_Computation_ZF
+    source_dir="$repository/Turing_Machines_ZF/Core"
+    ;;
+  invariance)
+    entry=Set_Coded_Invariance_ZF
+    source_dir="$repository/Set_Coded_Invariance_ZF"
+    ;;
+  *)
+    printf 'usage: %s {core|invariance} [archive-path]\n' "$0" >&2
+    exit 2
+    ;;
+esac
+destination=${2:-"$repository/$entry.tar.gz"}
 temporary=$(mktemp -d)
 trap 'rm -rf "$temporary"' EXIT
 
