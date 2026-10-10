@@ -178,7 +178,7 @@ tape, since the frame can contain nonblank data.
 
 ## 6 Dependencies and scope
 
-The ten theories form one independent
+The eleven theories form one independent
 [session](../Turing_Machines_ZF/Core/ROOT). Within that session, the direct
 imports are as follows. Each line names a theory followed by its import.
 
@@ -188,6 +188,7 @@ Turing_Tape               Turing_Machine
 Turing_Coding             Turing_Machine
 Turing_Code_Operations    Turing_Coding
 Turing_Primrec            Turing_Code_Operations, ZF-Induct.Primrec
+Turing_Primrec_Reductions Turing_Primrec
 Turing_Evaluator          Turing_Code_Operations
 Turing_Evaluator_Primrec  Turing_Evaluator, Turing_Primrec
 Turing_Decidability       Turing_Coding
@@ -209,6 +210,7 @@ the HOL entry's universality theorem. No simulation theorem between this
 instruction format and a different machine format is claimed.
 
 [Build instructions](BUILD.txt) reproduce the proofs.
-[Research extensions](RESEARCH.md) describes the remaining program and model
-theories. Their open compiler and formula obligations are outside this
-session. The final theorem of the EPQ has not been fully formalised.
+[Research extensions](RESEARCH.md) describes the invariance session and the
+remaining program and model theories. The general compiler and arithmetic
+translation obligations remain open. The final theorem of the EPQ has not
+been fully formalised.

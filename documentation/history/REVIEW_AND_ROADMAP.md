@@ -75,7 +75,7 @@ README 中的 Wetzel 类比也需要准确：[Paulson 的论文](https://arxiv.o
 | [Turing_Storage](../../Turing_Machines_ZF/Turing_Storage.thy) / [Turing_Projection](../../Turing_Machines_ZF/Turing_Projection.thy) | 擦除参数表、删除首参数、任意下标投影、库中完整 `SC` 的机器实现 | 保存参数时执行子程序的保护定理 |
 | [Turing_Realisation](../../Turing_Machines_ZF/Turing_Realisation.thy) / [Turing_Context](../../Turing_Machines_ZF/Turing_Context.thy) | 所有常数函数、多参数到一元接口桥梁；无自动工作区保护的反例 | `COMP`、`PREC` 的编译构造与正确性 |
 | [Turing_Primrec_Reduction](../../Turing_Machines_ZF/Turing_Primrec_Reduction.thy) | 自停机到空输入停机的 PR 归约；保留实际机器实现前提 | 消去该前提，得到无条件空输入停机不可判定 |
-| [Turing_CH](../../Turing_CH/Turing_CH.thy)（扩充） | CH 非不变性；统一真值经析取转成不变性；停机与非停机两侧条件结论 | 具体内化、有效公式编码、算术真理层 |
+| [Turing_CH](../../Set_Coded_Invariance_ZF/Turing_CH.thy)（扩充） | CH 非不变性；统一真值经析取转成不变性；停机与非停机两侧条件结论 | 具体内化、有效公式编码、算术真理层 |
 
 没有找到原有 theory 中的 `sorry`、额外 `axiomatization` 或 oracle。存在两个有意公开的 locale：拒绝变换接口已由具体机器解释；`halting_sentence` 尚未由具体公式解释。二者不能一概写成“假设已经消去”。
 

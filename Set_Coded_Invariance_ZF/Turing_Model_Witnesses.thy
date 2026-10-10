@@ -5,12 +5,17 @@
 section \<open>Finite Computation Witnesses in Transitive Models\<close>
 
 theory Turing_Model_Witnesses
-  imports "Turing_CH.Turing_CH"
+  imports
+    "Set_Coded_Computation_ZF.Turing_Coding"
+    "Independence_CH.ZF_Trans_Interpretations"
 begin
+
+definition transitive_zfc_model :: "i \<Rightarrow> o" where
+  "transitive_zfc_model(M) \<equiv> Transset(M) \<and> M \<Turnstile> ZFC"
 
 text \<open>Finite machines and their finite execution traces belong to every
 transitive ZFC set model. This discharges a closure obligation for the later
-internal halting formula. The finite_run predicate below is still the external
+internal halting formula. The \<open>finite_run\<close> predicate below is still the external
 set-theoretic definition; no satisfaction theorem is claimed here.\<close>
 
 context M_trivial

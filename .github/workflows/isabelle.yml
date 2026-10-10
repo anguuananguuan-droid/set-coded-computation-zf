@@ -1,5 +1,5 @@
 name: "01  Isabelle/ZF"
-run-name: "01  Set-coded computation"
+run-name: "01  Isabelle/ZF proofs"
 
 on:
   push:
@@ -49,6 +49,11 @@ jobs:
           set -o pipefail
           .ci-deps/Isabelle2025-2/bin/isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$RUNNER_TEMP/afp-document" -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF 2>&1 | tee "$RUNNER_TEMP/isabelle-document.log"
           test -s "$RUNNER_TEMP/afp-document/document.pdf"
+      - name: Build invariance proof document
+        run: |
+          set -o pipefail
+          .ci-deps/Isabelle2025-2/bin/isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$RUNNER_TEMP/invariance-document" -d Turing_Machines_ZF/Core -D Set_Coded_Invariance_ZF Set_Coded_Invariance_ZF 2>&1 | tee "$RUNNER_TEMP/isabelle-invariance-document.log"
+          test -s "$RUNNER_TEMP/invariance-document/document.pdf"
       - name: Save build log
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -58,6 +63,7 @@ jobs:
             ${{ runner.temp }}/isabelle-core.log
             ${{ runner.temp }}/isabelle-build.log
             ${{ runner.temp }}/isabelle-document.log
+            ${{ runner.temp }}/isabelle-invariance-document.log
           if-no-files-found: ignore
       - name: Save AFP proof document
         if: success()
@@ -65,4 +71,11 @@ jobs:
         with:
           name: set-coded-computation-zf-proof-document
           path: ${{ runner.temp }}/afp-document/document.pdf
+          if-no-files-found: error
+      - name: Save invariance proof document
+        if: success()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: set-coded-invariance-zf-proof-document
+          path: ${{ runner.temp }}/invariance-document/document.pdf
           if-no-files-found: error

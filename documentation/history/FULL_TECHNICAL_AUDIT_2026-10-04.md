@@ -92,11 +92,11 @@ Isabelle/ZF
 
 ## 9. 模型层与 EPQ 接口
 
-[`Turing_CH.thy`](../../Turing_CH/Turing_CH.thy) 用 `Transset(M) ∧ M ⊨ ZFC` 定义模型，用所有此类模型对闭句的真值一致定义 `zfc_invariant`。`CH_not_invariant` 在给定可数传递 ZFC 模型时调用 AFP `Independence_CH` 的构造，取得 CH 与非 CH 模型。`uniform_or_invariant_iff` 证明一般原则：如果闭句 `φ` 在每个目标模型中都具有同一个外部真值 `P`，而固定闭句 `σ` 在目标模型间有分歧，则 `Or(φ,σ)` 的不变性恰等价于 `P`。
+[`Turing_CH.thy`](../../Set_Coded_Invariance_ZF/Turing_CH.thy) 用 `Transset(M) ∧ M ⊨ ZFC` 定义模型，用所有此类模型对闭句的真值一致定义 `zfc_invariant`。`CH_not_invariant` 在给定可数传递 ZFC 模型时调用 AFP `Independence_CH` 的构造，取得 CH 与非 CH 模型。`uniform_or_invariant_iff` 证明一般原则：如果闭句 `φ` 在每个目标模型中都具有同一个外部真值 `P`，而固定闭句 `σ` 在目标模型间有分歧，则 `Or(φ,σ)` 的不变性恰等价于 `P`。
 
 `halting_sentence` locale 将 `halt_fm(e)` 的闭合、类型及 `sats_halt_fm_iff` 当作**假设**，在这些前提下得到停机/非停机与不变性的条件性等价。文件中 `halting_or_CH_invariant_iff_halts_blank` 仍在该 locale 内。尚无具体 `halt_fm` 实例解释 locale；不能把该等价写成已完成的有效停机归约。
 
-[`Turing_Model_Witnesses.thy`](../../Turing_Models/Turing_Model_Witnesses.thy) 从仓库的传递 ZFC 模型条件进入 AFP 的模型 locale，证明合法机器、配置及规范有限轨迹均属于每个模型。`transitive_zfc_halting_witness_iff` 将外部停机与模型中存在有限证书等价，并推出不同传递模型对这种证书存在性一致。证书中的 `finite_run` 仍是外部谓词："见证集合在模型里"不等于"内部一阶公式对它的解释正确"。
+[`Turing_Model_Witnesses.thy`](../../Set_Coded_Invariance_ZF/Turing_Model_Witnesses.thy) 从仓库的传递 ZFC 模型条件进入 AFP 的模型 locale，证明合法机器、配置及规范有限轨迹均属于每个模型。`transitive_zfc_halting_witness_iff` 将外部停机与模型中存在有限证书等价，并推出不同传递模型对这种证书存在性一致。证书中的 `finite_run` 仍是外部谓词："见证集合在模型里"不等于"内部一阶公式对它的解释正确"。
 
 [`Turing_Arithmetic_Truth.thy`](../../Turing_Models/Turing_Arithmetic_Truth.thy) 走另一条直接路径：显式自然数域公式、零、后继、`<`、加法、乘法及受 `nat` 限制的存在/全称量词有对应 `sats` 等价定理。加乘定理调用 AFP 的基数算术公式，并在自然数参数上证明它们确实表达普通 `#+`、`#*`。这些是**原子关系与量词接口**；还没有递归的源算术句法、任意公式的翻译函数、闭句真值归纳、自然数代码的有效性或 Tarski 侧非定义性在此目标中的组合。
 
@@ -128,5 +128,5 @@ Isabelle/ZF
 - 从定义入手：[`Turing_Machine.thy`](../../Turing_Machines_ZF/Core/Turing_Machine.thy) → [`Turing_Tape.thy`](../../Turing_Machines_ZF/Core/Turing_Tape.thy) → [`Turing_Coding.thy`](../../Turing_Machines_ZF/Core/Turing_Coding.thy)。
 - 从主要计算定理入手：[`Turing_Evaluator.thy`](../../Turing_Machines_ZF/Core/Turing_Evaluator.thy) → [`Turing_Decidability.thy`](../../Turing_Machines_ZF/Core/Turing_Decidability.thy) → [`Turing_Rejection.thy`](../../Turing_Machines_ZF/Core/Turing_Rejection.thy)。
 - 从语义反例与修复入手：[`Turing_Reduction.thy`](../../Turing_Machines_ZF/Turing_Reduction.thy) → [`Turing_Context.thy`](../../Turing_Machines_ZF/Turing_Context.thy) → [`Turing_Workspace.thy`](../../Turing_Machines_ZF/Core/Turing_Workspace.thy)。
-- 从 EPQ 边界入手：[`Turing_CH.thy`](../../Turing_CH/Turing_CH.thy) → [`Turing_Model_Witnesses.thy`](../../Turing_Models/Turing_Model_Witnesses.thy) → [`Turing_Arithmetic_Truth.thy`](../../Turing_Models/Turing_Arithmetic_Truth.thy)。
+- 从 EPQ 边界入手：[`Turing_CH.thy`](../../Set_Coded_Invariance_ZF/Turing_CH.thy) → [`Turing_Model_Witnesses.thy`](../../Set_Coded_Invariance_ZF/Turing_Model_Witnesses.thy) → [`Turing_Arithmetic_Truth.thy`](../../Turing_Models/Turing_Arithmetic_Truth.thy)。
 - 更细的历史审查与内部公式技术设想见 [`REVIEW_AND_ROADMAP.md`](REVIEW_AND_ROADMAP.md) 和 [`TURING_INTERNALISATION.md`](TURING_INTERNALISATION.md)；历史记录中的旧"待办"须按本报告基线重新解释。

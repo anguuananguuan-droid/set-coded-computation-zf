@@ -1,47 +1,53 @@
-AFP CANDIDATE
-Set_Coded_Computation_ZF
+AFP CANDIDATES
 
-1 SCOPE
+1 COMPUTATION
 
-The submission unit is Turing_Machines_ZF/Core. Its ten theories depend on
-Isabelle/ZF and the Isabelle distribution's ZF-Induct session. The remaining
-three repository sessions are research
-extensions. They are not part of the candidate entry.
+Set_Coded_Computation_ZF is the independent computation library in
+Turing_Machines_ZF/Core. Its eleven theories depend on Isabelle/ZF and the
+distribution's ZF-Induct session. They establish set-coded machine semantics,
+numerical evaluation with primitive-recursive finite-step certificates,
+self-input halting undecidability, and tape observation and workspace results.
 
-The principal result is the undecidability of self-input halting for the
-defined machine model. A primitive-recursive certificate for numerical
-finite-step evaluation and a bounded workspace theorem are independent
-companion results. No universal machine,
-general compiler, primitive-recursive completeness theorem, or conclusion
-about set-theoretic truth is claimed.
+2 INVARIANCE
 
-2 VERIFICATION
+Set_Coded_Invariance_ZF extends the computation library and depends on the
+AFP entry Independence_CH. Its eleven theories establish a closed internal
+halting sentence, its satisfaction theorem for transitive ZFC set models,
+an injective code for formulas, and primitive-recursive syntax transformations.
+Under existence of a countable transitive ZFC set model, both self-input
+halting and its complement primitive-recursively many-one reduce to codes of
+closed sentences invariant across all transitive ZFC set models.
 
-Use Isabelle2025-2. From the repository root, run
+The second candidate depends on the first. The archive and submission order
+need to be agreed with AFP editors because the computation library has not
+been accepted as an AFP entry. Neither candidate claims a general machine
+compiler or the full arithmetic-truth reduction of the EPQ paper.
 
-isabelle build -v -c -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+3 VERIFICATION
 
-For the proof document, install LuaLaTeX and run
+Use Isabelle2025-2 and the AFP snapshot dated 6 February 2026. From the
+repository root, build the computation session independently, then register
+the AFP snapshot and build the invariance session.
 
-isabelle build -v -c -o browser_info -o document=pdf \
-  -o 'document_variants=document:outline=/proof,/ML' \
-  -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+    isabelle build -v -c -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+    isabelle components -u /absolute/path/to/afp-2026-02-06/thys
+    isabelle build -v -c -d Turing_Machines_ZF/Core -D Set_Coded_Invariance_ZF Set_Coded_Invariance_ZF
 
-The GitHub Actions workflow runs both commands and retains the PDF. A local
-proof build does not verify PDF generation if LuaLaTeX is absent.
+For proof documents, install LuaLaTeX and build each candidate with
+document=pdf. The local proof builds verify the theories, not the PDF.
 
-3 SUBMISSION UNIT
+4 SUBMISSION UNITS
 
-Run scripts/package-afp-entry.sh with an optional output archive path. The
-archive contains only the ROOT file, ten theories, document/root.tex, and
-LICENSE. The package excludes the unfinished research extensions and private
-working documents. Inspect the archive before submission.
+    bash scripts/package-afp-entry.sh core
+    bash scripts/package-afp-entry.sh invariance
 
-4 REVIEW BOUNDARY
+Each archive contains its own ROOT, theories, document/root.tex, and LICENSE.
+The invariance archive declares the computation session as a dependency; it
+does not duplicate its sources. Inspect both archives before submission.
 
-The Isabelle/HOL AFP entry Universal Turing Machine is the source for the
-five-action operational design. This candidate contributes a set-coded
-Isabelle/ZF development with a finite-list tape observation interface and a
-concrete diagonal argument in that model. It does not establish priority over
-other ZF formalizations or an equivalence with the HOL model. External review
-is needed to judge suitability and novelty for AFP.
+5 REVIEW BOUNDARY
+
+The five-action machine design follows the AFP entry Universal Turing Machine
+in Isabelle/HOL. These candidates use set-coded Isabelle/ZF semantics.
+External review is needed to assess novelty, maintainability, and suitability
+for AFP. A successful repository build does not establish those judgments.

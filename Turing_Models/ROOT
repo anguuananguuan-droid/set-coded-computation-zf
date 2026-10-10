@@ -1,6 +1,6 @@
-session Turing_Models = Turing_CH +
+session Turing_Models = Set_Coded_Invariance_ZF +
   description "Finite computation witnesses and arithmetic formulas in transitive ZFC set models."
   options [timeout=300]
   theories
-    Turing_Model_Witnesses
     Turing_Arithmetic_Truth
+    Turing_Halting_Index

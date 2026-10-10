@@ -1,0 +1,106 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{isabelle,isabellesym}
+\usepackage{pdfsetup}
+\hypersetup{hidelinks}
+
+\urlstyle{rm}
+\isabellestyle{it}
+
+\begin{document}
+
+\title{Halting Absoluteness and Effective Sentence Invariance in Isabelle/ZF}
+\author{Tang Ziyi}
+\maketitle
+
+\begin{abstract}
+We construct a first-order set-theoretic formula whose satisfaction in every
+transitive ZFC set model agrees with finite execution of a given set-coded
+Turing machine. We then close the formula by naming its machine and input.
+Let $I$ be the natural-number codes of closed formulas whose truth value
+agrees across all such models. Assuming a countable transitive model of
+ZFC exists, we construct primitive-recursive many-one reductions from both
+self-input halting and its complement to $I$. The reductions use an
+injective numerical code for formulas and the AFP formalisation of the
+independence of the continuum hypothesis.
+\end{abstract}
+
+\tableofcontents
+
+\section{Halting formula}
+For every machine $P$, input $x$, and transitive set model $M$ of ZFC, the
+explicit formula $\mathit{halt\_fm}$ satisfies
+\[
+  (M,[P,x])\models\mathit{halt\_fm}
+  \quad\Longleftrightarrow\quad
+  \mathrm{halts}(P,x).
+\]
+Theorem \texttt{transitive\_model\_halt\_fm\_iff} proves this statement.
+The general method of absoluteness for transitive models is classical
+\cite[Chapter~12]{jech}. Here the satisfaction theorem concerns the explicit
+formula for this machine semantics. Finite run witnesses and their closure
+in transitive models are established before the formula is introduced. The
+closed sentence
+$\mathit{halt\_sentence}(P,x)$ names both parameters internally, and
+\texttt{sats\_halt\_sentence\_iff} proves its corresponding satisfaction
+equation. These results do not use CH or an assumption that a countable
+transitive model exists.
+
+\section{Effective reduction}
+Let $K$ be the self-input halting set of the companion computation entry,
+and let $I$ contain exactly the numerical codes of closed formulas whose
+truth value agrees across all transitive set models of ZFC. Given a
+countable transitive set model of ZFC, this entry constructs
+primitive-recursive $f_+$ and $f_-$ such that, for every natural number $e$,
+\[
+  e\in K\ \Longleftrightarrow\ f_+(e)\in I,
+  \qquad
+  e\notin K\ \Longleftrightarrow\ f_-(e)\in I.
+\]
+Theorems \texttt{self\_halting\_pr\_many\_one\_invariance} and
+\texttt{nonhalting\_pr\_many\_one\_invariance} are the formal reduction
+statements. CH supplies a fixed sentence on which two transitive models
+disagree, using the AFP formalisation of its independence~\cite{afp-ch}.
+The countable-model assumption is needed for these disagreement witnesses.
+
+The target set contains only codes of well-formed closed formulas. A
+constructor-tagged pairing code is proved injective on formulas. The two
+reducing functions are proved members of Isabelle/ZF's class
+\texttt{prim\_rec}, with application equations identifying their values
+with the codes of the intended sentences. Their finite-list component uses
+a bounded reverse traversal of the machine code.
+
+The machine semantics and self-input halting theorem come from the companion
+entry~\cite{afp-core}. The entry proves primitive-recursive many-one
+reductions. It does not identify every primitive-recursive function with a
+machine in that specific Turing model.
+
+\input{session}
+
+\section*{Development provenance}
+Tang Ziyi formulated the research question and wrote the initial
+formalisation. Subsequent definitions, proofs, and repository engineering
+include substantial assistance from OpenAI Codex.
+
+\begin{thebibliography}{9}
+
+\bibitem{afp-ch}
+Emmanuel Gunther, Miguel Pagano, Pedro S\'anchez Terraf, and Mat\'ias Steinberg.
+\emph{The Independence of the Continuum Hypothesis in Isabelle/ZF}.
+Archive of Formal Proofs, 2022.
+\url{https://isa-afp.org/entries/Independence_CH.html}.
+
+\bibitem{afp-core}
+Tang Ziyi.
+\emph{Set-Coded Computation in Isabelle/ZF}.
+Companion formal development, source repository.
+
+\bibitem{jech}
+Thomas Jech.
+\emph{Set Theory: The Third Millennium Edition, Revised and Expanded}.
+Springer, 2003.
+\url{https://doi.org/10.1007/3-540-44761-X}.
+
+\end{thebibliography}
+
+\end{document}

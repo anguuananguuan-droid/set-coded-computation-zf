@@ -1,0 +1,4 @@
+session Turing_Absoluteness = Turing_Models +
+  options [timeout=600]
+  theories
+    Turing_Decidable_Sets
