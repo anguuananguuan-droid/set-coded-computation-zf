@@ -7,7 +7,7 @@ begin
 text \<open>Closed sentences are obtained from \<open>halt_fm\<close> by naming the machine
 and the input with formulas that define them in every transitive model.
 The second part derives model-theoretic consequences, using the
-independence of CH from the AFP entry Independence_CH.\<close>
+independence of CH from the AFP entry \<open>Independence_CH\<close>.\<close>
 
 section \<open>Closed names for finite lists\<close>
 

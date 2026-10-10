@@ -10,7 +10,7 @@ begin
 
 text \<open>Finite machines and their finite execution traces belong to every
 transitive ZFC set model. This discharges a closure obligation for the later
-internal halting formula. The finite_run predicate below is still the external
+internal halting formula. The \<open>finite_run\<close> predicate below is still the external
 set-theoretic definition; no satisfaction theorem is claimed here.\<close>
 
 context M_trivial
