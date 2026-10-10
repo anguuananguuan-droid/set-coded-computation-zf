@@ -6,12 +6,9 @@ section \<open>Halting and ZFC-Invariance\<close>
 
 theory Turing_CH
   imports
-    "Set_Coded_Computation_ZF.Turing_Coding"
+    Turing_Model_Witnesses
     "Independence_CH.Definitions_Main"
 begin
-
-definition transitive_zfc_model :: "i \<Rightarrow> o" where
-  "transitive_zfc_model(M) \<equiv> Transset(M) \<and> M \<Turnstile> ZFC"
 
 definition zfc_invariant :: "i \<Rightarrow> o" where
   "zfc_invariant(\<phi>) \<equiv>

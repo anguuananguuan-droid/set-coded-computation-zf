@@ -9,33 +9,56 @@
 
 \begin{document}
 
-\title{Effective Reductions to Sentence Invariance in Isabelle/ZF}
+\title{Halting Absoluteness and Effective Sentence Invariance in Isabelle/ZF}
 \author{Tang Ziyi}
 \maketitle
 
 \begin{abstract}
-Let $I$ be the natural-number codes of closed set-theoretic formulas whose
-truth value agrees across all transitive set models of ZFC. Assuming a
-countable transitive model of ZFC exists, we construct primitive-recursive
-reductions from both self-input halting and its complement to $I$.
-The proof gives an injective numerical code for Isabelle/ZF formulas,
-primitive-recursive certificates for the two syntax transformations, and
-an internal halting sentence whose satisfaction agrees with finite machine
-execution in every transitive ZFC model. The fixed sentence used to witness
-non-invariance is the continuum hypothesis; its two model witnesses follow
-from the AFP formalisation of its independence.
+We construct a first-order set-theoretic formula whose satisfaction in every
+transitive ZFC set model agrees with finite execution of a given set-coded
+Turing machine. We then close the formula by naming its machine and input.
+Let $I$ be the natural-number codes of closed formulas whose truth value
+agrees across all such models. Assuming a countable transitive model of
+ZFC exists, we construct primitive-recursive many-one reductions from both
+self-input halting and its complement to $I$. The reductions use an
+injective numerical code for formulas and the AFP formalisation of the
+independence of the continuum hypothesis.
 \end{abstract}
 
 \tableofcontents
 
-\section{Statement and dependencies}
-The machine semantics and its self-input halting theorem come from
-\emph{Set-Coded Computation in Isabelle/ZF}. The present entry uses the AFP
-development \emph{The Independence of the Continuum Hypothesis in
-Isabelle/ZF} for models that disagree on CH. Invariance quantifies over all
-transitive set models of ZFC. The countable transitive model assumption is
-needed to produce the disagreement witnesses; it is not needed for the
-absoluteness direction of the halting sentence.
+\section{Halting formula}
+For every machine $P$, input $x$, and transitive set model $M$ of ZFC, the
+explicit formula $\mathit{halt\_fm}$ satisfies
+\[
+  (M,[P,x])\models\mathit{halt\_fm}
+  \quad\Longleftrightarrow\quad
+  \mathrm{halts}(P,x).
+\]
+Theorem \texttt{transitive\_model\_halt\_fm\_iff} proves this statement.
+Finite run witnesses and their closure in transitive models are established
+before the formula is introduced. The closed sentence
+$\mathit{halt\_sentence}(P,x)$ names both parameters internally, and
+\texttt{sats\_halt\_sentence\_iff} proves its corresponding satisfaction
+equation. These results do not use CH or an assumption that a countable
+transitive model exists.
+
+\section{Effective reduction}
+Let $K$ be the self-input halting set of the companion computation entry,
+and let $I$ contain exactly the numerical codes of closed formulas whose
+truth value agrees across all transitive set models of ZFC. Given a
+countable transitive set model of ZFC, this entry constructs
+primitive-recursive $f_+$ and $f_-$ such that, for every natural number $e$,
+\[
+  e\in K\ \Longleftrightarrow\ f_+(e)\in I,
+  \qquad
+  e\notin K\ \Longleftrightarrow\ f_-(e)\in I.
+\]
+Theorems \texttt{self\_halting\_pr\_many\_one\_invariance} and
+\texttt{nonhalting\_pr\_many\_one\_invariance} are the formal reduction
+statements. CH supplies a fixed sentence on which two transitive models
+disagree, using the AFP formalisation of its independence~\cite{afp-ch}.
+The countable-model assumption is needed for these disagreement witnesses.
 
 The target set contains only codes of well-formed closed formulas. A
 constructor-tagged pairing code is proved injective on formulas. The two
@@ -44,9 +67,10 @@ reducing functions are proved members of Isabelle/ZF's class
 with the codes of the intended sentences. Their finite-list component uses
 a bounded reverse traversal of the machine code.
 
-The entry proves primitive-recursive many-one reductions. It does not
-identify every primitive-recursive function with a machine in the specific
-Turing model of the preceding entry.
+The machine semantics and self-input halting theorem come from the companion
+entry~\cite{afp-core}. The entry proves primitive-recursive many-one
+reductions. It does not identify every primitive-recursive function with a
+machine in that specific Turing model.
 
 \input{session}
 
@@ -58,8 +82,9 @@ include substantial assistance from OpenAI Codex.
 \begin{thebibliography}{9}
 
 \bibitem{afp-ch}
+Emmanuel Gunther, Miguel Pagano, Pedro S\'anchez Terraf, and Mat\'ias Steinberg.
 \emph{The Independence of the Continuum Hypothesis in Isabelle/ZF}.
-Archive of Formal Proofs.
+Archive of Formal Proofs, 2022.
 \url{https://isa-afp.org/entries/Independence_CH.html}.
 
 \bibitem{afp-core}

@@ -5,8 +5,13 @@
 section \<open>Finite Computation Witnesses in Transitive Models\<close>
 
 theory Turing_Model_Witnesses
-  imports Turing_CH
+  imports
+    "Set_Coded_Computation_ZF.Turing_Coding"
+    "Independence_CH.ZF_Trans_Interpretations"
 begin
+
+definition transitive_zfc_model :: "i \<Rightarrow> o" where
+  "transitive_zfc_model(M) \<equiv> Transset(M) \<and> M \<Turnstile> ZFC"
 
 text \<open>Finite machines and their finite execution traces belong to every
 transitive ZFC set model. This discharges a closure obligation for the later

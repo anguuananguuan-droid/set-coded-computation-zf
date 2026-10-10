@@ -1,6 +1,7 @@
 theory Turing_Halting_Sentences
   imports
     Turing_Halting_Formula
+    Turing_CH
     "Set_Coded_Computation_ZF.Turing_Rejection"
 begin
 

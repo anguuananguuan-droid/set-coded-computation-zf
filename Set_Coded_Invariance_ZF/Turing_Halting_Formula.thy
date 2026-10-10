@@ -688,12 +688,6 @@ theorem transitive_model_halt_fm_iff:
   shows "(A, [P,x] \<Turnstile> halt_fm) \<longleftrightarrow> halts_on(P,x)"
   using tm_model.sats_halt_fm[of A P x] assms unfolding tm_model_def by simp
 
-context tm_model
-begin
-
-end
-
-
 section \<open>Arities\<close>
 
 context
