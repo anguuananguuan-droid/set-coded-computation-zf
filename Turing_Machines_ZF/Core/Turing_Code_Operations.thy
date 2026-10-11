@@ -371,4 +371,51 @@ proof -
     by auto
 qed
 
+subsection \<open>Instruction Code Normalization\<close>
+
+definition default_instruction_code :: i where
+  "default_instruction_code \<equiv>
+    pair_code(nop,final_state)"
+
+definition normalize_instruction_code :: "i \<Rightarrow> i" where
+  "normalize_instruction_code(n) \<equiv>
+    if n \<in> nat \<and> pair_left_code(n) \<in> action then n
+    else default_instruction_code"
+
+lemma default_instruction_code_type [TC]:
+  "default_instruction_code \<in> nat"
+  unfolding default_instruction_code_def by typecheck
+
+lemma normalize_instruction_code_type [TC]:
+  "normalize_instruction_code(n) \<in> nat"
+  unfolding normalize_instruction_code_def
+  using default_instruction_code_type by auto
+
+theorem normalize_instruction_code_correct:
+  "normalize_instruction_code(n) =
+    encode_instruction(decode_instruction(n))"
+proof (cases "n \<in> nat")
+  case True
+  from True have decoded: "pair_decode(n) \<in> nat \<times> nat"
+    by (rule pair_decode_type)
+  from decoded have first: "fst(pair_decode(n)) \<in> nat"
+    and second: "snd(pair_decode(n)) \<in> nat"
+    by typecheck+
+  from True have recover:
+    "pair_code(fst(pair_decode(n)),snd(pair_decode(n))) = n"
+    by (rule pair_code_decode)
+  from True show ?thesis
+    unfolding normalize_instruction_code_def decode_instruction_def
+      encode_instruction_def default_instruction_code_def
+    using pair_left_code_decode[OF True] recover first second
+    by auto
+next
+  case False
+  then show ?thesis
+    unfolding normalize_instruction_code_def decode_instruction_def
+      encode_instruction_def default_instruction_code_def
+    by simp
+qed
+
+
 end

@@ -17,5 +17,5 @@ session Set_Coded_Invariance_ZF = Set_Coded_Computation_ZF +
     Turing_Name_Primrec
     Turing_Machine_Name_Primrec
     Turing_Effective_Invariance
-  document_files
+  document_files (in "../submission/document")
     "root.tex"

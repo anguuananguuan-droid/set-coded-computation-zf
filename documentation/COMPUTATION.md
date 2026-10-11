@@ -178,7 +178,7 @@ tape, since the frame can contain nonblank data.
 
 ## 6 Dependencies and scope
 
-The eleven theories form one independent
+The twelve theories form one independent
 [session](../Turing_Machines_ZF/Core/ROOT). Within that session, the direct
 imports are as follows. Each line names a theory followed by its import.
 
@@ -190,7 +190,8 @@ Turing_Code_Operations    Turing_Coding
 Turing_Primrec            Turing_Code_Operations, ZF-Induct.Primrec
 Turing_Primrec_Reductions Turing_Primrec
 Turing_Evaluator          Turing_Code_Operations
-Turing_Evaluator_Primrec  Turing_Evaluator, Turing_Primrec
+Turing_Instruction_Normalization  Turing_Primrec
+Turing_Evaluator_Primrec  Turing_Evaluator, Turing_Instruction_Normalization
 Turing_Decidability       Turing_Coding
 Turing_Rejection          Turing_Decidability
 Turing_Workspace          Turing_Tape

@@ -47,7 +47,7 @@ equation. These results do not use CH or an assumption that a countable
 transitive model exists.
 
 \section{Effective reduction}
-Let $K$ be the self-input halting set of the companion computation entry,
+Let $K$ be the self-input halting set of the set-coded machines defined here,
 and let $I$ contain exactly the numerical codes of closed formulas whose
 truth value agrees across all transitive set models of ZFC. Given a
 countable transitive set model of ZFC, this entry constructs
@@ -70,17 +70,22 @@ reducing functions are proved members of Isabelle/ZF's class
 with the codes of the intended sentences. Their finite-list component uses
 a bounded reverse traversal of the machine code.
 
-The machine semantics and self-input halting theorem come from the companion
-entry~\cite{afp-core}. The entry proves primitive-recursive many-one
-reductions. It does not identify every primitive-recursive function with a
-machine in that specific Turing model.
+The machine semantics follow the five-action design of the Isabelle/HOL
+AFP entry \emph{Universal Turing Machine}~\cite{afp-utm}. Here the objects
+and proofs are developed in Isabelle/ZF. A concrete rejection transformation
+proves that $K$ is not decidable by a machine of this model. The two reductions
+are certified in Isabelle/ZF's class \texttt{prim\_rec}. No theorem identifying
+every member of that class with a machine of this model is assumed or proved.
+Consequently, this entry does not claim a machine-decidability theorem for
+the full target set $I$.
 
 \input{session}
 
 \section*{Development provenance}
 Tang Ziyi formulated the research question and wrote the initial
 formalisation. Subsequent definitions, proofs, and repository engineering
-include substantial assistance from OpenAI Codex.
+include substantial assistance from OpenAI Codex. Aristotle-generated
+draft proofs and review reports were also supplied during development.
 
 \begin{thebibliography}{9}
 
@@ -90,10 +95,12 @@ Emmanuel Gunther, Miguel Pagano, Pedro S\'anchez Terraf, and Mat\'ias Steinberg.
 Archive of Formal Proofs, 2022.
 \url{https://isa-afp.org/entries/Independence_CH.html}.
 
-\bibitem{afp-core}
-Tang Ziyi.
-\emph{Set-Coded Computation in Isabelle/ZF}.
-Companion formal development, source repository.
+\bibitem{afp-utm}
+Jian Xu, Xingyuan Zhang, Christian Urban, Sebastiaan J. C. Joosten, and
+Franz Regensburger.
+\emph{Universal Turing Machine}.
+Archive of Formal Proofs, 2019, revised 2022.
+\url{https://isa-afp.org/entries/Universal_Turing_Machine.html}.
 
 \bibitem{jech}
 Thomas Jech.

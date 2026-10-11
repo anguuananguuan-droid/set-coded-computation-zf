@@ -1,53 +1,62 @@
-AFP CANDIDATES
+AFP SUBMISSION
 
-1 COMPUTATION
+1 SCOPE
 
-Set_Coded_Computation_ZF is the independent computation library in
-Turing_Machines_ZF/Core. Its eleven theories depend on Isabelle/ZF and the
-distribution's ZF-Induct session. They establish set-coded machine semantics,
-numerical evaluation with primitive-recursive finite-step certificates,
-self-input halting undecidability, and tape observation and workspace results.
+The candidate entry is Set_Coded_Halting_Invariance_ZF. It constructs an
+explicit internal halting formula for set-coded Turing machines, proves its
+satisfaction theorem in every transitive ZFC set model, and constructs
+primitive-recursive many-one reductions from self-input halting and its
+complement to the codes of invariant closed sentences. The reductions
+assume the existence of a countable transitive ZFC set model.
 
-2 INVARIANCE
+The source halting set is proved undecidable in the machine model through
+a concrete rejection transformation. The entry does not establish closure
+of machine decidability under arbitrary primitive-recursive reductions.
+It therefore does not claim machine undecidability of the full target set,
+a general compiler, or the EPQ arithmetic-truth reduction.
 
-Set_Coded_Invariance_ZF extends the computation library and depends on the
-AFP entry Independence_CH. Its eleven theories establish a closed internal
-halting sentence, its satisfaction theorem for transitive ZFC set models,
-an injective code for formulas, and primitive-recursive syntax transformations.
-Under existence of a countable transitive ZFC set model, both self-input
-halting and its complement primitive-recursively many-one reduce to codes of
-closed sentences invariant across all transitive ZFC set models.
+2 SUBMISSION UNIT
 
-The second candidate depends on the first. The archive and submission order
-need to be agreed with AFP editors because the computation library has not
-been accepted as an AFP entry. Neither candidate claims a general machine
-compiler or the full arithmetic-truth reduction of the EPQ paper.
+submission/ROOT lists the nineteen theories included in the entry. They are
+maintained in Turing_Machines_ZF/Core and Set_Coded_Invariance_ZF. The export
+copies those sources and makes their computation-library imports local to
+one session. It includes the proof document and the repository license.
+No separate unaccepted computation entry is required.
 
-3 VERIFICATION
+The numeric evaluator, tape observation, workspace preservation, concrete
+programs, and arithmetic-truth extensions remain in the research repository.
+They are not included in this submission. Instruction-code normalization is
+shared with the evaluator through a separate theory.
 
-Use Isabelle2025-2 and the AFP snapshot dated 6 February 2026. From the
-repository root, build the computation session independently, then register
-the AFP snapshot and build the invariance session.
+3 REPRODUCTION
 
-    isabelle build -v -c -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
-    isabelle components -u /absolute/path/to/afp-2026-02-06/thys
-    isabelle build -v -c -d Turing_Machines_ZF/Core -D Set_Coded_Invariance_ZF Set_Coded_Invariance_ZF
+Use Isabelle2025-2 and the AFP snapshot dated 6 February 2026. Register the
+AFP theory directory as specified in documentation/BUILD.txt. Then export
+and extract the submission from the repository root.
 
-For proof documents, install LuaLaTeX and build each candidate with
-document=pdf. The local proof builds verify the theories, not the PDF.
+    bash scripts/package-afp-entry.sh
+    mkdir -p output/afp-entry
+    tar -xzf output/Set_Coded_Halting_Invariance_ZF.tar.gz -C output/afp-entry
+    isabelle build -v -c -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
 
-4 SUBMISSION UNITS
+With LuaLaTeX installed, include both proof-document variants.
 
-    bash scripts/package-afp-entry.sh core
-    bash scripts/package-afp-entry.sh invariance
+    isabelle build -v -c -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
 
-Each archive contains its own ROOT, theories, document/root.tex, and LICENSE.
-The invariance archive declares the computation session as a dependency; it
-does not duplicate its sources. Inspect both archives before submission.
+The archive is the verification target. The development session layout is
+not the submission layout. CI builds the extracted archive and publishes
+the archive, proof document, outline, and build log together.
 
-5 REVIEW BOUNDARY
+4 REVIEW
 
-The five-action machine design follows the AFP entry Universal Turing Machine
-in Isabelle/HOL. These candidates use set-coded Isabelle/ZF semantics.
-External review is needed to assess novelty, maintainability, and suitability
-for AFP. A successful repository build does not establish those judgments.
+The classical inputs are halting diagonalisation, absoluteness for
+transitive models, and the independence of CH. The formal contribution is
+the explicit connection from this machine semantics through internal
+satisfaction and primitive-recursive sentence construction to invariance.
+No claim of a new classical theorem or priority is made.
+
+The entry is a candidate. AFP acceptance and external specialist review
+have not been established. The author must review the submission metadata,
+confirm the maintenance commitment, and submit through the AFP process.
+
+https://isa-afp.org/submission/

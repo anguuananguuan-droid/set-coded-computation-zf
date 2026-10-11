@@ -19,7 +19,7 @@ protects saved data during a bounded number of steps.
 
 [Computation in Isabelle/ZF](documentation/COMPUTATION.md) explains the model
 through a small machine, then develops the coding, diagonal argument, and
-tape results. Each result is linked to its source. The eleven theory files
+tape results. Each result is linked to its source. The twelve theory files
 form the session
 [Set_Coded_Computation_ZF](Turing_Machines_ZF/Core/ROOT), which depends only
 on Isabelle/ZF and its bundled ZF-Induct session.
@@ -52,11 +52,14 @@ isabelle build -v -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
 
 [Build instructions](documentation/BUILD.txt) specify the environment and
 commands for the independent library, the invariance session, and the complete
-repository. [AFP candidates](documentation/AFP.txt) record the two submission
-scopes and their dependency.
+repository. [AFP submission](documentation/AFP.txt) specifies one entry exported from
+the maintained theories. Its nineteen theories include the halting formula,
+effective syntax, and the computation results they require. The exported
+entry depends on Isabelle/ZF and the accepted AFP entry Independence_CH.
 [GitHub Actions](https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/workflows/isabelle.yml)
-checks the independent library and all five project sessions. Each run
-identifies the source revision and retains its build logs.
+checks the independent library, all five development sessions, and the
+exported submission archive with its proof document. Each run identifies
+the source revision and retains its build logs.
 
 ## 4 Further research
 

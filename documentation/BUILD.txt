@@ -49,20 +49,24 @@ proof escape tokens. It is a source check, not a proof checker.
     python3 scripts/check_repository.py
     git diff --check
 
-5 PROOF DOCUMENTS
+5 SUBMISSION ARCHIVE AND DOCUMENT
 
-With LuaLaTeX installed, build the computation and invariance documents.
+The sole submission entry is Set_Coded_Halting_Invariance_ZF. Its export
+uses submission/ROOT and the maintained development theories. Reproduce the
+archive build using the commands in documentation/AFP.txt.
 
-    isabelle build -v -c -o document=pdf -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
-    isabelle build -v -c -o document=pdf -d Turing_Machines_ZF/Core -D Set_Coded_Invariance_ZF Set_Coded_Invariance_ZF
+    bash scripts/package-afp-entry.sh
 
-Local proof builds without LuaLaTeX do not verify document generation. The
-GitHub Actions workflow installs TeX and checks both PDFs.
+LuaLaTeX is required for the PDF. A proof build without document=pdf does
+not verify document generation. CI builds the extracted archive with both
+the complete proof document and a proof outline.
 
 6 CONTINUOUS INTEGRATION
 
 The workflow in .github/workflows/isabelle.yml checks the repository, builds
 the independent core before registering AFP, and builds all five sessions.
+It then exports the nineteen-theory submission and builds that archive with
+its proof document.
 The Linux distributions are installed by scripts/install-ci.sh. Actions are
 pinned to commit identifiers and build logs are attached to each run.
 

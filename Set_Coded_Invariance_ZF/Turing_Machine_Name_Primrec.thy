@@ -5,7 +5,7 @@
 section \<open>Primitive-Recursive Machine Names\<close>
 
 theory Turing_Machine_Name_Primrec
-  imports Turing_Name_Primrec "Set_Coded_Computation_ZF.Turing_Evaluator_Primrec"
+  imports Turing_Name_Primrec "Set_Coded_Computation_ZF.Turing_Instruction_Normalization"
 begin
 
 definition pr_instr_name_from_fields :: i where

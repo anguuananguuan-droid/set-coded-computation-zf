@@ -16,6 +16,7 @@ session Set_Coded_Computation_ZF = ZF +
     Turing_Code_Operations
     Turing_Primrec
     Turing_Primrec_Reductions
+    Turing_Instruction_Normalization
     Turing_Evaluator
     Turing_Evaluator_Primrec
     Turing_Decidability

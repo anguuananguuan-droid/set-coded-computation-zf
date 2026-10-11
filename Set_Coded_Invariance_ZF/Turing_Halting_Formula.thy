@@ -13,9 +13,10 @@ model of ZFC, it holds of a machine \<open>P\<close> and an input \<open>x\<clos
 
 All auxiliary iterations (dropping elements of a list, the run of the
 machine) are expressed by a finite witness function \<open>f\<close> with prescribed
-values \<open>f`0\<close> and \<open>f`succ(k)\<close>. Upward absoluteness uses that such finite
-functions belong to the model; downward absoluteness is an induction on
-\<open>k\<close>.\<close>
+values \<open>f`0\<close> and \<open>f`succ(k)\<close>. An external halting run supplies a
+finite witness function belonging to the model. Conversely, induction on
+\<open>k\<close> recovers the external run
+from an internal witness.\<close>
 
 section \<open>Closed names for natural numbers\<close>
 
@@ -720,7 +721,4 @@ end
 
 lemma arity_halt_fm_eq: "arity(halt_fm) = 2"
   using arity_halt_fm by (simp add: ord_simp_union)
-
-thm arity_step_fm arity_halt_fm
-
 end

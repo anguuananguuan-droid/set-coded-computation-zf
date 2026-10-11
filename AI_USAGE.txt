@@ -32,6 +32,10 @@ review requires its own record.
 
 3 Historical disclosure
 
+Aristotle-generated draft proofs and review reports were supplied by the
+author during the halting-absoluteness and invariance development. These
+materials were considered alongside the maintained Isabelle sources.
+
 Earlier work included comments from Anthropic Claude supplied by the author.
 The detailed disclosure is retained in
 documentation/history/AI_ASSISTANCE_2026-08.md. Its completion claims refer to
