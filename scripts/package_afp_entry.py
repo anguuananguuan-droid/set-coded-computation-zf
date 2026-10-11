@@ -50,8 +50,9 @@ def main():
                     raise SystemExit(f"{name} imports excluded theory {imported}")
             (entry / f"{name}.thy").write_text(text)
         shutil.copy2(manifest, entry / "ROOT")
-        shutil.copy2(REPOSITORY / "submission/document/root.tex",
-                     entry / "document/root.tex")
+        for name in ("root.tex", "build"):
+            shutil.copy2(REPOSITORY / "submission/document" / name,
+                         entry / "document" / name)
         shutil.copy2(REPOSITORY / "LICENSE", entry / "LICENSE")
         args.archive.parent.mkdir(parents=True, exist_ok=True)
         with tarfile.open(args.archive, "w:gz") as archive:

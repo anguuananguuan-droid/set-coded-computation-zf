@@ -2,7 +2,7 @@ chapter AFP
 
 session Set_Coded_Invariance_ZF = Set_Coded_Computation_ZF +
   description "Primitive-recursive reductions to invariance of set-coded sentences."
-  options [timeout=600]
+  options [timeout=600, document_build=build]
   sessions
     Independence_CH
   theories
@@ -19,3 +19,4 @@ session Set_Coded_Invariance_ZF = Set_Coded_Computation_ZF +
     Turing_Effective_Invariance
   document_files (in "../submission/document")
     "root.tex"
+    "build"

@@ -61,6 +61,11 @@ LuaLaTeX is required for the PDF. A proof build without document=pdf does
 not verify document generation. CI builds the extracted archive with both
 the complete proof document and a proof outline.
 
+The document build repeats LuaLaTeX until the auxiliary, contents, and
+bookmark files stop changing. It fails if they do not stabilize within
+six passes. Successful PDF generation alone does not establish correct
+contents-page references.
+
 6 CONTINUOUS INTEGRATION
 
 The workflow in .github/workflows/isabelle.yml checks the repository, builds

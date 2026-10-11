@@ -2,7 +2,7 @@ chapter AFP
 
 session Set_Coded_Halting_Invariance_ZF = ZF +
   description "Halting absoluteness and primitive-recursive reductions to sentence invariance."
-  options [timeout=900]
+  options [timeout=900, document_build=build]
   sessions
     "ZF-Induct"
     Independence_CH
@@ -28,3 +28,4 @@ session Set_Coded_Halting_Invariance_ZF = ZF +
     Turing_Effective_Invariance
   document_files
     "root.tex"
+    "build"
