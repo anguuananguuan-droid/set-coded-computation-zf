@@ -71,7 +71,10 @@ contents-page references.
 The workflow in .github/workflows/isabelle.yml checks the repository, builds
 the independent core before registering AFP, and builds all five sessions.
 It then exports the nineteen-theory submission and builds that archive with
-its proof document.
+its proof document. The saved submission heap is checked for undischarged
+hypotheses in the six principal results and oracle dependencies throughout
+its named proof closure. AFP mandatory style checks run on the extracted
+entry. Any failure rejects the run.
 The Linux distributions are installed by scripts/install-ci.sh. Actions are
 pinned to commit identifiers and build logs are attached to each run.
 
@@ -89,3 +92,27 @@ downloaded separately and are not redistributed in the repository.
 
 https://isabelle.in.tum.de/website-Isabelle2025-2/dist/index.html
 https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/workflows/isabelle.yml
+
+7 SUBMISSION PROOF AND STYLE CHECKS
+
+Build the exported entry with a saved heap before inspecting dependencies.
+The ML check is maintained outside the submission theories.
+
+    isabelle build -b -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
+    isabelle ML_process -d output/afp-entry/Set_Coded_Halting_Invariance_ZF -l Set_Coded_Halting_Invariance_ZF -f scripts/check_submission_proofs.ML
+
+This check rejects theorem oracle dependencies, including skipped proofs.
+It does not judge semantic adequacy or establish a new consistency result.
+
+The linter revision is c9983adc5c51a6455f702bb58c9f960d425a2af3.
+Download that revision from the repository below and register linter_base.
+Replace the example absolute path with the extracted directory.
+
+    isabelle components -u /absolute/path/to/isabelle-linter-c9983adc5c51a6455f702bb58c9f960d425a2af3/linter_base
+    isabelle lint -o lint_bundles=afp_mandatory -f error -O output/afp-lint.txt -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
+
+An empty report records no findings from the selected checks. It does not
+replace mathematical review. The Linux installer pins the linter archive
+to SHA256 83dc386d6e9dcbfa9f820abddac31c1bedffa46f1f74265a8ccf9007ff9ca2f1.
+
+https://github.com/isabelle-prover/isabelle-linter

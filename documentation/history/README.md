@@ -24,6 +24,12 @@ and retain the build output.
 explanation and navigation. It supersedes the document layout described in
 RV.001. The earlier record remains unchanged.
 
+[RV.003](../records/RV.003.txt) records the 11 October review of the
+nineteen theory halting invariance submission, the revised reduction
+interfaces, and the proof and style checks. Its
+[source manifest](../records/RV.003.sources.txt) identifies the reviewed
+proof sources and verification tools.
+
 ## 3 Earlier reviews
 
 [August development review](RV-IN-ISABELLE-ZF-WEEKLY-2026-08-03.md) records

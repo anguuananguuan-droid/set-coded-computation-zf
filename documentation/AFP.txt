@@ -7,7 +7,8 @@ explicit internal halting formula for set-coded Turing machines, proves its
 satisfaction theorem in every transitive ZFC set model, and constructs
 primitive-recursive many-one reductions from self-input halting and its
 complement to the codes of invariant closed sentences. The reductions
-assume the existence of a countable transitive ZFC set model.
+hold when CH is not invariant. The stated countable transitive ZFC set
+model assumption supplies this premise through Independence_CH.
 
 The source halting set is proved undecidable in the machine model through
 a concrete rejection transformation. The entry does not establish closure
@@ -22,6 +23,11 @@ maintained in Turing_Machines_ZF/Core and Set_Coded_Invariance_ZF. The export
 copies those sources and makes their computation-library imports local to
 one session. It includes the proof document and the repository license.
 No separate unaccepted computation entry is required.
+
+The export alters only the declared computation-library imports. Archive
+member order, permissions, ownership, and timestamps are normalized. In
+the same Python environment, unchanged submission contents produce the
+same archive bytes without embedding the exporting user's identity.
 
 The numeric evaluator, tape observation, workspace preservation, concrete
 programs, and arithmetic-truth extensions remain in the research repository.
@@ -45,7 +51,9 @@ With LuaLaTeX installed, include both proof-document variants.
 
 The archive is the verification target. The development session layout is
 not the submission layout. CI builds the extracted archive and publishes
-the archive, proof document, outline, and build log together.
+the archive, proof document, outline, mandatory style report, and build
+logs together. Proof dependencies and AFP mandatory checks are inspected
+using the commands in documentation/BUILD.txt.
 
 4 REVIEW
 

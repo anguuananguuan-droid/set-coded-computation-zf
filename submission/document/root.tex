@@ -69,7 +69,9 @@ nonhalting\_pr\_many\_one\_invariance
 \end{quote}
 CH supplies a fixed sentence on which two transitive models
 disagree, using the AFP formalisation of its independence~\cite{afp-ch}.
-The countable-model assumption is needed for these disagreement witnesses.
+The reductions also hold under the direct premise that CH is not invariant.
+The countable-model assumption supplies that premise through the
+disagreement witnesses.
 
 The target set contains only codes of well-formed closed formulas. A
 constructor-tagged pairing code is proved injective on formulas. The two
@@ -80,7 +82,9 @@ a bounded reverse traversal of the machine code.
 
 The machine semantics follow the five-action design of the Isabelle/HOL
 AFP entry \emph{Universal Turing Machine}~\cite{afp-utm}. Here the objects
-and proofs are developed in Isabelle/ZF. A concrete rejection transformation
+and proofs are developed in Isabelle/ZF. Model closure, relativization, and
+formula satisfaction use the AFP entry \emph{Transitive Models of Fragments
+of ZFC}~\cite{afp-models}. A concrete rejection transformation
 proves that $K$ is not decidable by a machine of this model. The two reductions
 are certified in Isabelle/ZF's class \texttt{prim\_rec}. No theorem identifying
 every member of that class with a machine of this model is assumed or proved.
@@ -110,6 +114,12 @@ Franz Regensburger.
 \emph{Universal Turing Machine}.
 Archive of Formal Proofs, 2019, revised 2022.
 \url{https://isa-afp.org/entries/Universal_Turing_Machine.html}.
+
+\bibitem{afp-models}
+Emmanuel Gunther, Miguel Pagano, Pedro S\'anchez Terraf, and Mat\'ias Steinberg.
+\emph{Transitive Models of Fragments of ZFC}.
+Archive of Formal Proofs, 2022.
+\url{https://isa-afp.org/entries/Transitive_Models.html}.
 
 \bibitem{jech}
 Thomas Jech.

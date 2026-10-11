@@ -11,14 +11,13 @@ set theory with two free variables and proves that, in every transitive set
 model of ZFC, it holds of a machine \<open>P\<close> and an input \<open>x\<close> exactly when
 \<open>P\<close> halts on \<open>x\<close> (theorem \<open>transitive_model_halt_fm_iff\<close>).
 
-All auxiliary iterations (dropping elements of a list, the run of the
-machine) are expressed by a finite witness function \<open>f\<close> with prescribed
-values \<open>f`0\<close> and \<open>f`succ(k)\<close>. An external halting run supplies a
-finite witness function belonging to the model. Conversely, induction on
-\<open>k\<close> recovers the external run
-from an internal witness.\<close>
+The formulas for list traversal and machine execution constrain finitely
+many applications of an existential witness set. They do not require every
+witness to be a finite function. An external run supplies a canonical finite
+function belonging to the model. Conversely, induction recovers the required
+finite sequence from any internal witness.\<close>
 
-section \<open>Closed names for natural numbers\<close>
+section \<open>Names for natural numbers\<close>
 
 definition nat_name_fm :: "i \<Rightarrow> i" where
   "nat_name_fm(n) \<equiv> nat_rec(n, empty_fm(0), \<lambda>k p. Exists(And(p, succ_fm(0,1))))"

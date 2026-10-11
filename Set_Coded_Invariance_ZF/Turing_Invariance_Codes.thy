@@ -48,9 +48,29 @@ lemma self_nonhalting_or_CH_type [TC]:
   unfolding self_nonhalting_or_CH_def using decode_machine_type numeral_input_type
   by typecheck
 
-theorem self_nonhalting_or_CH_invariant_iff:
-  assumes countable: "M \<approx> \<omega>" and transitive: "Transset(M)"
-    and zfc: "M \<Turnstile> ZFC" and e: "e \<in> nat"
+theorem self_halting_or_CH_invariant_iff_of_CH_not_invariant:
+  assumes CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)" and e: "e \<in> nat"
+  shows "zfc_invariant(self_halting_or_CH(e)) \<longleftrightarrow> e \<in> self_halting"
+proof -
+  have P: "decode_machine(e) \<in> machine" using e by (rule decode_machine_type)
+  have x: "numeral_input(e) \<in> list(symbol)" using e by (rule numeral_input_type)
+  have sentence: "halt_sentence(decode_machine(e),numeral_input(e)) \<in> formula"
+    by (rule halt_sentence_type[OF P x])
+  have closed: "arity(halt_sentence(decode_machine(e),numeral_input(e))) = 0"
+    by (rule arity_halt_sentence[OF P x])
+  have CH_type: "\<cdot>CH\<cdot> \<in> formula" by typecheck
+  have CH_closed: "arity(\<cdot>CH\<cdot>) = 0"
+    by (simp add: Not_CH.arity_is_ContHyp_fm)
+  have "zfc_invariant(self_halting_or_CH(e)) \<longleftrightarrow>
+      halts_on(decode_machine(e),numeral_input(e))"
+    unfolding self_halting_or_CH_def
+    by (rule uniform_or_invariant_iff[OF sentence closed CH_type CH_closed CH_noninv])
+      (rule sats_halt_sentence_iff[OF _ P x])
+  with e show ?thesis unfolding self_halting_def by blast
+qed
+
+theorem self_nonhalting_or_CH_invariant_iff_of_CH_not_invariant:
+  assumes CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)" and e: "e \<in> nat"
   shows "zfc_invariant(self_nonhalting_or_CH(e)) \<longleftrightarrow> e \<notin> self_halting"
 proof -
   have P: "decode_machine(e) \<in> machine" using e by (rule decode_machine_type)
@@ -62,8 +82,6 @@ proof -
   have CH_type: "\<cdot>CH\<cdot> \<in> formula" by typecheck
   have CH_closed: "arity(\<cdot>CH\<cdot>) = 0"
     by (simp add: Not_CH.arity_is_ContHyp_fm)
-  have CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)"
-    by (rule CH_not_invariant[OF countable transitive zfc])
   have inv:
     "zfc_invariant(self_nonhalting_or_CH(e)) \<longleftrightarrow>
       \<not> halts_on(decode_machine(e),numeral_input(e))"
@@ -82,40 +100,46 @@ proof -
   from e inv show ?thesis unfolding self_halting_def by blast
 qed
 
+theorem self_nonhalting_or_CH_invariant_iff:
+  assumes "M \<approx> \<omega>" "Transset(M)" "M \<Turnstile> ZFC" "e \<in> nat"
+  shows "zfc_invariant(self_nonhalting_or_CH(e)) \<longleftrightarrow> e \<notin> self_halting"
+  by (rule self_nonhalting_or_CH_invariant_iff_of_CH_not_invariant
+      [OF CH_not_invariant[OF assms(1-3)] assms(4)])
+
 definition self_halting_positive_code :: "i \<Rightarrow> i" where
   "self_halting_positive_code(e) \<equiv> formula_code(self_halting_or_CH(e))"
 
 definition self_halting_negative_code :: "i \<Rightarrow> i" where
   "self_halting_negative_code(e) \<equiv> formula_code(self_nonhalting_or_CH(e))"
 
-theorem positive_code_reduces_self_halting:
-  assumes countable: "M \<approx> \<omega>" and transitive: "Transset(M)"
-    and zfc: "M \<Turnstile> ZFC" and e: "e \<in> nat"
+theorem positive_code_reduces_self_halting_of_CH_not_invariant:
+  assumes CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)" and e: "e \<in> nat"
   shows "e \<in> self_halting \<longleftrightarrow>
     self_halting_positive_code(e) \<in> invariant_formula_codes"
-proof -
-  have point:
-    "e \<in> {k \<in> nat. zfc_invariant(self_halting_or_CH(k))} \<longleftrightarrow>
-      e \<in> self_halting"
-    using invariant_index_set_eq_self_halting[OF countable transitive zfc]
-    by simp
-  from point e
-  have left: "e \<in> self_halting \<longleftrightarrow> zfc_invariant(self_halting_or_CH(e))"
-    by simp
-  have right: "zfc_invariant(self_halting_or_CH(e)) \<longleftrightarrow>
-      self_halting_positive_code(e) \<in> invariant_formula_codes"
-    unfolding self_halting_positive_code_def
-    using invariant_formula_code_iff[OF self_halting_or_CH_type[OF e]] by blast
-  from left right show ?thesis by blast
-qed
+  using self_halting_or_CH_invariant_iff_of_CH_not_invariant[OF CH_noninv e]
+    invariant_formula_code_iff[OF self_halting_or_CH_type[OF e]]
+  unfolding self_halting_positive_code_def by blast
 
-theorem negative_code_reduces_nonhalting:
-  assumes countable: "M \<approx> \<omega>" and transitive: "Transset(M)"
-    and zfc: "M \<Turnstile> ZFC" and e: "e \<in> nat"
+theorem negative_code_reduces_nonhalting_of_CH_not_invariant:
+  assumes CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)" and e: "e \<in> nat"
   shows "e \<notin> self_halting \<longleftrightarrow>
     self_halting_negative_code(e) \<in> invariant_formula_codes"
-  using self_nonhalting_or_CH_invariant_iff[OF assms]
+  using self_nonhalting_or_CH_invariant_iff_of_CH_not_invariant[OF CH_noninv e]
     invariant_formula_code_iff[OF self_nonhalting_or_CH_type[OF e]]
   unfolding self_halting_negative_code_def by blast
+
+theorem positive_code_reduces_self_halting:
+  assumes "M \<approx> \<omega>" "Transset(M)" "M \<Turnstile> ZFC" "e \<in> nat"
+  shows "e \<in> self_halting \<longleftrightarrow>
+    self_halting_positive_code(e) \<in> invariant_formula_codes"
+  by (rule positive_code_reduces_self_halting_of_CH_not_invariant
+      [OF CH_not_invariant[OF assms(1-3)] assms(4)])
+
+theorem negative_code_reduces_nonhalting:
+  assumes "M \<approx> \<omega>" "Transset(M)" "M \<Turnstile> ZFC" "e \<in> nat"
+  shows "e \<notin> self_halting \<longleftrightarrow>
+    self_halting_negative_code(e) \<in> invariant_formula_codes"
+  by (rule negative_code_reduces_nonhalting_of_CH_not_invariant
+      [OF CH_not_invariant[OF assms(1-3)] assms(4)])
 
 end

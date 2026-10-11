@@ -58,7 +58,8 @@ effective syntax, and the computation results they require. The exported
 entry depends on Isabelle/ZF and the accepted AFP entry Independence_CH.
 [GitHub Actions](https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/workflows/isabelle.yml)
 checks the independent library, all five development sessions, and the
-exported submission archive with its proof document. Each run identifies
+exported submission archive with its proof document, theorem oracle checks,
+and AFP mandatory style checks. Each run identifies
 the source revision and retains its build logs.
 
 ## 4 Further research

@@ -10,7 +10,7 @@ and the input with formulas that define them in every transitive model.
 The second part derives model-theoretic consequences, using the
 independence of CH from the AFP entry \<open>Independence_CH\<close>.\<close>
 
-section \<open>Closed names for finite lists\<close>
+section \<open>Names for finite lists\<close>
 
 lemma sym_nat: "a \<in> symbol \<Longrightarrow> a \<in> nat"
   unfolding symbol_def by auto

@@ -117,9 +117,8 @@ proof -
         pr_formula_neg_apply pr_formula_or_apply formula_code_type)
 qed
 
-theorem positive_primitive_recursive_reduction:
-  assumes countable: "M \<approx> \<omega>" and transitive: "Transset(M)"
-    and zfc: "M \<Turnstile> ZFC"
+theorem positive_primitive_recursive_reduction_of_CH_not_invariant:
+  assumes CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)"
   shows "pr_reduces(pr_invariance_positive,self_halting,invariant_formula_codes)"
 proof -
   have "pr_invariance_positive \<in> prim_rec"
@@ -133,7 +132,7 @@ proof -
       pr_invariance_positive`[e] \<in> invariant_formula_codes"
   proof (intro ballI)
     fix e assume e: "e \<in> nat"
-    from positive_code_reduces_self_halting[OF countable transitive zfc e]
+    from positive_code_reduces_self_halting_of_CH_not_invariant[OF CH_noninv e]
       pr_invariance_positive_apply[OF e]
     show "e \<in> self_halting \<longleftrightarrow>
       pr_invariance_positive`[e] \<in> invariant_formula_codes" by simp
@@ -141,9 +140,8 @@ proof -
   ultimately show ?thesis unfolding pr_reduces_def by blast
 qed
 
-theorem negative_primitive_recursive_reduction:
-  assumes countable: "M \<approx> \<omega>" and transitive: "Transset(M)"
-    and zfc: "M \<Turnstile> ZFC"
+theorem negative_primitive_recursive_reduction_of_CH_not_invariant:
+  assumes CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)"
   shows "pr_reduces(pr_invariance_negative,nat - self_halting,invariant_formula_codes)"
 proof -
   have "pr_invariance_negative \<in> prim_rec"
@@ -156,7 +154,7 @@ proof -
       pr_invariance_negative`[e] \<in> invariant_formula_codes"
   proof (intro ballI)
     fix e assume e: "e \<in> nat"
-    from e negative_code_reduces_nonhalting[OF countable transitive zfc e]
+    from e negative_code_reduces_nonhalting_of_CH_not_invariant[OF CH_noninv e]
       pr_invariance_negative_apply[OF e]
     show "e \<in> nat - self_halting \<longleftrightarrow>
       pr_invariance_negative`[e] \<in> invariant_formula_codes" by simp
@@ -164,16 +162,40 @@ proof -
   ultimately show ?thesis unfolding pr_reduces_def by blast
 qed
 
+theorem positive_primitive_recursive_reduction:
+  assumes "M \<approx> \<omega>" "Transset(M)" "M \<Turnstile> ZFC"
+  shows "pr_reduces(pr_invariance_positive,self_halting,invariant_formula_codes)"
+  by (rule positive_primitive_recursive_reduction_of_CH_not_invariant
+      [OF CH_not_invariant[OF assms]])
+
+theorem negative_primitive_recursive_reduction:
+  assumes "M \<approx> \<omega>" "Transset(M)" "M \<Turnstile> ZFC"
+  shows "pr_reduces(pr_invariance_negative,nat - self_halting,invariant_formula_codes)"
+  by (rule negative_primitive_recursive_reduction_of_CH_not_invariant
+      [OF CH_not_invariant[OF assms]])
+
+theorem self_halting_pr_many_one_invariance_of_CH_not_invariant:
+  assumes "\<not> zfc_invariant(\<cdot>CH\<cdot>)"
+  shows "pr_many_one_reducible(self_halting,invariant_formula_codes)"
+  unfolding pr_many_one_reducible_def
+  using positive_primitive_recursive_reduction_of_CH_not_invariant[OF assms] by blast
+
+theorem nonhalting_pr_many_one_invariance_of_CH_not_invariant:
+  assumes "\<not> zfc_invariant(\<cdot>CH\<cdot>)"
+  shows "pr_many_one_reducible(nat - self_halting,invariant_formula_codes)"
+  unfolding pr_many_one_reducible_def
+  using negative_primitive_recursive_reduction_of_CH_not_invariant[OF assms] by blast
+
 theorem self_halting_pr_many_one_invariance:
   assumes "M \<approx> \<omega>" "Transset(M)" "M \<Turnstile> ZFC"
   shows "pr_many_one_reducible(self_halting,invariant_formula_codes)"
-  unfolding pr_many_one_reducible_def
-  using positive_primitive_recursive_reduction[OF assms] by blast
+  by (rule self_halting_pr_many_one_invariance_of_CH_not_invariant
+      [OF CH_not_invariant[OF assms]])
 
 theorem nonhalting_pr_many_one_invariance:
   assumes "M \<approx> \<omega>" "Transset(M)" "M \<Turnstile> ZFC"
   shows "pr_many_one_reducible(nat - self_halting,invariant_formula_codes)"
-  unfolding pr_many_one_reducible_def
-  using negative_primitive_recursive_reduction[OF assms] by blast
+  by (rule nonhalting_pr_many_one_invariance_of_CH_not_invariant
+      [OF CH_not_invariant[OF assms]])
 
 end

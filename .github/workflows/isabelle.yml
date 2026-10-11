@@ -28,14 +28,17 @@ jobs:
         with:
           path: .ci-deps
           key: linux-isabelle2025-2-afp2026-02-06-${{ hashFiles('scripts/install-ci.sh') }}
-      - name: Install Isabelle and AFP
+          restore-keys: linux-isabelle2025-2-afp2026-02-06-
+      - name: Install Isabelle, AFP, and linter
         run: bash scripts/install-ci.sh "$GITHUB_WORKSPACE/.ci-deps"
       - name: Check independent computation session
         run: |
           set -o pipefail
           .ci-deps/Isabelle2025-2/bin/isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF 2>&1 | tee "$RUNNER_TEMP/isabelle-core.log"
-      - name: Register AFP
-        run: .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/afp-2026-02-06/thys"
+      - name: Register AFP and linter
+        run: |
+          .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/afp-2026-02-06/thys"
+          .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/isabelle-linter-c9983adc5c51a6455f702bb58c9f960d425a2af3/linter_base"
       - name: Check all proofs
         run: |
           set -o pipefail
@@ -50,9 +53,17 @@ jobs:
           bash scripts/package-afp-entry.sh "$RUNNER_TEMP/Set_Coded_Halting_Invariance_ZF.tar.gz"
           mkdir -p "$RUNNER_TEMP/afp-entry"
           tar -xzf "$RUNNER_TEMP/Set_Coded_Halting_Invariance_ZF.tar.gz" -C "$RUNNER_TEMP/afp-entry"
-          .ci-deps/Isabelle2025-2/bin/isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$RUNNER_TEMP/afp-document" -D "$RUNNER_TEMP/afp-entry/Set_Coded_Halting_Invariance_ZF" 2>&1 | tee "$RUNNER_TEMP/isabelle-submission.log"
+          .ci-deps/Isabelle2025-2/bin/isabelle build -v -b -c -j 1 -o threads=2 -o timeout=1800 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$RUNNER_TEMP/afp-document" -D "$RUNNER_TEMP/afp-entry/Set_Coded_Halting_Invariance_ZF" 2>&1 | tee "$RUNNER_TEMP/isabelle-submission.log"
           test -s "$RUNNER_TEMP/afp-document/document.pdf"
           test -s "$RUNNER_TEMP/afp-document/outline.pdf"
+      - name: Check submission proof dependencies
+        run: |
+          set -o pipefail
+          .ci-deps/Isabelle2025-2/bin/isabelle ML_process -d "$RUNNER_TEMP/afp-entry/Set_Coded_Halting_Invariance_ZF" -l Set_Coded_Halting_Invariance_ZF -f scripts/check_submission_proofs.ML 2>&1 | tee "$RUNNER_TEMP/isabelle-proof-dependencies.log"
+      - name: Check AFP submission style
+        run: |
+          set -o pipefail
+          .ci-deps/Isabelle2025-2/bin/isabelle lint -v -j 1 -o threads=2 -o timeout=1800 -o lint_bundles=afp_mandatory -f error -O "$RUNNER_TEMP/isabelle-afp-lint.txt" -D "$RUNNER_TEMP/afp-entry/Set_Coded_Halting_Invariance_ZF" 2>&1 | tee "$RUNNER_TEMP/isabelle-afp-lint.log"
       - name: Save build log
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -62,6 +73,9 @@ jobs:
             ${{ runner.temp }}/isabelle-core.log
             ${{ runner.temp }}/isabelle-build.log
             ${{ runner.temp }}/isabelle-submission.log
+            ${{ runner.temp }}/isabelle-afp-lint.log
+            ${{ runner.temp }}/isabelle-afp-lint.txt
+            ${{ runner.temp }}/isabelle-proof-dependencies.log
           if-no-files-found: ignore
       - name: Save submission
         if: success()
@@ -72,4 +86,5 @@ jobs:
             ${{ runner.temp }}/Set_Coded_Halting_Invariance_ZF.tar.gz
             ${{ runner.temp }}/afp-document/document.pdf
             ${{ runner.temp }}/afp-document/outline.pdf
+            ${{ runner.temp }}/isabelle-afp-lint.txt
           if-no-files-found: error
