@@ -6,6 +6,7 @@
 
 \urlstyle{rm}
 \isabellestyle{it}
+\newcommand{\theoremname}[1]{{\urlstyle{tt}\nolinkurl{#1}}}
 
 \begin{document}
 \pagenumbering{roman}
@@ -38,14 +39,14 @@ explicit formula $\mathit{halt\_fm}$ satisfies
   \quad\Longleftrightarrow\quad
   \mathrm{halts}(P,x).
 \]
-Theorem \texttt{transitive\_model\_halt\_fm\_iff} proves this statement.
+Theorem \theoremname{transitive_model_halt_fm_iff} proves this statement.
 The general method of absoluteness for transitive models is classical
 \cite[Chapter~12]{jech}. Here the satisfaction theorem concerns the explicit
 formula for this machine semantics. Finite run witnesses and their closure
 in transitive models are established before the formula is introduced. The
 closed sentence
 $\mathit{halt\_sentence}(P,x)$ names both parameters internally, and
-\texttt{sats\_halt\_sentence\_iff} proves its corresponding satisfaction
+\theoremname{sats_halt_sentence_iff} proves its corresponding satisfaction
 equation. These results do not use CH or an assumption that a countable
 transitive model exists.
 
