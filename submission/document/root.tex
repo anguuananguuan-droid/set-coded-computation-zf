@@ -8,6 +8,7 @@
 \isabellestyle{it}
 
 \begin{document}
+\pagenumbering{roman}
 
 \title{Halting Absoluteness and Effective Sentence Invariance in Isabelle/ZF}
 \author{Tang Ziyi}
@@ -26,6 +27,8 @@ independence of the continuum hypothesis.
 \end{abstract}
 
 \tableofcontents
+\clearpage
+\pagenumbering{arabic}
 
 \section{Halting formula}
 For every machine $P$, input $x$, and transitive set model $M$ of ZFC, the
@@ -81,6 +84,7 @@ the full target set $I$.
 
 \input{session}
 
+\clearpage
 \section*{Development provenance}
 Tang Ziyi formulated the research question and wrote the initial
 formalisation. Subsequent definitions, proofs, and repository engineering
