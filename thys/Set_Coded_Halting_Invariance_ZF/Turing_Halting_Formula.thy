@@ -481,8 +481,9 @@ proof -
     have D2: "drop(p,drop(p,P)) \<in> list(instruction)" using p D1 by simp
     have D3: "drop(b,drop(p,drop(p,P))) \<in> list(instruction)" using b D2 by
       simp
-    have D1A: "drop(p,P) \<in> A" using tm_drop_tail_in_A[OF machine_in_A[OF P(2)] p]
-      tm_drop_tail_list[OF PL p] by simp
+    have D1A: "drop(p,P) \<in> A"
+      using tm_drop_tail_in_A[OF machine_in_A[OF P(2)] p]
+        tm_drop_tail_list[OF PL p] by simp
     have D2A: "drop(p,drop(p,P)) \<in> A"
       using tm_drop_tail_in_A[OF D1A p] tm_drop_tail_list[OF D1 p] by simp
     have D3A: "drop(b,drop(p,drop(p,P))) \<in> A"
