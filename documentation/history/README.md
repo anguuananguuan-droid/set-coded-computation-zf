@@ -42,6 +42,13 @@ proof and tooling revision. RV.005 corrects the interpretation of the old
 linter reports and the earlier PDF boundary check. The original records
 remain unchanged.
 
+[IN.003](../records/IN.003.txt) and [RV.006](../records/RV.006.txt) record
+the ZF halting generalisation and canonical entry revision. Its
+[source manifest](../records/RV.006.sources.txt) identifies the checked
+proof and verification infrastructure. The record covers the unified
+source namespace, formula environments, warning cleanup, and document
+verification outside the published entry.
+
 ## 3 Earlier reviews
 
 [August development review](RV-IN-ISABELLE-ZF-WEEKLY-2026-08-03.md) records
