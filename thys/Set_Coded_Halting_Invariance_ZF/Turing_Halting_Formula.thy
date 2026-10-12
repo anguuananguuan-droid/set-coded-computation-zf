@@ -35,7 +35,8 @@ lemma nat_name_fm_0 [simp]: "nat_name_fm(0) = empty_fm(0)"
   unfolding nat_name_fm_def by (rule nat_rec_0)
 
 lemma nat_name_fm_succ [simp]:
-  "n \<in> nat \<Longrightarrow> nat_name_fm(succ(n)) = Exists(And(nat_name_fm(n), succ_fm(0,1)))"
+  "n \<in> nat \<Longrightarrow> nat_name_fm(succ(n)) =
+    Exists(And(nat_name_fm(n), succ_fm(0,1)))"
   unfolding nat_name_fm_def by (rule nat_rec_succ)
 
 lemma nat_name_fm_type [TC]: "n \<in> nat \<Longrightarrow> nat_name_fm(n) \<in> formula"
