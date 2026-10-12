@@ -48,7 +48,7 @@ jobs:
       - name: Install document tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-luatex texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended poppler-utils
+          sudo apt-get install -y --no-install-recommends texlive-luatex texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern poppler-utils
       - name: Build submission archive and proof document
         run: |
           set -o pipefail
