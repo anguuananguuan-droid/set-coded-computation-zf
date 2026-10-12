@@ -101,8 +101,9 @@ proof -
   then show ?thesis by (rule numeral_tape_eq_unique[OF m k])
 qed
 
-text \<open>The former literal-output contract could only compute outputs at
-least as large as the input. This invariant records the reason it was replaced.\<close>
+text \<open>Literal equality with a numeral output tape requires the output
+to be at least as large as the input. The tape span cannot decrease during
+execution. Observational equality avoids this restriction.\<close>
 
 lemma literal_numeral_output_not_smaller:
   assumes M: "M \<in> machine" and n: "n \<in> nat" and m: "m \<in> nat"

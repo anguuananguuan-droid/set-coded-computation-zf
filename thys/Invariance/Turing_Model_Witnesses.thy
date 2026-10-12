@@ -2,7 +2,7 @@
     Author:     Tang Ziyi
 *)
 
-section \<open>Finite Computation Witnesses in Transitive Models\<close>
+section \<open>Finite Witnesses in Transitive Models\<close>
 
 theory Turing_Model_Witnesses
   imports

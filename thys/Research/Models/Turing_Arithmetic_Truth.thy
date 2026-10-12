@@ -8,9 +8,9 @@ theory Turing_Arithmetic_Truth
   imports "Set_Coded_Invariance_ZF.Turing_Nat_Membership"
 begin
 
-text \<open>This begins a direct route from arithmetic truth to model invariance.
-Quantifiers over arithmetic variables must range over the standard naturals;
-the following formula makes that domain explicit.\<close>
+text \<open>The formulas express basic arithmetic relations in transitive
+models. Arithmetic quantifiers are restricted to the standard natural
+numbers by the explicit domain formula.\<close>
 
 theorem sats_arith_zero:
   assumes model: "transitive_zfc_model(A)" and env: "env \<in> list(A)"

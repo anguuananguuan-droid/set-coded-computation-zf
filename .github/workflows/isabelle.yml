@@ -88,6 +88,7 @@ jobs:
             ${{ runner.temp }}/isabelle-document-layout.log
             ${{ runner.temp }}/linter-controls
             ${{ runner.temp }}/afp-document-qa
+            ${{ runner.temp }}/afp-document
           if-no-files-found: ignore
       - name: Save submission
         if: success()

@@ -48,9 +48,11 @@ if not re.search(r"session Set_Coded_Computation_ZF = ZF \+", (core / "ROOT").re
 for path in sorted(theories):
     source = path.read_text()
     header = re.search(r"\btheory\s+(\w+)\s+imports\s+(.*?)\s+begin\b", source, re.S)
-    if not re.search(rf"Title:\s+{re.escape(path.name)}\b", source[:400]):
+    file_header = re.match(r"\(\*.*?\*\)", source, re.S)
+    fields = file_header.group() if file_header else ""
+    if not re.search(rf"\bTitle:\s+{re.escape(path.name)}\b", fields):
         errors.append(f"{path.relative_to(ROOT)}: missing matching Title in file header")
-    if not re.search(r"Author:\s+\S", source[:400]):
+    if not re.search(r"\bAuthor:\s+\S", fields):
         errors.append(f"{path.relative_to(ROOT)}: missing Author in file header")
     if len(re.findall(r"^section\s", source, re.M)) != 1:
         errors.append(f"{path.relative_to(ROOT)}: expected one theory-level section")

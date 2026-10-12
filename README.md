@@ -91,6 +91,8 @@ Model closure and satisfaction use
 
 The Isabelle theories and project documentation use the
 [BSD 3 Clause License](LICENSE).
+The linter patch retains the upstream
+[copyright and license notice](THIRD_PARTY_NOTICES.txt).
 The EPQ paper is copyright 2026 Tang Ziyi, all rights reserved.
 [Citation metadata](CITATION.cff) identifies the project. Cite the revision
 used. [Contribution rules](CONTRIBUTING.txt) and [engineering rules](AGENTS.md)

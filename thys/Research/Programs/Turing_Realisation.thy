@@ -8,9 +8,9 @@ theory Turing_Realisation
   imports Turing_Projection Turing_Arithmetic
 begin
 
-text \<open>Constants, all projections, and the list-based successor now have
-finite machine witnesses. Closure under arbitrary COMP and PREC is a separate
-remaining obligation; these base cases do not assume such a compiler.\<close>
+text \<open>Constants, all projections, and the list-based successor have
+finite machine witnesses. Closure under arbitrary COMP and PREC is not
+established by these base cases.\<close>
 
 definition erase_arguments_machine :: i where
   "erase_arguments_machine \<equiv>

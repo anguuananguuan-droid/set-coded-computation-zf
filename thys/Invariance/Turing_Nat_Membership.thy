@@ -8,9 +8,9 @@ theory Turing_Nat_Membership
   imports Turing_Model_Witnesses
 begin
 
-text \<open>The formula tests membership in the natural numbers defined by
-\<open>omega_fm\<close>. Transitivity identifies these numbers with the external
-set \<open>nat\<close>.\<close>
+text \<open>The formula expresses membership in the standard natural
+numbers. Transitivity identifies the model's natural numbers with the
+external set \<open>nat\<close>.\<close>
 
 definition nat_member_fm :: "i \<Rightarrow> i" where
   "nat_member_fm(i) \<equiv> Exists(And(omega_fm(0),Member(succ(i),0)))"

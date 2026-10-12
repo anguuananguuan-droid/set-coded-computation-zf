@@ -267,10 +267,10 @@ qed
 
 subsection \<open>Finite Computations\<close>
 
-text \<open>A finite run is a set-theoretic function on succ(n). The following equivalence theorem
-identifies such a run with n iterations of the step
-function. This witness form is used when finite computations are considered
-inside set-theoretic models.\<close>
+text \<open>A finite run is a set-theoretic function on succ(n). The
+equivalence theorem identifies such a run with n iterations of the step
+function. This witness form supports internal descriptions of finite
+computations in set-theoretic models.\<close>
 
 definition steps :: "[i,i,i] \<Rightarrow> i" where
   "steps(M,c,n) \<equiv> (\<lambda>x. step(M,x))^n (c)"
