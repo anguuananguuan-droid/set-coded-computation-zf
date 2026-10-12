@@ -208,7 +208,10 @@ definition drop_fm :: "[i,i,i] \<Rightarrow> i" where
 text \<open>The witness for \<open>drop_fm\<close> records successive list
 tails. At the outer existential quantifier its index is 0. Under the
 bounded universal quantifier and three further existential quantifiers,
-the environment prefix is \<open>[f`succ(k),f`k,succ(k),k,f]\<close>.
+the environment has the prefix
+
+\<open>[f`succ(k),f`k,succ(k),k,f]\<close>.
+
 The recurrence relates entries 1 and 0 by \<open>tl_fm\<close>. The
 initial and final applications select the original list and the required
 tail.\<close>
@@ -227,7 +230,9 @@ definition tm_drop_tail :: "[i,i] \<Rightarrow> i" where
 lemma tm_drop_tail_0 [simp]: "tm_drop_tail(0,l) = l"
   unfolding tm_drop_tail_def by simp
 
-lemma tm_drop_tail_succ [simp]: "n \<in> nat \<Longrightarrow> tm_drop_tail(succ(n),l) = tl'(tm_drop_tail(n,l))"
+lemma tm_drop_tail_succ [simp]:
+  "n \<in> nat \<Longrightarrow>
+    tm_drop_tail(succ(n),l) = tl'(tm_drop_tail(n,l))"
   unfolding tm_drop_tail_def by simp
 
 lemma tm_drop_tail_list:
