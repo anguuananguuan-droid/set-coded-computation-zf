@@ -10,7 +10,7 @@ begin
 
 text \<open>A frame appends saved data beyond both ends of a finite workspace.
 The left lists are stored nearest to the head first. The frame is ordinary
-binary tm_tape data, not a new tm_machine operation.\<close>
+binary tape data, not a new machine operation.\<close>
 
 definition frame_config :: "[i,i,i] \<Rightarrow> i" where
   "frame_config(c,L,R) \<equiv> \<langle>fst(c),\<langle>fst(snd(c)) @ L,snd(snd(c)) @ R\<rangle>\<rangle>"

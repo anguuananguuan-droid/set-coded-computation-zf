@@ -8,11 +8,11 @@ theory Turing_Rejection
   imports "Turing_Decidability"
 begin
 
-text \<open>Given a tm_machine M, the construction reserves a fresh control
+text \<open>Given a machine M, the construction reserves a fresh control
 state above the states and instruction slots used by M. Transitions that
 would terminate M enter that state. A blank scanned there terminates the
-new tm_machine; a 1 makes it loop. The projection lemmas relate runs of the
-new tm_machine to runs of M, including termination caused by a missing
+new machine; a 1 makes it loop. The projection lemmas relate runs of the
+new machine to runs of M, including termination caused by a missing
 instruction. The final theorem instantiates the diagonal argument with this
 explicit finite instruction list.\<close>
 

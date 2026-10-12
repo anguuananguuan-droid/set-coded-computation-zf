@@ -10,9 +10,9 @@ begin
 
 subsection \<open>Configuration Codes\<close>
 
-text \<open>The evaluator computes a configuration code from a tm_machine
+text \<open>The evaluator computes a configuration code from a machine
 number and a configuration code. Its correctness theorems compare exact
-encoded configurations, including their finite tm_tape lists. At this stage
+encoded configurations, including their finite tape lists. At this stage
 the evaluator is a set-theoretic function; primitive-recursive certificates
 for the numerical operations follow in the next theory.\<close>
 

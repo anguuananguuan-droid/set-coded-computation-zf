@@ -347,7 +347,7 @@ next
   qed
 qed
 
-subsection \<open>Complete tm_machine names\<close>
+subsection \<open>Complete machine names\<close>
 
 definition pr_machine_name_code :: i where
   "pr_machine_name_code \<equiv>

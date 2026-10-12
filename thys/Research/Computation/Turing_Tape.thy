@@ -8,11 +8,11 @@ theory Turing_Tape
   imports "Set_Coded_Halting_Invariance_ZF.Turing_Machine"
 begin
 
-text \<open>A finite list represents an infinite blank-ended half-tm_tape. The
+text \<open>A finite list represents an infinite blank-ended half-tape. The
 Isabelle/ZF function nth returns 0 beyond the end of the list, matching the
 blank symbol. Equality of represented contents must therefore ignore trailing
 blanks. No instruction
-is added to the tm_machine: this relation is used only to observe its output.\<close>
+is added to the machine: this relation is used only to observe its output.\<close>
 
 definition half_tape_eq :: "[i,i] \<Rightarrow> o" where
   "half_tape_eq(xs,ys) \<equiv> \<forall>n\<in>nat. nth(n,xs) = nth(n,ys)"

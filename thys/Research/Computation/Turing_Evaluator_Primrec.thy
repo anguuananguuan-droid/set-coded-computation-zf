@@ -8,10 +8,10 @@ theory Turing_Evaluator_Primrec
   imports "Turing_Evaluator" "Set_Coded_Halting_Invariance_ZF.Turing_Instruction_Normalization"
 begin
 
-text \<open>The one-tm_step evaluator and its finite iteration have
+text \<open>The one-step evaluator and its finite iteration have
 primitive-recursive certificates. An application theorem identifies the iteration certificate with
 the numerical evaluator at every natural time bound.
-This is a result about numerical evaluation, not a universal tm_machine.\<close>
+This is a result about numerical evaluation, not a universal machine.\<close>
 
 subsection \<open>Tape Inspection\<close>
 

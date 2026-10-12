@@ -10,9 +10,9 @@ begin
 
 subsection \<open>Machine Representation\<close>
 
-text \<open>A tm_machine is a finite instruction list. An instruction contains an
+text \<open>A machine is a finite instruction list. An instruction contains an
 action number and a next-state number. Actions 0 and 1 write symbols, 2 and
-3 move the head, and 4 leaves the tm_tape unchanged. State 1 is initial and
+3 move the head, and 4 leaves the tape unchanged. State 1 is initial and
 state 0 is final. The named actions, states, and symbols are input
 abbreviations for these natural numbers; printed propositions may show the
 numbers instead of their names.\<close>
@@ -181,7 +181,7 @@ subsection \<open>One-Step Semantics\<close>
 
 text \<open>For a nonfinal state q and scanned symbol b, the instruction slot
 is 2 * pred(q) + b. A missing slot enters the final state without changing
-the tm_tape. The final state is absorbing.\<close>
+the tape. The final state is absorbing.\<close>
 
 definition slot :: "[i,i] \<Rightarrow> i" where
   "slot(q,b) \<equiv> 2 #* pred(q) #+ b"
@@ -271,7 +271,7 @@ qed
 subsection \<open>Finite Computations\<close>
 
 text \<open>A finite run is a set-theoretic function on succ(n). The
-equivalence theorem identifies such a run with n iterations of the tm_step
+equivalence theorem identifies such a run with n iterations of the step
 function. This witness form supports internal descriptions of finite
 computations in set-theoretic models.\<close>
 

@@ -17,8 +17,8 @@ abbreviation (input) cp_rewind where "cp_rewind \<equiv> succ(succ(succ(succ(suc
 
 text \<open>A temporarily erased stroke marks the current source position.
 The permanent blank between the blocks separates the return scans. Once
-all source strokes have been copied, the tm_machine rewinds to the first block.
-Only the existing binary alphabet and single-tm_tape instructions are used.\<close>
+all source strokes have been copied, the machine rewinds to the first block.
+Only the existing binary alphabet and single-tape instructions are used.\<close>
 
 definition copy_machine :: i where
   "copy_machine \<equiv>

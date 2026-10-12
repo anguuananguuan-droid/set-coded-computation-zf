@@ -101,8 +101,8 @@ proof -
   then show ?thesis by (rule numeral_tape_eq_unique[OF m k])
 qed
 
-text \<open>Literal equality with a numeral output tm_tape requires the output
-to be at least as large as the input. The tm_tape span cannot decrease during
+text \<open>Literal equality with a numeral output tape requires the output
+to be at least as large as the input. The tape span cannot decrease during
 execution. Observational equality avoids this restriction.\<close>
 
 lemma literal_numeral_output_not_smaller:

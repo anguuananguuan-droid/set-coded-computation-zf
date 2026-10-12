@@ -135,7 +135,7 @@ text \<open>Let a family of closed sentences express membership in a set
 uniformly over all transitive ZFC set models. If their codes are produced
 by a primitive-recursive function, disjoining any fixed non-invariant
 sentence gives a primitive-recursive reduction to invariant sentence codes.
-This statement does not require a tm_machine interpretation of the source set
+This statement does not require a machine interpretation of the source set
 or use CH.\<close>
 
 theorem pr_reduces_invariance:

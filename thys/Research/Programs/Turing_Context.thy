@@ -8,7 +8,7 @@ theory Turing_Context
   imports "Turing_Realisation"
 begin
 
-text \<open>A numerical realiser is specified on an otherwise blank tm_tape.
+text \<open>A numerical realiser is specified on an otherwise blank tape.
 This does not give a frame rule for executing it beside saved nonblank data.
 The following identity program moves left, erases that cell, and returns.
 It satisfies the standalone numerical contract but destroys a saved stroke.

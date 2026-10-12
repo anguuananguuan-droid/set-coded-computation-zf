@@ -105,7 +105,7 @@ proof -
   then show ?thesis using kA by auto
 qed
 
-subsection \<open>Model and tm_tape updates\<close>
+subsection \<open>Model and tape updates\<close>
 
 text \<open>The satisfaction proofs use \<open>M_ZF1_trans\<close>, a
 transitive model of Zermelo set theory with the four replacement instances
@@ -513,7 +513,7 @@ lemma sats_fetch_fm_simp [simp]:
 
 end
 
-subsection \<open>One tm_step\<close>
+subsection \<open>One step\<close>
 
 definition step_fm :: "[i,i,i] \<Rightarrow> i" where
   "step_fm(p,c,d) \<equiv>

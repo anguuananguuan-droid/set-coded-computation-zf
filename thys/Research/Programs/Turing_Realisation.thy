@@ -9,7 +9,7 @@ theory Turing_Realisation
 begin
 
 text \<open>Constants, all projections, and the list-based successor have
-finite tm_machine witnesses. Closure under arbitrary COMP and PREC is not
+finite machine witnesses. Closure under arbitrary COMP and PREC is not
 established by these base cases.\<close>
 
 definition erase_arguments_machine :: i where

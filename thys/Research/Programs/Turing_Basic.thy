@@ -10,7 +10,7 @@ begin
 
 text \<open>These concrete finite machines exercise the numerical contract on
 identity, growth, and erasure. In particular, erasure must work on every
-natural input, including zero, without deleting represented tm_tape cells.\<close>
+natural input, including zero, without deleting represented tape cells.\<close>
 
 lemma empty_machine_type [TC]: "[] \<in> tm_machine"
   unfolding tm_machine_def by typecheck
@@ -115,7 +115,7 @@ corollary zero_realises_constant:
   unfolding tm_realises_unary_def
   using zero_computes zero_machine_type by (auto simp add: CONSTANT_def)
 
-text \<open>This composition runs on the actual blank-padded tm_tape left by
+text \<open>This composition runs on the actual blank-padded tape left by
 zero_machine; no list normalisation is performed between the programs.\<close>
 
 corollary zero_then_successor_computes_one:

@@ -36,10 +36,10 @@ qed
 
 subsection \<open>Halting and Output\<close>
 
-text \<open>Output is the symbol scanned when the tm_machine reaches the final
+text \<open>Output is the symbol scanned when the machine reaches the final
 state. Scanning 1 means acceptance and scanning 0 means rejection. This
 convention differs from output specifications that require a canonical
-literal tm_tape or a numeral remaining on the tm_tape.\<close>
+literal tape or a numeral remaining on the tape.\<close>
 
 definition yields :: "[i,i,i] \<Rightarrow> o" where
   "yields(M,x,b) \<equiv>
@@ -234,10 +234,10 @@ lemma blank_halting_iff:
 
 subsection \<open>Self-Halting\<close>
 
-text \<open>The self-halting set uses the total tm_machine decoder and the
+text \<open>The self-halting set uses the total machine decoder and the
 unary input for its own code. The diagonal locale separates the
-diagonal argument from the construction of a tm_machine that halts exactly
-when another tm_machine rejects. The next theory supplies that tm_machine.\<close>
+diagonal argument from the construction of a machine that halts exactly
+when another machine rejects. The next theory supplies that machine.\<close>
 
 definition self_halting :: i where
   "self_halting \<equiv>
