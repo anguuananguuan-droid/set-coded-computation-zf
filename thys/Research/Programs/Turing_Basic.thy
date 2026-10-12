@@ -5,7 +5,7 @@
 section \<open>Basic Numerical Machines\<close>
 
 theory Turing_Basic
-  imports Turing_Reduction "ZF-Induct.Primrec"
+  imports "Turing_Reduction" "ZF-Induct.Primrec"
 begin
 
 text \<open>These concrete finite machines exercise the numerical contract on

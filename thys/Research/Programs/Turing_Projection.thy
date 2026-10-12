@@ -5,7 +5,7 @@
 section \<open>Total Argument Projection\<close>
 
 theory Turing_Projection
-  imports Turing_Storage
+  imports "Turing_Storage"
 begin
 
 abbreviation (input) kp_next where "kp_next \<equiv> succ(2)"

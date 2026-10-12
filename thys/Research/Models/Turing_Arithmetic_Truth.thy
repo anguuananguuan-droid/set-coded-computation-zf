@@ -5,12 +5,24 @@
 section \<open>First Arithmetic Formulas in Transitive Models\<close>
 
 theory Turing_Arithmetic_Truth
-  imports "Set_Coded_Invariance_ZF.Turing_Nat_Membership"
+  imports "Set_Coded_Halting_Invariance_ZF.Nat_Membership"
 begin
 
 text \<open>The formulas express basic arithmetic relations in transitive
 models. Arithmetic quantifiers are restricted to the standard natural
 numbers by the explicit domain formula.\<close>
+
+
+lemma transitive_zf_M_ZF2_trans:
+  assumes model: "transitive_zf_model(A)"
+  shows "M_ZF2_trans(A)"
+proof -
+  from model have zf: "A \<Turnstile> ZF"
+    unfolding transitive_zf_model_def by auto
+  interpret Z: M_ZF A by (rule M_satT_imp_M_ZF[OF zf])
+  interpret T: M_ZF1_trans A by (rule transitive_zf_M_ZF1_trans[OF model])
+  show ?thesis by unfold_locales
+qed
 
 theorem sats_arith_zero:
   assumes model: "transitive_zfc_model(A)" and env: "env \<in> list(A)"
@@ -28,7 +40,7 @@ theorem sats_arith_successor:
   shows "sats(A,succ_fm(i,j),env) \<longleftrightarrow>
     nth(j,env) = succ(nth(i,env))"
 proof -
-  interpret A: M_trivial "##A" by (rule transitive_zfc_M_trivial[OF model])
+  interpret A: M_trivial "##A" by (rule transitive_zf_M_trivial[OF transitive_zfc_model_imp_zf[OF model]])
   have x: "nth(i,env) \<in> A" using env i ib by typecheck
   have y: "nth(j,env) \<in> A" using env j jb by typecheck
   show ?thesis using env i j x y by simp
@@ -48,7 +60,7 @@ theorem sats_arith_add:
   shows "sats(A,is_cadd_fm(i,j,k),env) \<longleftrightarrow>
     nth(k,env) = nth(i,env) #+ nth(j,env)"
 proof -
-  interpret A: M_ZF2_trans A by (rule transitive_zfc_M_ZF2_trans[OF model])
+  interpret A: M_ZF2_trans A by (rule transitive_zf_M_ZF2_trans[OF transitive_zfc_model_imp_zf[OF model]])
   have xm: "nth(i,env) \<in> A" using A.nat_into_M[OF x] by simp
   have ym: "nth(j,env) \<in> A" using A.nat_into_M[OF y] by simp
   have zm: "nth(k,env) \<in> A" using A.nat_into_M[OF z] by simp
@@ -65,7 +77,7 @@ theorem sats_arith_multiply:
   shows "sats(A,is_cmult_fm(i,j,k),env) \<longleftrightarrow>
     nth(k,env) = nth(i,env) #* nth(j,env)"
 proof -
-  interpret A: M_ZF2_trans A by (rule transitive_zfc_M_ZF2_trans[OF model])
+  interpret A: M_ZF2_trans A by (rule transitive_zf_M_ZF2_trans[OF transitive_zfc_model_imp_zf[OF model]])
   have xm: "nth(i,env) \<in> A" using A.nat_into_M[OF x] by simp
   have ym: "nth(j,env) \<in> A" using A.nat_into_M[OF y] by simp
   have zm: "nth(k,env) \<in> A" using A.nat_into_M[OF z] by simp
@@ -94,14 +106,14 @@ theorem sats_arith_exists_fm:
   shows "sats(A,arith_exists_fm(p),env) \<longleftrightarrow>
     (\<exists>n\<in>nat. sats(A,p,Cons(n,env)))"
 proof -
-  interpret A: M_trivial "##A" by (rule transitive_zfc_M_trivial[OF model])
+  interpret A: M_trivial "##A" by (rule transitive_zf_M_trivial[OF transitive_zfc_model_imp_zf[OF model]])
   have nat_in_A: "\<And>n. n \<in> nat \<Longrightarrow> n \<in> A"
   proof -
     fix n assume n: "n \<in> nat"
     from A.nat_into_M[OF n] show "n \<in> A" by simp
   qed
   show ?thesis unfolding arith_exists_fm_def
-    using env p nat_in_A sats_nat_member_fm[OF model] by auto
+    using env p nat_in_A sats_nat_member_fm[OF transitive_zfc_model_imp_zf[OF model]] by auto
 qed
 
 theorem sats_arith_forall_fm:
@@ -110,14 +122,14 @@ theorem sats_arith_forall_fm:
   shows "sats(A,arith_forall_fm(p),env) \<longleftrightarrow>
     (\<forall>n\<in>nat. sats(A,p,Cons(n,env)))"
 proof -
-  interpret A: M_trivial "##A" by (rule transitive_zfc_M_trivial[OF model])
+  interpret A: M_trivial "##A" by (rule transitive_zf_M_trivial[OF transitive_zfc_model_imp_zf[OF model]])
   have nat_in_A: "\<And>n. n \<in> nat \<Longrightarrow> n \<in> A"
   proof -
     fix n assume n: "n \<in> nat"
     from A.nat_into_M[OF n] show "n \<in> A" by simp
   qed
   show ?thesis unfolding arith_forall_fm_def
-    using env p nat_in_A sats_nat_member_fm[OF model] by auto
+    using env p nat_in_A sats_nat_member_fm[OF transitive_zfc_model_imp_zf[OF model]] by auto
 qed
 
 end

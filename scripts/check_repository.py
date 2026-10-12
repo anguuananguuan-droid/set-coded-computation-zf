@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check document paths, session membership, and the independent core boundary.
+"""Check document paths, session membership, and the computation dependency boundary.
 
 The proof token scan is deliberately conservative. Isabelle remains the proof
 checker. Session parsing covers this repository's plain ROOT theory lists.
@@ -41,10 +41,14 @@ for path in sorted(theories):
     if len(members.get(path, [])) != 1:
         errors.append(f"{path.relative_to(ROOT)}: expected exactly one session registration")
 
-core = ROOT / "thys/Computation"
-core_theories = {path.stem for path in theories if path.parent == core}
-if not re.search(r"session Set_Coded_Computation_ZF = ZF \+", (core / "ROOT").read_text()):
-    errors.append("thys/Computation/ROOT: independent session must extend ZF")
+from check_computation import computation_sources, theory_catalogue, project_dependency
+try:
+    catalogue, owners = theory_catalogue(ROOT)
+    computation_sources(ROOT)
+except ValueError as error:
+    errors.append(str(error))
+canonical = ROOT / "thys/Set_Coded_Halting_Invariance_ZF"
+canonical_names = {p.stem for p in theories if p.parent == canonical}
 for path in sorted(theories):
     source = path.read_text()
     header = re.search(r"\btheory\s+(\w+)\s+imports\s+(.*?)\s+begin\b", source, re.S)
@@ -58,10 +62,12 @@ for path in sorted(theories):
         errors.append(f"{path.relative_to(ROOT)}: expected one theory-level section")
     if not header or header.group(1) != path.stem:
         errors.append(f"{path.relative_to(ROOT)}: theory header does not match filename")
-    elif path.parent == core:
-        for imported in header.group(2).split():
-            if imported.strip('"') not in core_theories | {"ZF", "ZF-Induct.Primrec"}:
-                errors.append(f"{path.relative_to(ROOT)}: noncore import {imported}")
+    else:
+        for imported in re.findall(r'"[^"\n]+"|[\w.]+', header.group(2)):
+            try:
+                project_dependency(path.stem, imported.strip('"'), catalogue, owners)
+            except ValueError as error:
+                errors.append(f"{path.relative_to(ROOT)}: {error}")
 
 for path in files:
     if path.suffix not in {".md", ".txt", ".thy"} and path.name != "README":
@@ -98,4 +104,4 @@ for path in files:
 if errors:
     raise SystemExit("\n".join(errors))
 print(f"Checked {len(theories)} theories in {len(set(d for ds in members.values() for d in ds))} sessions.")
-print("Document paths, session membership, file headers, core imports, and proof token scan passed.")
+print("Document paths, session membership, file headers, computation imports, and proof token scan passed.")

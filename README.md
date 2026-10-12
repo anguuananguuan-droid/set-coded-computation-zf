@@ -5,9 +5,9 @@ Tang Ziyi
 ## 1 Result
 
 This development constructs a set-theoretic formula for machine halting and
-proves that its satisfaction in every transitive ZFC set model agrees with
+proves that its satisfaction in every transitive ZF set model agrees with
 external finite execution. The machine and its input are then named inside
-closed sentences.
+closed sentences. These results do not require the axiom of choice.
 
 Assuming a countable transitive ZFC set model exists, two explicit
 primitive-recursive maps reduce self-input halting and its complement to the
@@ -22,33 +22,32 @@ The development does not establish machine undecidability of the full target
 set or a general compiler implementing arbitrary primitive-recursive maps.
 
 The sole AFP candidate is
-[Set_Coded_Halting_Invariance_ZF](submission/ROOT). Its nineteen theories are
-exported from the maintained sources into one session with
+[Set_Coded_Halting_Invariance_ZF](thys/Set_Coded_Halting_Invariance_ZF/ROOT).
+Its nineteen maintained theories and its ROOT are exported unchanged into
+one session with
 [Independence_CH](https://isa-afp.org/entries/Independence_CH.html) as its parent.
-[Submission scope](documentation/AFP.txt) states its theorem, boundaries, and
-reproduction procedure. The entry has not been submitted or accepted.
+[Candidate scope](documentation/AFP.txt) states its theorem, boundaries, and
+verification procedure. The entry has not been submitted or accepted.
 
 ## 2 Sources
 
-The repository maintains forty theories in five development sessions.
-The submission manifest selects eight computation theories and all eleven
-invariance theories for the candidate.
+The repository maintains forty theories in five sessions. The candidate
+has one source directory and one public theory namespace. Research sessions
+extend it through that namespace.
 
 ```text
-thys/Computation             12 theories, independent computation library
-thys/Invariance              11 theories, internal formulas and reductions
-thys/Research/Programs       14 theories, concrete machine programs
-thys/Research/Models          2 theories, arithmetic and model index sets
-thys/Research/Absoluteness    1 theory, decidable sets in transitive models
-submission                   one exported AFP entry and its proof document
+thys/Set_Coded_Halting_Invariance_ZF   19 theories, candidate
+thys/Research/Computation              4 theories, tape and evaluation
+thys/Research/Programs                14 theories, machine programs
+thys/Research/Models                   2 theories, arithmetic and model index sets
+thys/Research/Absoluteness             1 theory, decidable sets in models
 ```
 
 [Computation](documentation/COMPUTATION.md) describes machine semantics,
 coding, numeric evaluation, self-halting undecidability, observational tape
-semantics, and bounded workspace preservation. Its
-[session](thys/Computation/ROOT) uses Isabelle/ZF and bundled ZF-Induct.
-[Theory guide](documentation/RESEARCH.md) locates the invariance development
-and the seventeen research theories, with their proved and open boundaries.
+semantics, and bounded workspace preservation.
+[Theory guide](documentation/RESEARCH.md) locates the forty theories and their
+proved and open boundaries.
 
 The general machine compiler, a universal machine implementing the numeric
 evaluator, and an effective translation of arbitrary arithmetic sentences
@@ -58,17 +57,18 @@ self-halting reductions.
 
 ## 3 Reproduction
 
-With Isabelle2025-2 on the executable search path, run the independent
-computation session from the repository root.
+With Isabelle2025-2 installed, check the computation fragment independently
+of AFP. This command generates a temporary verification session from the
+maintained sources.
 
 ```sh
-isabelle build -v -c -D thys/Computation Set_Coded_Computation_ZF
+python3 scripts/check_computation.py --isabelle /absolute/path/to/isabelle --directory output/computation-check
 ```
 
 [Build instructions](documentation/BUILD.txt) cover the five sessions,
 exported archive, proof dependencies, PDF layout, and style checks. Style
-acceptance requires the pinned linter with its maintained compatibility patch and a
-negative-control test demonstrating detection of deliberate violations.
+acceptance requires the pinned linter with its maintained compatibility patch
+and negative controls demonstrating detection of deliberate violations.
 An empty linter report alone is insufficient evidence.
 
 [GitHub Actions](https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/workflows/isabelle.yml)

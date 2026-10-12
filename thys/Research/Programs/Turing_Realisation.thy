@@ -5,7 +5,7 @@
 section \<open>Concrete Realisers of the Primitive-Recursive Basis\<close>
 
 theory Turing_Realisation
-  imports Turing_Projection Turing_Arithmetic
+  imports "Turing_Projection" "Turing_Arithmetic"
 begin
 
 text \<open>Constants, all projections, and the list-based successor have

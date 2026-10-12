@@ -5,7 +5,7 @@
 section \<open>Finite Programs and Tape Transformations\<close>
 
 theory Turing_Programs
-  imports Turing_Basic
+  imports "Turing_Basic"
 begin
 
 abbreviation reaches :: "[i,i,i] \<Rightarrow> o" where

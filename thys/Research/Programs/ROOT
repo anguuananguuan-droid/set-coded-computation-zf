@@ -1,4 +1,4 @@
-session Turing_Machines_ZF = Set_Coded_Computation_ZF +
+session Turing_Machines_ZF = Turing_Computation_Extensions +
   description "Extended machine constructions and primitive-recursive certificates."
   options [timeout=300]
   sessions

@@ -2,55 +2,71 @@
 
 ## 1 Scope
 
-The repository maintains forty theories across five sessions. Twelve form
-the independent computation library, eleven form the invariance development,
-and seventeen form research extensions. The submission manifest selects
-nineteen theories from the first two groups.
+The repository maintains forty theories across five sessions. Nineteen form
+[the candidate](../thys/Set_Coded_Halting_Invariance_ZF/ROOT) and twenty-one
+form research extensions. Research sessions use the same qualified theory
+names as the candidate archive. Each theory has one maintained source.
 
-[Computation](COMPUTATION.md) describes the twelve computation theories.
-[AFP scope](AFP.txt) defines the sole candidate and its main theorem.
+[Computation](COMPUTATION.md) describes the eight computation theories in
+the candidate and the four computation extensions.
+[AFP scope](AFP.txt) defines the candidate and its main theorem.
 The source of each theorem states its assumptions.
 
 ## 2 Internal formulas and invariance
 
-The [Set_Coded_Invariance_ZF](../thys/Invariance/ROOT) session extends
-[Independence_CH](https://isa-afp.org/entries/Independence_CH.html) and imports
-the independent computation library.
-[Turing_Model_Witnesses](../thys/Invariance/Turing_Model_Witnesses.thy)
-proves closure of finite computation objects in transitive models.
-[Turing_Nat_Membership](../thys/Invariance/Turing_Nat_Membership.thy)
+The candidate session extends
+[Independence_CH](https://isa-afp.org/entries/Independence_CH.html).
+[Turing_Model_Witnesses](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Model_Witnesses.thy)
+proves closure of finite computation objects in transitive ZF set models.
+[Nat_Membership](../thys/Set_Coded_Halting_Invariance_ZF/Nat_Membership.thy)
 provides the internal natural-number domain.
-[Turing_Halting_Formula](../thys/Invariance/Turing_Halting_Formula.thy)
+[Turing_Halting_Formula](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Halting_Formula.thy)
 constructs the explicit halting formula and proves its satisfaction theorem.
-[Turing_Halting_Sentences](../thys/Invariance/Turing_Halting_Sentences.thy)
-names machines and inputs to produce closed sentences.
+[Turing_Halting_Sentences](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Halting_Sentences.thy)
+names machines and inputs to produce closed sentences. Finite closure,
+halting satisfaction, and closed halting sentences do not require choice.
 
-[Turing_CH](../thys/Invariance/Turing_CH.thy) defines invariance across all
-transitive ZFC set models, proves the disjunction principle, and obtains CH
-disagreement witnesses from a countable transitive ZFC set model.
-[Turing_Formula_Coding](../thys/Invariance/Turing_Formula_Coding.thy) gives an
-injective numerical code for formulas.
-[Turing_Invariance_Codes](../thys/Invariance/Turing_Invariance_Codes.thy)
+[Sentence_Invariance](../thys/Set_Coded_Halting_Invariance_ZF/Sentence_Invariance.thy)
+defines invariance across all transitive ZFC set models, proves the
+disjunction principle, and obtains CH disagreement witnesses from a
+countable transitive ZFC set model.
+[Formula_Coding](../thys/Set_Coded_Halting_Invariance_ZF/Formula_Coding.thy)
+gives an injective numerical code for formulas.
+[Turing_Invariance_Codes](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Invariance_Codes.thy)
 defines the target set and proves the semantic coding equivalences.
 
-[Turing_Syntax_Primrec](../thys/Invariance/Turing_Syntax_Primrec.thy)
+[Formula_Primrec](../thys/Set_Coded_Halting_Invariance_ZF/Formula_Primrec.thy)
 certifies formula constructors.
-[Turing_Name_Primrec](../thys/Invariance/Turing_Name_Primrec.thy) certifies
-numeral and unary-input names.
-[Turing_Machine_Name_Primrec](../thys/Invariance/Turing_Machine_Name_Primrec.thy)
+[Turing_Name_Primrec](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Name_Primrec.thy)
+certifies numeral and unary-input names.
+[Turing_Machine_Name_Primrec](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Machine_Name_Primrec.thy)
 certifies machine names by bounded reverse traversal of their code.
-[Turing_Effective_Invariance](../thys/Invariance/Turing_Effective_Invariance.thy)
+[Turing_Effective_Invariance](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Effective_Invariance.thy)
 assembles the two primitive-recursive reductions to the codes of invariant
 closed sentences. The direct semantic premise is that CH is not invariant.
 The stated countable-model assumption supplies this premise.
 
-## 3 Machine programs
+## 3 Computation extensions
+
+The [Turing_Computation_Extensions](../thys/Research/Computation/ROOT)
+session extends the candidate.
+[Turing_Tape](../thys/Research/Computation/Turing_Tape.thy) proves
+observational equality for finite tape representations.
+[Turing_Evaluator](../thys/Research/Computation/Turing_Evaluator.thy) gives
+numeric one-step and finite-step evaluation with exact simulation equations.
+[Turing_Evaluator_Primrec](../thys/Research/Computation/Turing_Evaluator_Primrec.thy)
+certifies those numeric operations as primitive recursive.
+[Turing_Workspace](../thys/Research/Computation/Turing_Workspace.thy) proves
+that sufficient blank padding protects saved data for a supplied finite
+step bound. These four theories are outside the candidate archive.
+
+## 4 Machine programs
 
 The [Turing_Machines_ZF](../thys/Research/Programs/ROOT) session extends the
-independent library. Its fourteen theories concern machine transformations,
-numerical realization, and concrete programs.
+computation extensions. Its fourteen theories concern machine
+transformations, numerical realization, and concrete programs.
 
-### 3.1 Transformations and reductions
+### 4.1 Transformations and reductions
 
 [Turing_Transformations](../thys/Research/Programs/Turing_Transformations.thy)
 constructs input loading and hardwiring.
@@ -65,7 +81,7 @@ certify the numerical hardwiring map as primitive recursive. The theorem
 `self_hardwire_realiser_imp_blank_halting_undecidable` assumes a machine
 implementing that map.
 
-### 3.2 Concrete programs and storage
+### 4.2 Concrete programs and storage
 
 [Turing_Basic](../thys/Research/Programs/Turing_Basic.thy) and
 [Turing_Programs](../thys/Research/Programs/Turing_Programs.thy) provide
@@ -85,16 +101,16 @@ machines to initial functions, constants, and projections.
 `numerical_realisation_does_not_imply_frame`. A machine can implement the
 identity function in its prescribed blank context while erasing a saved
 cell in a larger context. Numerical correctness alone therefore does not
-protect nearby storage. The independent workspace theorem avoids dependency
-on these program theories.
+protect nearby storage. The workspace theorem avoids dependency on these
+program theories.
 
 A general machine compiler for the primitive-recursive COMP and PREC
 constructors remains open. The individual programs do not establish those
 general cases.
 
-## 4 Arithmetic and model extensions
+## 5 Arithmetic and model extensions
 
-The [Turing_Models](../thys/Research/Models/ROOT) session extends invariance.
+The [Turing_Models](../thys/Research/Models/ROOT) session extends the candidate.
 [Turing_Arithmetic_Truth](../thys/Research/Models/Turing_Arithmetic_Truth.thy)
 proves satisfaction rules for the natural-number domain, zero, successor,
 order, addition, multiplication, and restricted quantification.
@@ -102,7 +118,8 @@ order, addition, multiplication, and restricted quantification.
 identifies the model's finite-witness self-halting predicate with the external
 self-halting set.
 
-The [Turing_Absoluteness](../thys/Research/Absoluteness/ROOT) session adds
+The [Turing_Absoluteness](../thys/Research/Absoluteness/ROOT) session extends
+Turing_Models and adds
 [Turing_Decidable_Sets](../thys/Research/Absoluteness/Turing_Decidable_Sets.thy).
 Its theorem `tm_decidable_in_transitive_model` proves that every set decidable
 by the defined machine model belongs to every transitive ZFC set model.
@@ -111,7 +128,7 @@ A recursive arithmetic syntax and an effective translation of arbitrary
 arithmetic sentences remain open. The existing arithmetic satisfaction rules
 do not constitute that translation.
 
-## 5 EPQ boundary
+## 6 EPQ boundary
 
 The [EPQ paper](../papers/EPQ.pdf) motivates a reduction from true arithmetic
 to codes of sentences invariant across transitive ZFC set models. The

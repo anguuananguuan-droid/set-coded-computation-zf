@@ -5,7 +5,7 @@
 section \<open>Sequential Composition\<close>
 
 theory Turing_Composition
-  imports Turing_Transformations
+  imports "Turing_Transformations"
 begin
 
 subsection \<open>Continuation Tables\<close>

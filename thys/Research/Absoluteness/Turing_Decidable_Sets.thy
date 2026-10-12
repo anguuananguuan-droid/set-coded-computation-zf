@@ -5,8 +5,8 @@
 section \<open>Decidable Sets in Transitive Models\<close>
 
 theory Turing_Decidable_Sets
-  imports "Set_Coded_Invariance_ZF.Turing_Halting_Sentences"
-    "Set_Coded_Computation_ZF.Turing_Decidability"
+  imports "Set_Coded_Halting_Invariance_ZF.Turing_Halting_Sentences"
+    "Set_Coded_Halting_Invariance_ZF.Turing_Decidability"
 begin
 
 text \<open>Every Turing-decidable set of natural numbers belongs to every
@@ -307,7 +307,7 @@ theorem tm_decidable_in_transitive_model:
   assumes model: "transitive_zfc_model(A)" and dec: "tm_decidable(X)"
   shows "X \<in> A"
 proof -
-  interpret tm_model A by unfold_locales (rule model)
+  interpret tm_model A by unfold_locales (rule transitive_zfc_model_imp_zf[OF model])
   from dec obtain P where dP: "decides(P,X)" unfolding tm_decidable_def by blast
   then have P: "P \<in> machine" and XN: "X \<subseteq> nat"
     and acc: "\<And>n. n \<in> nat \<Longrightarrow> accepts_number(P,n) \<longleftrightarrow> n \<in> X"

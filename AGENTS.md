@@ -18,9 +18,9 @@ without authorization.
 
 2 SOURCE STRUCTURE
 
-2.1 Maintained theories shall have one source under thys. The submission
-archive shall be generated from submission/ROOT. Generated copies shall not
-be edited as maintained sources.
+2.1 Maintained theories shall have one source under thys. The candidate
+archive shall copy thys/Set_Coded_Halting_Invariance_ZF/ROOT and its declared
+sources unchanged. Generated copies shall not be edited as maintained sources.
 
 2.2 Each theory shall have a Title and Author header, one theory-level
 section, and subordinate subsections. A heading shall state the scope of the
@@ -52,6 +52,9 @@ retained when their meaning is explicit.
 3.5 Reuse the established Isabelle symbols and notation. New notation shall
 have one stated meaning and shall not conceal an assumption or representation.
 
+3.6 Source wrapping shall follow rendered Isabelle symbols and logical units.
+Byte length shall not determine the position of a line break.
+
 4 INTERFACES AND VERIFICATION
 
 4.1 A changed definition, import, theorem name, or assumption shall receive a
@@ -62,8 +65,9 @@ Routine proof changes shall receive an affected-session build.
 checks shall exercise its declared timeout, inspect proof dependencies,
 validate the linter with negative controls, and produce both PDF variants.
 Document references shall converge and the final PDFs shall have no overfull
-boxes. PDF checks shall compare extracted text with the declared text bounds
-and inspect the final compiler logs.
+boxes. PDF checks shall instrument only generated source copies. Their
+extracted text and geometry shall match the unmodified PDFs. Checks shall compare text
+with the declared bounds and inspect the final compiler logs.
 
 4.3 A successful build shall be reported only for the revision actually
 checked. Source scans, kernel proof checks, document checks, and mathematical

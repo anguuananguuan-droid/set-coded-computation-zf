@@ -2,11 +2,11 @@ REPRODUCTION
 
 1 ENVIRONMENT
 
-The supported release is Isabelle2025-2. The independent computation session
-uses Isabelle/ZF and bundled ZF-Induct. The invariance and model developments
-use the AFP snapshot dated 6 February 2026. LuaLaTeX is required for the PDF.
-Python 3 is required for repository checks and export.
-Poppler's pdftotext is required for the PDF layout check.
+The supported release is Isabelle2025-2. The candidate and research sessions
+use the AFP snapshot dated 6 February 2026. The independent computation
+check uses only Isabelle/ZF and bundled ZF-Induct. LuaLaTeX is required for
+the PDF. Python 3 is required for repository checks and export. Poppler's
+pdftotext is required for the PDF layout check.
 
 https://isabelle.in.tum.de/website-Isabelle2025-2/
 https://isa-afp.org/release/afp-2026-02-06.tar.gz
@@ -16,26 +16,26 @@ path. Register the AFP theory directory using its actual absolute path.
 
     isabelle components -u /absolute/path/to/afp-2026-02-06/thys
 
-2 DEVELOPMENT SESSIONS
+2 MAINTAINED SESSIONS
 
-The independent session can be checked before registering AFP.
-
-    isabelle build -v -c -D thys/Computation Set_Coded_Computation_ZF
-
-The invariance development depends on that session and Independence_CH.
-
-    isabelle build -v -c -d thys/Computation -D thys/Invariance Set_Coded_Invariance_ZF
-
-ROOTS locates all five development sessions under thys. The research sessions
-are Turing_Machines_ZF, Turing_Models, and Turing_Absoluteness.
+ROOTS locates the candidate and four research sessions under thys. The
+candidate is Set_Coded_Halting_Invariance_ZF. The research sessions are
+Turing_Computation_Extensions, Turing_Machines_ZF, Turing_Models, and
+Turing_Absoluteness.
 
     isabelle build -v -c -j 1 -o threads=2 -D .
 
-This command exercises the timeouts declared in each ROOT. Reducing workers
-can help on a smaller machine. A diagnostic timeout override shall be
-recorded as an override and shall not replace the acceptance build.
-A successful build returns exit status 0. A build without -c may reuse
-unchanged session products.
+This command exercises the timeouts declared in each ROOT. A diagnostic
+timeout override shall be recorded as an override and shall not replace
+the acceptance build. A successful build returns exit status 0. A build
+without -c may reuse unchanged session products.
+
+The independent computation fragment can be checked before registering AFP.
+The script generates a temporary session from its twelve maintained sources
+and checks them over Isabelle/ZF and ZF-Induct. The temporary session is a
+verification target, not another maintained public theory namespace.
+
+    python3 scripts/check_computation.py --isabelle /absolute/path/to/isabelle --directory output/computation-check
 
 3 REPOSITORY SOURCE CHECKS
 
@@ -45,50 +45,56 @@ boundaries, and selected prohibited proof commands. It is not a proof check.
     python3 scripts/check_repository.py
     git diff --check
 
-4 SUBMISSION ARCHIVE
+4 CANDIDATE ARCHIVE
 
-submission/ROOT selects the nineteen theories exported as
-Set_Coded_Halting_Invariance_ZF. Its parent is Independence_CH. The declared
-submission timeout is 900 seconds. The acceptance command does not override
-that value.
+thys/Set_Coded_Halting_Invariance_ZF/ROOT is the single maintained and
+exported manifest. Its parent is Independence_CH. The declared timeout is
+300 seconds. The acceptance command does not override that value.
 
     bash scripts/package-afp-entry.sh
     mkdir -p output/afp-entry
     tar -xzf output/Set_Coded_Halting_Invariance_ZF.tar.gz -C output/afp-entry
     isabelle build -v -b -c -j 1 -o threads=2 -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
 
-The exporter copies the selected maintained theories and makes computation
-imports local to the exported session. It normalizes archive member order,
-permissions, ownership, and timestamps. In the same Python environment,
-unchanged submission contents produce the same archive bytes.
+The exporter copies the candidate ROOT, nineteen theories, and document
+sources unchanged. It normalizes archive member order, permissions,
+ownership, and timestamps. In the same Python environment, unchanged
+candidate contents produce the same archive bytes.
 
 5 PROOFS AND DOCUMENTS
 
-The saved submission heap supports the maintained dependency check.
+The saved candidate heap supports the maintained dependency check.
 
     isabelle ML_process -d output/afp-entry/Set_Coded_Halting_Invariance_ZF -l Set_Coded_Halting_Invariance_ZF -f scripts/check_submission_proofs.ML
 
-This check inspects the six principal results for undischarged hypotheses
-and checks their named proof closure for oracle dependencies. Explicit
-premises in theorem statements remain premises.
+This check inspects the six principal results for undischarged hypotheses.
+It collects named facts from all nineteen canonical theories and checks
+their proof closure for oracle dependencies. Explicit premises in theorem
+statements remain premises.
 
 Build both document variants with LuaLaTeX installed.
 
-    AFP_DOCUMENT_QA_OUTPUT="$PWD/output/afp-document-qa" isabelle build -v -b -c -j 1 -o threads=2 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$PWD/output/afp-document" -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
+    isabelle build -v -b -c -j 1 -o threads=2 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$PWD/output/afp-document" -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
 
-The custom document build repeats LuaLaTeX until the auxiliary, contents,
-and bookmark files stop changing. It fails if they do not stabilize within
-six passes. The environment variable retains final logs, contents, auxiliary,
-and bookmark files separately for each variant.
+The document build repeats LuaLaTeX until the auxiliary, contents, and
+bookmark files stop changing. It fails if they do not stabilize within
+six passes. Isabelle2025-2's default engine uses fixed compilation passes
+and does not check convergence. document_output retains the unmodified
+PDFs and generated LaTeX sources separately for each variant.
 
-    python3 scripts/check_proof_document.py --pdf output/afp-document/document.pdf --log output/afp-document-qa/document/root.log
-    python3 scripts/check_proof_document.py --pdf output/afp-document/outline.pdf --log output/afp-document-qa/outline/root.log
+The layout checker uses fresh verification directories.
 
-The checker requires nonempty extracted text within the horizontal text
-bounds declared by the document. It rejects overfull boxes and unresolved
-reference or rerun warnings in the final LuaLaTeX log. Both variants shall
-also have correct contents references. A proof build without document=pdf
-does not check these conditions.
+    python3 scripts/check_proof_document.py --pdf output/afp-document/document.pdf --sources output/afp-document/document --qa-dir output/afp-document-qa/document --isabelle /absolute/path/to/isabelle
+    python3 scripts/check_proof_document.py --pdf output/afp-document/outline.pdf --sources output/afp-document/outline --qa-dir output/afp-document-qa/outline --isabelle /absolute/path/to/isabelle
+
+The checker instruments and compiles only copies of the generated LaTeX
+sources. The original candidate, source output, and PDFs remain unchanged.
+The copy's extracted text, page dimensions, and word coordinates shall
+match the original PDF. The checker then requires nonempty text within the
+horizontal text bounds and rejects overfull boxes, unresolved references,
+and rerun warnings in the final log. Both variants shall also have correct
+contents references. A proof build without document=pdf does not check
+these conditions.
 
 6 AFP STYLE CHECKS
 
@@ -110,7 +116,7 @@ The controls require a clean named lemma to pass, an unfinished proof to be
 rejected, and an attribute on an unnamed lemma to be rejected. They also
 require nonzero parsed-command coverage. Deliberate violations are created
 only in temporary control sessions. Their logs and results.json provide the
-control evidence. They are not submission theories.
+control evidence. They are not candidate theories.
 
 Style acceptance requires successful controls, nonzero command coverage in
 the entry, and no mandatory findings. It does not replace mathematical review.
@@ -119,12 +125,12 @@ https://github.com/isabelle-prover/isabelle-linter
 
 7 CONTINUOUS INTEGRATION
 
-.github/workflows/isabelle.yml checks the source repository, the independent
-library before AFP registration, all five development sessions, the exported
-submission, document variants and layout, proof dependencies, linter controls,
-and AFP mandatory findings. Acceptance builds use the ROOT timeouts. Artifacts
-retain the source revision, archive, documents, style reports, and verification
-logs.
+.github/workflows/isabelle.yml checks repository sources, the independent
+computation fragment before AFP registration, all five maintained sessions,
+the unmodified exported candidate, document variants and layout, proof
+dependencies, linter controls, and AFP mandatory findings. Acceptance builds
+use the ROOT timeouts. Artifacts retain the source revision, archive,
+documents, style reports, and verification logs.
 
 scripts/install-ci.sh downloads checksum-pinned Linux dependencies and
 applies the maintained linter compatibility patch. It does not redistribute

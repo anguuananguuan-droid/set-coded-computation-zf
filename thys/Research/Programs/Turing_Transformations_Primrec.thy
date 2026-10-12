@@ -6,8 +6,8 @@ section \<open>Primitive-Recursive Machine Transformations\<close>
 
 theory Turing_Transformations_Primrec
   imports
-    Turing_Transformations
-    "Set_Coded_Computation_ZF.Turing_Evaluator_Primrec"
+    "Turing_Transformations"
+    "Turing_Computation_Extensions.Turing_Evaluator_Primrec"
 begin
 
 subsection \<open>State Shifting\<close>

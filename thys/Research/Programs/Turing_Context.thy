@@ -5,7 +5,7 @@
 section \<open>The Boundary of Standalone Numerical Contracts\<close>
 
 theory Turing_Context
-  imports Turing_Realisation
+  imports "Turing_Realisation"
 begin
 
 text \<open>A numerical realiser is specified on an otherwise blank tape.

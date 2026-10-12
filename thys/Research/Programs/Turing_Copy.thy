@@ -5,7 +5,7 @@
 section \<open>Copying a Unary Block with a Binary Machine\<close>
 
 theory Turing_Copy
-  imports Turing_Arguments
+  imports "Turing_Arguments"
 begin
 
 abbreviation (input) cp_seek_original where "cp_seek_original \<equiv> succ(2)"

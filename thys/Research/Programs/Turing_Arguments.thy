@@ -5,7 +5,7 @@
 section \<open>Unambiguous Argument Lists\<close>
 
 theory Turing_Arguments
-  imports Turing_Programs
+  imports "Turing_Programs"
 begin
 
 text \<open>Each argument n occupies n+1 strokes followed by a blank. Positive

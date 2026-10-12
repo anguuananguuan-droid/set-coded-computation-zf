@@ -5,7 +5,7 @@
 section \<open>Machine Transformations and Input Loading\<close>
 
 theory Turing_Transformations
-  imports "Set_Coded_Computation_ZF.Turing_Rejection"
+  imports "Set_Coded_Halting_Invariance_ZF.Turing_Rejection"
 begin
 
 subsection \<open>Input Loading\<close>
@@ -19,7 +19,7 @@ lemma write_symbol_type [TC]:
   shows "write_symbol(b) \<in> action"
   using scanned unfolding write_symbol_def symbol_def by auto
 
-lemma update_write_symbol:
+lemma tm_update_write_symbol:
   assumes scanned: "b \<in> symbol"
   shows "tm_update(write_symbol(b),\<langle>l,r\<rangle>) =
     \<langle>l,Cons(b,tl(r))\<rangle>"
@@ -159,7 +159,7 @@ next
   from initial_tape moved_tape written_tape scanned reversed_tail
     tail_execution
   show ?case
-    by (simp add: update_write_symbol app_assoc)
+    by (simp add: tm_update_write_symbol app_assoc)
 qed
 
 theorem execute_loader_actions:

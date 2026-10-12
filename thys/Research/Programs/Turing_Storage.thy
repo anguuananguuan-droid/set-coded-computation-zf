@@ -5,7 +5,7 @@
 section \<open>Argument Erasure and Storage Operations\<close>
 
 theory Turing_Storage
-  imports Turing_Arguments
+  imports "Turing_Arguments"
 begin
 
 lemma repeat_append_cons:

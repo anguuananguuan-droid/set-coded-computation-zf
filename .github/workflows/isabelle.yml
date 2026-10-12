@@ -34,7 +34,7 @@ jobs:
       - name: Check independent computation session
         run: |
           set -o pipefail
-          .ci-deps/Isabelle2025-2/bin/isabelle build -v -c -j 1 -o threads=2 -D thys/Computation Set_Coded_Computation_ZF 2>&1 | tee "$RUNNER_TEMP/isabelle-core.log"
+          python3 scripts/check_computation.py --isabelle .ci-deps/Isabelle2025-2/bin/isabelle --directory "$RUNNER_TEMP/computation-check" 2>&1 | tee "$RUNNER_TEMP/isabelle-core.log"
       - name: Register AFP and linter
         run: |
           .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/afp-2026-02-06/thys"
@@ -50,8 +50,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y texlive-luatex texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended poppler-utils
       - name: Build submission archive and proof document
-        env:
-          AFP_DOCUMENT_QA_OUTPUT: ${{ runner.temp }}/afp-document-qa
         run: |
           set -o pipefail
           bash scripts/package-afp-entry.sh "$RUNNER_TEMP/Set_Coded_Halting_Invariance_ZF.tar.gz"
@@ -63,8 +61,8 @@ jobs:
       - name: Check proof document layout
         run: |
           set -o pipefail
-          python3 scripts/check_proof_document.py --pdf "$RUNNER_TEMP/afp-document/document.pdf" --log "$RUNNER_TEMP/afp-document-qa/document/root.log" 2>&1 | tee "$RUNNER_TEMP/isabelle-document-layout.log"
-          python3 scripts/check_proof_document.py --pdf "$RUNNER_TEMP/afp-document/outline.pdf" --log "$RUNNER_TEMP/afp-document-qa/outline/root.log" 2>&1 | tee -a "$RUNNER_TEMP/isabelle-document-layout.log"
+          python3 scripts/check_proof_document.py --pdf "$RUNNER_TEMP/afp-document/document.pdf" --sources "$RUNNER_TEMP/afp-document/document" --qa-dir "$RUNNER_TEMP/afp-document-qa/document" --isabelle "$GITHUB_WORKSPACE/.ci-deps/Isabelle2025-2/bin/isabelle" 2>&1 | tee "$RUNNER_TEMP/isabelle-document-layout.log"
+          python3 scripts/check_proof_document.py --pdf "$RUNNER_TEMP/afp-document/outline.pdf" --sources "$RUNNER_TEMP/afp-document/outline" --qa-dir "$RUNNER_TEMP/afp-document-qa/outline" --isabelle "$GITHUB_WORKSPACE/.ci-deps/Isabelle2025-2/bin/isabelle" 2>&1 | tee -a "$RUNNER_TEMP/isabelle-document-layout.log"
       - name: Check submission proof dependencies
         run: |
           set -o pipefail
@@ -87,6 +85,7 @@ jobs:
             ${{ runner.temp }}/isabelle-proof-dependencies.log
             ${{ runner.temp }}/isabelle-document-layout.log
             ${{ runner.temp }}/linter-controls
+            ${{ runner.temp }}/computation-check
             ${{ runner.temp }}/afp-document-qa
             ${{ runner.temp }}/afp-document
           if-no-files-found: ignore
