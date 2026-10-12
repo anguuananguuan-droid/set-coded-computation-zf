@@ -13,9 +13,9 @@ The source of each theorem states its assumptions.
 
 ## 2 Internal formulas and invariance
 
-The [Set_Coded_Invariance_ZF](../thys/Invariance/ROOT) session extends the
-computation library and uses
-[Independence_CH](https://isa-afp.org/entries/Independence_CH.html).
+The [Set_Coded_Invariance_ZF](../thys/Invariance/ROOT) session extends
+[Independence_CH](https://isa-afp.org/entries/Independence_CH.html) and imports
+the independent computation library.
 [Turing_Model_Witnesses](../thys/Invariance/Turing_Model_Witnesses.thy)
 proves closure of finite computation objects in transitive models.
 [Turing_Nat_Membership](../thys/Invariance/Turing_Nat_Membership.thy)

@@ -35,6 +35,13 @@ simulation for the fixed manuscript c10092f. It separates the technical
 screen, mathematical assessment, required clarification, and optional
 dependency changes. No submission was made.
 
+[IN.002](../records/IN.002.txt) and [RV.005](../records/RV.005.txt) record the
+12 October source reorganisation and verification repair. The
+[source manifest](../records/RV.005.sources.txt) identifies the checked
+proof and tooling revision. RV.005 corrects the interpretation of the old
+linter reports and the earlier PDF boundary check. The original records
+remain unchanged.
+
 ## 3 Earlier reviews
 
 [August development review](RV-IN-ISABELLE-ZF-WEEKLY-2026-08-03.md) records
