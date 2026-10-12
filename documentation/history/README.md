@@ -30,6 +30,11 @@ interfaces, and the proof and style checks. Its
 [source manifest](../records/RV.003.sources.txt) identifies the reviewed
 proof sources and verification tools.
 
+[RV.004](../records/RV.004.txt) records the 12 October AFP pre submission
+simulation for the fixed manuscript c10092f. It separates the technical
+screen, mathematical assessment, required clarification, and optional
+dependency changes. No submission was made.
+
 ## 3 Earlier reviews
 
 [August development review](RV-IN-ISABELLE-ZF-WEEKLY-2026-08-03.md) records
