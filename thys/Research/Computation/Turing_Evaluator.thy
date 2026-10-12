@@ -10,9 +10,9 @@ begin
 
 subsection \<open>Configuration Codes\<close>
 
-text \<open>The evaluator computes a configuration code from a machine
+text \<open>The evaluator computes a configuration code from a tm_machine
 number and a configuration code. Its correctness theorems compare exact
-encoded configurations, including their finite tape lists. At this stage
+encoded configurations, including their finite tm_tape lists. At this stage
 the evaluator is a set-theoretic function; primitive-recursive certificates
 for the numerical operations follow in the next theory.\<close>
 
@@ -33,11 +33,11 @@ lemma symbol_subset_nat:
   using symbol_in_nat Ord_nat by (blast dest: OrdmemD)
 
 lemma tape_lists_natural:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "fst(t) \<in> list(nat)"
     and "snd(t) \<in> list(nat)"
 proof -
-  from tape have left: "fst(t) \<in> list(symbol)"
+  from tm_tape have left: "fst(t) \<in> list(symbol)"
     and right: "snd(t) \<in> list(symbol)"
     by (rule tapeD)+
   from left show "fst(t) \<in> list(nat)"
@@ -47,13 +47,13 @@ proof -
 qed
 
 lemma encode_tape_type [TC]:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "encode_tape(t) \<in> nat"
 proof -
-  from tape_lists_natural(1)[OF tape] have left_code:
+  from tape_lists_natural(1)[OF tm_tape] have left_code:
     "nat_list_encode(fst(t)) \<in> nat"
     by (rule nat_list_encode_type)
-  from tape_lists_natural(2)[OF tape] have right_code:
+  from tape_lists_natural(2)[OF tm_tape] have right_code:
     "nat_list_encode(snd(t)) \<in> nat"
     by (rule nat_list_encode_type)
   from left_code right_code show ?thesis
@@ -65,18 +65,18 @@ lemma encode_configuration_type [TC]:
   shows "encode_configuration(c) \<in> nat"
 proof -
   from configuration have state: "fst(c) \<in> nat"
-    and tape: "snd(c) \<in> tape"
+    and tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck+
-  from state encode_tape_type[OF tape] show ?thesis
+  from state encode_tape_type[OF tm_tape] show ?thesis
     unfolding encode_configuration_def by typecheck
 qed
 
 lemma encode_tape_left:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "fst(pair_decode(encode_tape(t))) = nat_list_encode(fst(t))"
 proof -
-  from tape_lists_natural(1)[OF tape] have left: "fst(t) \<in> list(nat)" .
-  from tape_lists_natural(2)[OF tape] have right: "snd(t) \<in> list(nat)" .
+  from tape_lists_natural(1)[OF tm_tape] have left: "fst(t) \<in> list(nat)" .
+  from tape_lists_natural(2)[OF tm_tape] have right: "snd(t) \<in> list(nat)" .
   from left have left_code: "nat_list_encode(fst(t)) \<in> nat"
     by (rule nat_list_encode_type)
   from right have right_code: "nat_list_encode(snd(t)) \<in> nat"
@@ -87,11 +87,11 @@ proof -
 qed
 
 lemma encode_tape_right:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "snd(pair_decode(encode_tape(t))) = nat_list_encode(snd(t))"
 proof -
-  from tape_lists_natural(1)[OF tape] have left: "fst(t) \<in> list(nat)" .
-  from tape_lists_natural(2)[OF tape] have right: "snd(t) \<in> list(nat)" .
+  from tape_lists_natural(1)[OF tm_tape] have left: "fst(t) \<in> list(nat)" .
+  from tape_lists_natural(2)[OF tm_tape] have right: "snd(t) \<in> list(nat)" .
   from left have left_code: "nat_list_encode(fst(t)) \<in> nat"
     by (rule nat_list_encode_type)
   from right have right_code: "nat_list_encode(snd(t)) \<in> nat"
@@ -102,15 +102,15 @@ proof -
 qed
 
 lemma encode_tape_left_code:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "pair_left_code(encode_tape(t)) = nat_list_encode(fst(t))"
-  using encode_tape_type[OF tape] encode_tape_left[OF tape]
+  using encode_tape_type[OF tm_tape] encode_tape_left[OF tm_tape]
     pair_left_code_decode by simp
 
 lemma encode_tape_right_code:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "pair_right_code(encode_tape(t)) = nat_list_encode(snd(t))"
-  using encode_tape_type[OF tape] encode_tape_right[OF tape]
+  using encode_tape_type[OF tm_tape] encode_tape_right[OF tm_tape]
     pair_right_code_decode by simp
 
 lemma encode_configuration_state:
@@ -118,9 +118,9 @@ lemma encode_configuration_state:
   shows "pair_left_code(encode_configuration(c)) = fst(c)"
 proof -
   from configuration have state: "fst(c) \<in> nat"
-    and tape: "snd(c) \<in> tape"
+    and tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck+
-  from state encode_tape_type[OF tape] show ?thesis
+  from state encode_tape_type[OF tm_tape] show ?thesis
     unfolding encode_configuration_def
     using pair_decode_code pair_left_code_decode pair_code_type by simp
 qed
@@ -130,9 +130,9 @@ lemma encode_configuration_tape:
   shows "pair_right_code(encode_configuration(c)) = encode_tape(snd(c))"
 proof -
   from configuration have state: "fst(c) \<in> nat"
-    and tape: "snd(c) \<in> tape"
+    and tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck+
-  from state encode_tape_type[OF tape] show ?thesis
+  from state encode_tape_type[OF tm_tape] show ?thesis
     unfolding encode_configuration_def
     using pair_decode_code pair_right_code_decode pair_code_type by simp
 qed
@@ -186,25 +186,25 @@ proof -
 qed
 
 theorem code_scan_encode:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "code_scan(encode_tape(t)) = scan(t)"
 proof -
-  from tape_lists_natural(2)[OF tape] have right: "snd(t) \<in> list(nat)" .
+  from tape_lists_natural(2)[OF tm_tape] have right: "snd(t) \<in> list(nat)" .
   show ?thesis
     unfolding code_scan_def scan_def
-    using encode_tape_right_code[OF tape] code_head_encode[OF right]
+    using encode_tape_right_code[OF tm_tape] code_head_encode[OF right]
     by simp
 qed
 
 theorem code_update_encode:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "code_update(a,encode_tape(t)) = encode_tape(tm_update(a,t))"
 proof -
-  from tape have left_symbols: "fst(t) \<in> list(symbol)"
+  from tm_tape have left_symbols: "fst(t) \<in> list(symbol)"
     and right_symbols: "snd(t) \<in> list(symbol)"
     by (rule tapeD)+
-  from tape_lists_natural(1)[OF tape] have left: "fst(t) \<in> list(nat)" .
-  from tape_lists_natural(2)[OF tape] have right: "snd(t) \<in> list(nat)" .
+  from tape_lists_natural(1)[OF tm_tape] have left: "fst(t) \<in> list(nat)" .
+  from tape_lists_natural(2)[OF tm_tape] have right: "snd(t) \<in> list(nat)" .
   from left have left_code: "nat_list_encode(fst(t)) \<in> nat"
     by (rule nat_list_encode_type)
   from right have right_code: "nat_list_encode(snd(t)) \<in> nat"
@@ -215,7 +215,7 @@ proof -
     by (rule tl_type)
   show ?thesis
     unfolding code_update_def tm_update_def encode_tape_def
-    using encode_tape_left_code[OF tape] encode_tape_right_code[OF tape]
+    using encode_tape_left_code[OF tm_tape] encode_tape_right_code[OF tm_tape]
       code_head_encode[OF left] code_head_encode[OF right]
       code_tail_encode[OF left] code_tail_encode[OF right]
       pair_left_code_pair_code[OF left_code right_code]
@@ -354,16 +354,16 @@ theorem code_step_correct:
   assumes machine_number: "e \<in> nat"
     and configuration: "c \<in> configuration"
   shows "code_step(e,encode_configuration(c)) =
-    encode_configuration(step(decode_machine(e),c))"
+    encode_configuration(tm_step(decode_machine(e),c))"
 proof -
   let ?ins =
     "fetch(decode_machine(e),fst(c),scan(snd(c)))"
   from configuration have state: "fst(c) \<in> nat"
-    and tape: "snd(c) \<in> tape"
+    and tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck+
-  from tape have scanned: "scan(snd(c)) \<in> symbol"
+  from tm_tape have scanned: "scan(snd(c)) \<in> symbol"
     by (rule scan_type)
-  from machine_number have decoded_machine: "decode_machine(e) \<in> machine"
+  from machine_number have decoded_machine: "decode_machine(e) \<in> tm_machine"
     by (rule decode_machine_type)
   from decoded_machine have fetched: "?ins \<in> instruction"
     by (rule fetch_type)
@@ -383,11 +383,11 @@ proof -
     unfolding code_step_def Let_def
     using encode_configuration_state[OF configuration]
       encode_configuration_tape[OF configuration]
-      code_scan_encode[OF tape] fetched_action fetched_state
-      code_update_encode[OF tape]
+      code_scan_encode[OF tm_tape] fetched_action fetched_state
+      code_update_encode[OF tm_tape]
     by simp
-  also have "... = encode_configuration(step(decode_machine(e),c))"
-    unfolding step_def Let_def encode_configuration_def by simp
+  also have "... = encode_configuration(tm_step(decode_machine(e),c))"
+    unfolding tm_step_def Let_def encode_configuration_def by simp
   finally show ?thesis .
 qed
 
@@ -418,9 +418,9 @@ proof (induct n rule: nat_induct)
   then show ?case by simp
 next
   case (succ n)
-  from machine_number have machine: "decode_machine(e) \<in> machine"
+  from machine_number have tm_machine: "decode_machine(e) \<in> tm_machine"
     by (rule decode_machine_type)
-  from machine configuration succ.hyps(1) have stepped:
+  from tm_machine configuration succ.hyps(1) have stepped:
     "steps(decode_machine(e),c,n) \<in> configuration"
     by (rule steps_type)
   from code_step_correct[OF machine_number stepped] succ.hyps(2)
@@ -451,9 +451,9 @@ theorem code_steps_final_iff:
       final_state \<longleftrightarrow>
     fst(steps(decode_machine(e),c,n)) = final_state"
 proof -
-  from machine_number have machine: "decode_machine(e) \<in> machine"
+  from machine_number have tm_machine: "decode_machine(e) \<in> tm_machine"
     by (rule decode_machine_type)
-  from machine configuration time have stepped:
+  from tm_machine configuration time have stepped:
     "steps(decode_machine(e),c,n) \<in> configuration"
     by (rule steps_type)
   show ?thesis
@@ -580,12 +580,12 @@ next
   have external:
     "fst(steps(decode_machine(e),initial_config(x),n)) = final_state"
     by (rule iffD1)
-  from machine_number have machine: "decode_machine(e) \<in> machine"
+  from machine_number have tm_machine: "decode_machine(e) \<in> tm_machine"
     by (rule decode_machine_type)
   show "halts_on(decode_machine(e),x)"
     unfolding halts_on_def
   proof (intro conjI)
-    show "decode_machine(e) \<in> machine" by (rule machine)
+    show "decode_machine(e) \<in> tm_machine" by (rule tm_machine)
     show "x \<in> list(symbol)" by (rule input)
     show "\<exists>n\<in>nat.
       fst(steps(decode_machine(e),initial_config(x),n)) = final_state"

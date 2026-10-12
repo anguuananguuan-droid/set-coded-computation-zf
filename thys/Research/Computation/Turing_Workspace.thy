@@ -10,7 +10,7 @@ begin
 
 text \<open>A frame appends saved data beyond both ends of a finite workspace.
 The left lists are stored nearest to the head first. The frame is ordinary
-binary tape data, not a new machine operation.\<close>
+binary tm_tape data, not a new tm_machine operation.\<close>
 
 definition frame_config :: "[i,i,i] \<Rightarrow> i" where
   "frame_config(c,L,R) \<equiv> \<langle>fst(c),\<langle>fst(snd(c)) @ L,snd(snd(c)) @ R\<rangle>\<rangle>"
@@ -22,7 +22,7 @@ lemma frame_config_pair [simp]:
 lemma frame_config_type [TC]:
   "\<lbrakk>c \<in> configuration; L \<in> list(symbol); R \<in> list(symbol)\<rbrakk> \<Longrightarrow>
     frame_config(c,L,R) \<in> configuration"
-  unfolding frame_config_def configuration_def tape_def by auto
+  unfolding frame_config_def configuration_def tm_tape_def by auto
 
 lemma frame_config_state [simp]: "fst(frame_config(c,L,R)) = fst(c)"
   unfolding frame_config_def by simp
@@ -38,11 +38,11 @@ lemma tm_update_frame_interior:
 lemma step_frame_interior:
   assumes c: "c \<in> configuration"
     and left: "fst(snd(c)) \<noteq> []" and right: "snd(snd(c)) \<noteq> []"
-  shows "step(M,frame_config(c,L,R)) = frame_config(step(M,c),L,R)"
+  shows "tm_step(M,frame_config(c,L,R)) = frame_config(tm_step(M,c),L,R)"
 proof -
   from c obtain q l r where rep: "c = \<langle>q,\<langle>l,r\<rangle>\<rangle>"
     and l: "l \<in> list(symbol)" and r: "r \<in> list(symbol)"
-    unfolding configuration_def tape_def by auto
+    unfolding configuration_def tm_tape_def by auto
   from rep left right have nonempty: "l \<noteq> []" "r \<noteq> []" by simp_all
   from r nonempty(2) have head: "hd(r @ R) = hd(r)" by (cases rule: list.cases) auto
   from tm_update_frame_interior[OF l r nonempty] rep head
@@ -68,11 +68,11 @@ lemma tm_update_margin:
 lemma step_margin:
   assumes c: "c \<in> configuration" and n: "n \<in> nat"
     and margin: "workspace_margin(c,succ(n))"
-  shows "workspace_margin(step(M,c),n)"
+  shows "workspace_margin(tm_step(M,c),n)"
 proof -
   from c obtain q l r where rep: "c = \<langle>q,\<langle>l,r\<rangle>\<rangle>"
     and l: "l \<in> list(symbol)" and r: "r \<in> list(symbol)"
-    unfolding configuration_def tape_def by auto
+    unfolding configuration_def tm_tape_def by auto
   from margin rep have bounds: "succ(n) \<le> length(l)" "succ(n) \<le> length(r)"
     unfolding workspace_margin_def by simp_all
   from tm_update_margin[OF l r n bounds] rep
@@ -80,7 +80,7 @@ proof -
 qed
 
 lemma steps_succ_first:
-  "n \<in> nat \<Longrightarrow> steps(M,c,succ(n)) = steps(M,step(M,c),n)"
+  "n \<in> nat \<Longrightarrow> steps(M,c,succ(n)) = steps(M,tm_step(M,c),n)"
   using steps_add[OF nat_1I, of n M c] by simp
 
 text \<open>In n steps the head can consume at most n cells on either side.
@@ -88,7 +88,7 @@ With those cells present, the two saved lists are left untouched. The result
 is literal configuration equality, including the final head position.\<close>
 
 theorem steps_preserve_frame:
-  assumes M: "M \<in> machine" and c: "c \<in> configuration" and n: "n \<in> nat"
+  assumes M: "M \<in> tm_machine" and c: "c \<in> configuration" and n: "n \<in> nat"
     and margin: "workspace_margin(c,n)"
   shows "steps(M,frame_config(c,L,R),n) = frame_config(steps(M,c,n),L,R)"
   using n c margin
@@ -98,10 +98,10 @@ next
   case (succ n)
   from margin_nonempty[OF succ.prems(2)]
   have interior: "fst(snd(c)) \<noteq> []" "snd(snd(c)) \<noteq> []" by auto
-  have first: "step(M,frame_config(c,L,R)) = frame_config(step(M,c),L,R)"
+  have first: "tm_step(M,frame_config(c,L,R)) = frame_config(tm_step(M,c),L,R)"
     by (rule step_frame_interior[OF succ.prems(1) interior])
-  have next_c: "step(M,c) \<in> configuration" by (rule step_type[OF M succ.prems(1)])
-  have next_margin: "workspace_margin(step(M,c),n)"
+  have next_c: "tm_step(M,c) \<in> configuration" by (rule step_type[OF M succ.prems(1)])
+  have next_margin: "workspace_margin(tm_step(M,c),n)"
     by (rule step_margin[OF succ.prems(1) succ.hyps(1) succ.prems(2)])
   from succ.hyps(2)[OF next_c next_margin] first
   show ?case by (simp only: steps_succ_first[OF succ.hyps(1)])
@@ -125,10 +125,10 @@ lemma pad_config_eq:
 proof -
   from c obtain q l r where rep: "c = \<langle>q,\<langle>l,r\<rangle>\<rangle>"
     and l: "l \<in> list(symbol)" and r: "r \<in> list(symbol)"
-    unfolding configuration_def tape_def by auto
+    unfolding configuration_def tm_tape_def by auto
   from c pad_config_type[OF c n] half_tape_eq_blank_padding[OF l n]
     half_tape_eq_blank_padding[OF r n] rep
-  show ?thesis unfolding config_eq_def tape_eq_def pad_config_def frame_config_def configuration_def tape_def by auto
+  show ?thesis unfolding config_eq_def tape_eq_def pad_config_def frame_config_def configuration_def tm_tape_def by auto
 qed
 
 lemma pad_config_margin:
@@ -136,7 +136,7 @@ lemma pad_config_margin:
   shows "workspace_margin(pad_config(c,n),n)"
 proof -
   from c have l: "fst(snd(c)) \<in> list(symbol)" and r: "snd(snd(c)) \<in> list(symbol)"
-    unfolding configuration_def tape_def by auto
+    unfolding configuration_def tm_tape_def by auto
   have bound: "\<And>k. k \<in> nat \<Longrightarrow> n \<le> k #+ n"
     using n by (rule add_le_self2)
   show ?thesis unfolding workspace_margin_def pad_config_def frame_config_def
@@ -144,7 +144,7 @@ proof -
 qed
 
 theorem bounded_workspace_simulation:
-  assumes M: "M \<in> machine" and c: "c \<in> configuration" and n: "n \<in> nat"
+  assumes M: "M \<in> tm_machine" and c: "c \<in> configuration" and n: "n \<in> nat"
   shows "steps(M,frame_config(pad_config(c,n),L,R),n) =
     frame_config(steps(M,pad_config(c,n),n),L,R)"
     and "config_eq(steps(M,pad_config(c,n),n),steps(M,c,n))"
@@ -152,7 +152,7 @@ theorem bounded_workspace_simulation:
       rule steps_config_eq[OF M pad_config_eq[OF c n] n])
 
 corollary bounded_workspace_history:
-  assumes M: "M \<in> machine" and c: "c \<in> configuration"
+  assumes M: "M \<in> tm_machine" and c: "c \<in> configuration"
     and n: "n \<in> nat" and k: "k \<in> nat" and bound: "k \<le> n"
   shows "steps(M,frame_config(pad_config(c,n),L,R),k) =
     frame_config(steps(M,pad_config(c,n),k),L,R)"

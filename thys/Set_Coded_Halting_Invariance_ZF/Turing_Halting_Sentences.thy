@@ -16,19 +16,16 @@ symbol input in a transitive ZF set model.\<close>
 
 subsection \<open>Names for finite lists\<close>
 
-lemma sym_nat: "a \<in> symbol \<Longrightarrow> a \<in> nat"
-  unfolding symbol_def by auto
-
 lemma nat_name_sym_type: "a \<in> symbol \<Longrightarrow> nat_name_fm(a) \<in> formula"
-  by (rule nat_name_fm_type, erule sym_nat)
+  by (rule nat_name_fm_type, erule symbol_nat)
 
 lemma arity_nat_name_sym: "a \<in> symbol \<Longrightarrow> arity(nat_name_fm(a)) = 1"
-  by (rule arity_nat_name_fm, erule sym_nat)
+  by (rule arity_nat_name_fm, erule symbol_nat)
 
 lemma sats_nat_name_sym:
-  "\<lbrakk>transitive_zf_model(A); a \<in> symbol; y \<in> A; env \<in> list(A)\<rbrakk> \<Longrightarrow>
+  "\<lbrakk>M_ZF1_trans(A); a \<in> symbol; y \<in> A; env \<in> list(A)\<rbrakk> \<Longrightarrow>
     (A, Cons(y,env) \<Turnstile> nat_name_fm(a)) \<longleftrightarrow> y = a"
-  by (rule sats_nat_name_fm, assumption, erule sym_nat)
+  by (rule sats_nat_name_fm, assumption, erule symbol_nat)
 
 definition list_name_fm :: "[i \<Rightarrow> i, i] \<Rightarrow> i" where
   "list_name_fm(N,l) \<equiv>
@@ -77,7 +74,7 @@ next
 qed
 
 lemma sats_list_name_fm:
-  assumes model: "transitive_zf_model(A)" and l: "l \<in> list(B)"
+  assumes model: "M_ZF1_trans(A)" and l: "l \<in> list(B)"
     and BA: "B \<subseteq> A"
     and N: "\<And>a y env. a \<in> B \<Longrightarrow> y \<in> A \<Longrightarrow> env \<in> list(A) \<Longrightarrow>
       (A, Cons(y,env) \<Turnstile> N(a)) \<longleftrightarrow> y = a"
@@ -86,11 +83,11 @@ lemma sats_list_name_fm:
   using l
 proof (induct l rule: list.induct)
   case Nil
-  interpret tm_model A by unfold_locales (rule model)
+  interpret M_ZF1_trans A by (rule model)
   show ?case using Nil by simp
 next
   case (Cons a t)
-  interpret tm_model A by unfold_locales (rule model)
+  interpret M_ZF1_trans A by (rule model)
   have aA: "a \<in> A" using Cons.hyps(1) BA by blast
   have tA: "t \<in> A" using list_in_A[OF Cons.hyps(2)] BA by blast
   show ?case using Cons.prems Cons.hyps(3) N[OF Cons.hyps(1)] aA tA by auto
@@ -110,11 +107,11 @@ lemma arity_instr_name_fm: "i \<in> instruction \<Longrightarrow> arity(instr_na
     ord_simp_union)
 
 lemma sats_instr_name_fm:
-  assumes model: "transitive_zf_model(A)" and i: "i \<in> instruction"
+  assumes model: "M_ZF1_trans(A)" and i: "i \<in> instruction"
     and y: "y \<in> A" and env: "env \<in> list(A)"
   shows "(A, Cons(y,env) \<Turnstile> instr_name_fm(i)) \<longleftrightarrow> y = i"
 proof -
-  interpret tm_model A by unfold_locales (rule model)
+  interpret M_ZF1_trans A by (rule model)
   from i obtain a q where iq: "i = \<langle>a,q\<rangle>" and a: "a \<in> nat"
     and q: "q \<in> nat"
     unfolding instruction_def using action_subset_nat by blast
@@ -136,64 +133,73 @@ therefore \<open>[P,x]\<close>. Both free variables of the halting formula
 are bound, and the resulting sentence has arity 0.\<close>
 
 lemma halt_sentence_type [TC]:
-  assumes P: "P \<in> machine" and x: "x \<in> list(symbol)"
+  assumes P: "P \<in> tm_machine" and x: "x \<in> list(symbol)"
   shows "halt_sentence(P,x) \<in> formula"
 proof -
   have "list_name_fm(nat_name_fm,x) \<in> formula"
     using x by (rule list_name_fm_type) (rule nat_name_sym_type)
   moreover have "list_name_fm(instr_name_fm,P) \<in> formula"
-    using P unfolding machine_def by (rule list_name_fm_type) simp
+    using P unfolding tm_machine_def by (rule list_name_fm_type) simp
   ultimately show ?thesis unfolding halt_sentence_def by simp
 qed
 
 lemma arity_halt_sentence:
-  assumes P: "P \<in> machine" and x: "x \<in> list(symbol)"
+  assumes P: "P \<in> tm_machine" and x: "x \<in> list(symbol)"
   shows "arity(halt_sentence(P,x)) = 0"
 proof -
   have "arity(list_name_fm(nat_name_fm,x)) = 1"
     using x by (rule arity_list_name_fm) (erule nat_name_sym_type, erule
       arity_nat_name_sym)
   moreover have "arity(list_name_fm(instr_name_fm,P)) = 1"
-    using P unfolding machine_def by (rule arity_list_name_fm) (auto intro:
+    using P unfolding tm_machine_def by (rule arity_list_name_fm) (auto intro:
       arity_instr_name_fm)
   moreover have "list_name_fm(nat_name_fm,x) \<in> formula"
     using x by (rule list_name_fm_type) (rule nat_name_sym_type)
   moreover have "list_name_fm(instr_name_fm,P) \<in> formula"
-    using P unfolding machine_def by (rule list_name_fm_type) simp
+    using P unfolding tm_machine_def by (rule list_name_fm_type) simp
   ultimately show ?thesis unfolding halt_sentence_def
     by (simp add: arity_Exists arity_And arity_halt_fm_eq ord_simp_union)
 qed
 
+context M_ZF1_trans
+begin
+
 theorem sats_halt_sentence_iff:
-  assumes model: "transitive_zf_model(A)"
-    and P: "P \<in> machine" and x: "x \<in> list(symbol)"
-  shows "(A, [] \<Turnstile> halt_sentence(P,x)) \<longleftrightarrow> halts_on(P,x)"
+  assumes P: "P \<in> tm_machine" and x: "x \<in> list(symbol)"
+  shows "(M, [] \<Turnstile> halt_sentence(P,x)) \<longleftrightarrow> halts_on(P,x)"
 proof -
-  interpret tm_model A by unfold_locales (rule model)
-  have symA: "symbol \<subseteq> A" using sym_nat by auto
-  have insA: "instruction \<subseteq> A"
+  have symA: "symbol \<subseteq> M" using symbol_nat by auto
+  have insA: "instruction \<subseteq> M"
     unfolding instruction_def using action_subset_nat by auto
-  have PL: "P \<in> list(instruction)" using P unfolding machine_def .
-  have nx: "\<And>y env. y \<in> A \<Longrightarrow> env \<in> list(A) \<Longrightarrow>
-      (A, Cons(y,env) \<Turnstile> list_name_fm(nat_name_fm,x)) \<longleftrightarrow> y = x"
-    by (rule sats_list_name_fm[OF model x symA]) (rule sats_nat_name_sym[OF
-      model])
-  have nP: "\<And>y env. y \<in> A \<Longrightarrow> env \<in> list(A) \<Longrightarrow>
-      (A, Cons(y,env) \<Turnstile> list_name_fm(instr_name_fm,P)) \<longleftrightarrow> y = P"
-    by (rule sats_list_name_fm[OF model PL insA]) (rule sats_instr_name_fm[OF
-      model])
-  have xA: "x \<in> A" using x by simp
-  have PA: "P \<in> A" using P by simp
-  have "(A, [] \<Turnstile> halt_sentence(P,x)) \<longleftrightarrow> (A, [P,x] \<Turnstile> halt_fm)"
+  have PL: "P \<in> list(instruction)" using P unfolding tm_machine_def .
+  have nx: "\<And>y env. y \<in> M \<Longrightarrow> env \<in> list(M) \<Longrightarrow>
+      (M, Cons(y,env) \<Turnstile> list_name_fm(nat_name_fm,x)) \<longleftrightarrow> y = x"
+    by (rule sats_list_name_fm[OF M_ZF1_trans_axioms x symA])
+      (rule sats_nat_name_sym[OF M_ZF1_trans_axioms])
+  have nP: "\<And>y env. y \<in> M \<Longrightarrow> env \<in> list(M) \<Longrightarrow>
+      (M, Cons(y,env) \<Turnstile> list_name_fm(instr_name_fm,P)) \<longleftrightarrow> y = P"
+    by (rule sats_list_name_fm[OF M_ZF1_trans_axioms PL insA])
+      (rule sats_instr_name_fm[OF M_ZF1_trans_axioms])
+  have xA: "x \<in> M" using x by simp
+  have PA: "P \<in> M" using P by simp
+  have "(M, [] \<Turnstile> halt_sentence(P,x)) \<longleftrightarrow> (M, [P,x] \<Turnstile> halt_fm)"
     unfolding halt_sentence_def using nx nP xA PA by auto
   then show ?thesis using sats_halt_fm[OF P x] by simp
 qed
+
+end
+
+theorem sats_halt_sentence_iff:
+  assumes "transitive_zf_model(A)" "P \<in> tm_machine" "x \<in> list(symbol)"
+  shows "(A, [] \<Turnstile> halt_sentence(P,x)) \<longleftrightarrow> halts_on(P,x)"
+  by (rule M_ZF1_trans.sats_halt_sentence_iff
+      [OF transitive_zf_M_ZF1_trans[OF assms(1)] assms(2,3)])
 
 subsection \<open>Model-theoretic consequences\<close>
 
 corollary transitive_models_agree_on_halting:
   assumes "transitive_zf_model(A)" "transitive_zf_model(B)"
-    and "P \<in> machine" "x \<in> list(symbol)"
+    and "P \<in> tm_machine" "x \<in> list(symbol)"
   shows "(A, [] \<Turnstile> halt_sentence(P,x)) \<longleftrightarrow> (B, [] \<Turnstile> halt_sentence(P,x))"
   using sats_halt_sentence_iff assms by blast
 

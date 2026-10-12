@@ -27,7 +27,7 @@ lemma tm_update_write_symbol:
 
 lemma empty_left_tape_type [TC]:
   assumes right: "r \<in> list(symbol)"
-  shows "\<langle>[],r\<rangle> \<in> tape"
+  shows "\<langle>[],r\<rangle> \<in> tm_tape"
 proof (rule tapeI)
   show "[] \<in> list(symbol)" by simp
   show "r \<in> list(symbol)" by (rule right)
@@ -36,16 +36,16 @@ qed
 consts action_semantics :: "i \<Rightarrow> i"
 
 primrec
-  "action_semantics([]) = id(tape)"
+  "action_semantics([]) = id(tm_tape)"
   "action_semantics(Cons(a,A)) =
-    (\<lambda>t\<in>tape. action_semantics(A)`tm_update(a,t))"
+    (\<lambda>t\<in>tm_tape. action_semantics(A)`tm_update(a,t))"
 
 definition execute_actions :: "[i,i] \<Rightarrow> i" where
   "execute_actions(A,t) \<equiv> action_semantics(A)`t"
 
 lemma action_semantics_type [TC]:
   assumes actions: "A \<in> list(action)"
-  shows "action_semantics(A) \<in> tape \<rightarrow> tape"
+  shows "action_semantics(A) \<in> tm_tape \<rightarrow> tm_tape"
   using actions
 proof (induct A rule: list.induct)
   case Nil
@@ -55,36 +55,36 @@ next
   note current_action = Cons.hyps(1)
   note tail_actions = Cons.hyps(2)
   note semantics_IH = Cons.hyps(3)
-  have "(\<lambda>t\<in>tape. action_semantics(A)`tm_update(a,t))
-      \<in> tape \<rightarrow> tape"
+  have "(\<lambda>t\<in>tm_tape. action_semantics(A)`tm_update(a,t))
+      \<in> tm_tape \<rightarrow> tm_tape"
   proof (rule lam_type)
     fix t
-    assume tape: "t \<in> tape"
-    from tape have "tm_update(a,t) \<in> tape"
+    assume tm_tape: "t \<in> tm_tape"
+    from tm_tape have "tm_update(a,t) \<in> tm_tape"
       by (rule tm_update_type)
-    with semantics_IH show "action_semantics(A)`tm_update(a,t) \<in> tape"
+    with semantics_IH show "action_semantics(A)`tm_update(a,t) \<in> tm_tape"
       by (rule apply_type)
   qed
   then show ?case by simp
 qed
 
 lemma execute_actions_Nil [simp]:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "execute_actions([],t) = t"
-  using tape unfolding execute_actions_def by simp
+  using tm_tape unfolding execute_actions_def by simp
 
 lemma execute_actions_Cons [simp]:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "execute_actions(Cons(a,A),t) =
     execute_actions(A,tm_update(a,t))"
-  using tape tm_update_type[OF tape]
+  using tm_tape tm_update_type[OF tm_tape]
   unfolding execute_actions_def by simp
 
 lemma execute_actions_type [TC]:
   assumes actions: "A \<in> list(action)"
-    and tape: "t \<in> tape"
-  shows "execute_actions(A,t) \<in> tape"
-  using action_semantics_type[OF actions] tape
+    and tm_tape: "t \<in> tm_tape"
+  shows "execute_actions(A,t) \<in> tm_tape"
+  using action_semantics_type[OF actions] tm_tape
   unfolding execute_actions_def by (rule apply_type)
 
 consts load_actions :: "i \<Rightarrow> i"
@@ -127,7 +127,7 @@ lemma execute_load_actions:
   using symbols right
 proof (induct xs arbitrary: r rule: list.induct)
   case Nil
-  from Nil.prems have initial_tape: "\<langle>[],r\<rangle> \<in> tape"
+  from Nil.prems have initial_tape: "\<langle>[],r\<rangle> \<in> tm_tape"
     by (rule empty_left_tape_type)
   from initial_tape show ?case by simp
 next
@@ -142,16 +142,16 @@ next
   from right_symbols have moved_right:
     "Cons(blank_symbol,r) \<in> list(symbol)"
     by typecheck
-  from right_symbols have initial_tape: "\<langle>[],r\<rangle> \<in> tape"
+  from right_symbols have initial_tape: "\<langle>[],r\<rangle> \<in> tm_tape"
     by (rule empty_left_tape_type)
   from moved_right have moved_tape:
-    "\<langle>[],Cons(blank_symbol,r)\<rangle> \<in> tape"
+    "\<langle>[],Cons(blank_symbol,r)\<rangle> \<in> tm_tape"
     by (rule empty_left_tape_type)
   from scanned right_symbols have written_right:
     "Cons(b,r) \<in> list(symbol)"
     by typecheck
   from written_right have written_tape:
-    "\<langle>[],Cons(b,r)\<rangle> \<in> tape"
+    "\<langle>[],Cons(b,r)\<rangle> \<in> tm_tape"
     by (rule empty_left_tape_type)
   from execution_IH[OF written_right] have tail_execution:
     "execute_actions(load_actions(bs),\<langle>[],Cons(b,r)\<rangle>) =
@@ -167,7 +167,7 @@ theorem execute_loader_actions:
   shows "execute_actions(loader_actions(x),\<langle>[],[]\<rangle>) =
     \<langle>[],x\<rangle>"
 proof -
-  have blank_tape: "\<langle>[],[]\<rangle> \<in> tape"
+  have blank_tape: "\<langle>[],[]\<rangle> \<in> tm_tape"
     by (rule empty_left_tape_type) simp
   from input blank_tape show ?thesis
     unfolding loader_actions_def
@@ -339,12 +339,12 @@ lemma step_compiled_action:
     and current_action: "a \<in> action"
     and tail_actions: "A \<in> list(action)"
     and suffix: "N \<in> list(instruction)"
-    and tape: "t \<in> tape"
-  shows "step(P @ compile_actions(Cons(a,A),succ(i)) @ N,
+    and tm_tape: "t \<in> tm_tape"
+  shows "tm_step(P @ compile_actions(Cons(a,A),succ(i)) @ N,
       \<langle>succ(i),t\<rangle>) =
     \<langle>succ(succ(i)),tm_update(a,t)\<rangle>"
 proof -
-  from scan_type[OF tape] have scanned: "scan(t) \<in> symbol" .
+  from scan_type[OF tm_tape] have scanned: "scan(t) \<in> symbol" .
   from fetch_compiled_action[
       OF index prefix prefix_length current_action tail_actions suffix
         scanned]
@@ -352,7 +352,7 @@ proof -
     "fetch(P @ compile_actions(Cons(a,A),succ(i)) @ N,
       succ(i),scan(t)) = \<langle>a,succ(succ(i))\<rangle>" .
   from fetched show ?thesis
-    unfolding step_def Let_def by simp
+    unfolding tm_step_def Let_def by simp
 qed
 
 lemma steps_compiled_actions:
@@ -361,11 +361,11 @@ lemma steps_compiled_actions:
     and prefix_length: "length(P) = 2 #* i"
     and actions: "A \<in> list(action)"
     and suffix: "N \<in> list(instruction)"
-    and tape: "t \<in> tape"
+    and tm_tape: "t \<in> tm_tape"
   shows "steps(P @ compile_actions(A,succ(i)) @ N,
       \<langle>succ(i),t\<rangle>,length(A)) =
     \<langle>succ(i #+ length(A)),execute_actions(A,t)\<rangle>"
-  using actions index prefix prefix_length tape
+  using actions index prefix prefix_length tm_tape
 proof (induct A arbitrary: i P t rule: list.induct)
   case Nil
   then show ?case by simp
@@ -377,7 +377,7 @@ next
   note index = Cons.prems(1)
   note prefix = Cons.prems(2)
   note prefix_length = Cons.prems(3)
-  note tape = Cons.prems(4)
+  note tm_tape = Cons.prems(4)
   let ?ins = "\<langle>a,succ(succ(i))\<rangle>"
   let ?P = "P @ Cons(?ins,Cons(?ins,[]))"
   let ?M = "P @ compile_actions(Cons(a,A),succ(i)) @ N"
@@ -392,12 +392,12 @@ next
   from index prefix prefix_length instruction have extended_length:
     "length(?P) = 2 #* succ(i)"
     by simp
-  from tape have updated_tape: "tm_update(a,t) \<in> tape"
+  from tm_tape have updated_tape: "tm_update(a,t) \<in> tm_tape"
     by (rule tm_update_type)
   from step_compiled_action[
-      OF index prefix prefix_length current_action tail_actions suffix tape]
+      OF index prefix prefix_length current_action tail_actions suffix tm_tape]
   have first_step:
-    "step(?M,\<langle>succ(i),t\<rangle>) =
+    "tm_step(?M,\<langle>succ(i),t\<rangle>) =
       \<langle>succ(succ(i)),tm_update(a,t)\<rangle>" .
   have machine_shape:
     "?M = ?P @ compile_actions(A,succ(succ(i))) @ N"
@@ -413,12 +413,12 @@ next
     by typecheck
   have split_execution:
     "steps(?M,\<langle>succ(i),t\<rangle>,succ(length(A))) =
-      steps(?M,step(?M,\<langle>succ(i),t\<rangle>),length(A))"
+      steps(?M,tm_step(?M,\<langle>succ(i),t\<rangle>),length(A))"
     using steps_add[OF nat_1I tail_length,
       of ?M "\<langle>succ(i),t\<rangle>"] tail_length
     by simp
   from split_execution first_step machine_shape tail_execution
-    index tape
+    index tm_tape
   show ?case by simp
 qed
 
@@ -503,33 +503,33 @@ lemma shift_instruction_default [simp]:
 
 lemma shift_machine_type [TC]:
   assumes offset: "k \<in> nat"
-    and machine_M: "M \<in> machine"
-  shows "shift_machine(k,M) \<in> machine"
+    and machine_M: "M \<in> tm_machine"
+  shows "shift_machine(k,M) \<in> tm_machine"
 proof -
   from machine_M have instructions: "M \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   have "map(\<lambda>ins. shift_instruction(k,ins),M)
       \<in> list(instruction)"
     using instructions
     by (rule map_type) (rule shift_instruction_type[OF offset])
-  then show ?thesis unfolding shift_machine_def machine_def .
+  then show ?thesis unfolding shift_machine_def tm_machine_def .
 qed
 
 lemma length_shift_machine [simp]:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "length(shift_machine(k,M)) = length(M)"
-  using machine_M unfolding shift_machine_def machine_def by simp
+  using machine_M unfolding shift_machine_def tm_machine_def by simp
 
 lemma nth_shift_machine:
   assumes offset: "k \<in> nat"
-    and machine_M: "M \<in> machine"
+    and machine_M: "M \<in> tm_machine"
     and natural: "j \<in> nat"
     and in_range: "j < length(M)"
   shows "nth(j,shift_machine(k,M)) =
     shift_instruction(k,nth(j,M))"
 proof -
   from machine_M have instructions: "M \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   from natural in_range instructions show ?thesis
     unfolding shift_machine_def by simp
 qed
@@ -568,7 +568,7 @@ qed
 
 lemma shifted_slot_in_range_iff:
   assumes offset: "k \<in> nat"
-    and machine_M: "M \<in> machine"
+    and machine_M: "M \<in> tm_machine"
     and state: "q \<in> nat"
     and nonfinal: "q \<noteq> final_state"
     and scanned: "b \<in> symbol"
@@ -578,7 +578,7 @@ proof -
   from slot_type[OF state scanned] have slot_natural:
     "slot(q,b) \<in> nat" .
   from machine_M have length_natural: "length(M) \<in> nat"
-    unfolding machine_def by typecheck
+    unfolding tm_machine_def by typecheck
   have shifted_slot:
     "slot(shift_state(k,q),b) = 2 #* k #+ slot(q,b)"
     by (rule slot_shift_state[OF offset state nonfinal])
@@ -602,7 +602,7 @@ lemma fetch_shifted_tail:
   assumes offset: "k \<in> nat"
     and prefix: "P \<in> list(instruction)"
     and prefix_length: "length(P) = 2 #* k"
-    and machine_M: "M \<in> machine"
+    and machine_M: "M \<in> tm_machine"
     and state: "q \<in> nat"
     and scanned: "b \<in> symbol"
   shows "fetch(P @ shift_machine(k,M),shift_state(k,q),b) =
@@ -617,10 +617,10 @@ next
   from slot_type[OF state scanned] have slot_natural: "?s \<in> nat" .
   from offset have index_natural: "?j \<in> nat" by typecheck
   from shift_machine_type[OF offset machine_M] have shifted_machine:
-    "shift_machine(k,M) \<in> machine" .
+    "shift_machine(k,M) \<in> tm_machine" .
   then have shifted_instructions:
     "shift_machine(k,M) \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   from length_app[OF prefix shifted_instructions] machine_M
   have combined_length:
     "length(P @ shift_machine(k,M)) =
@@ -692,9 +692,9 @@ definition hardwire :: "[i,i] \<Rightarrow> i" where
     in compile_actions(A,initial_state) @ shift_machine(k,M)"
 
 lemma hardwire_type [TC]:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
-  shows "hardwire(M,x) \<in> machine"
+  shows "hardwire(M,x) \<in> tm_machine"
 proof -
   let ?A = "loader_actions(x)"
   let ?k = "length(?A)"
@@ -706,12 +706,12 @@ proof -
     "compile_actions(?A,initial_state) \<in> list(instruction)"
     by simp
   from shift_machine_type[OF offset machine_M] have shifted:
-    "shift_machine(?k,M) \<in> machine" .
+    "shift_machine(?k,M) \<in> tm_machine" .
   from shifted have shifted_instructions:
     "shift_machine(?k,M) \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   from prefix shifted_instructions show ?thesis
-    unfolding hardwire_def Let_def machine_def by typecheck
+    unfolding hardwire_def Let_def tm_machine_def by typecheck
 qed
 
 lemma length_hardwire_prefix:
@@ -721,7 +721,7 @@ lemma length_hardwire_prefix:
   using loader_actions_type[OF input] by simp
 
 lemma fetch_hardwire_shift:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and state: "q \<in> nat"
     and scanned: "b \<in> symbol"
@@ -747,7 +747,7 @@ proof -
 qed
 
 lemma hardwire_loader_endpoint:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
   shows "steps(hardwire(M,x),initial_config([]),
       length(loader_actions(x))) =
@@ -760,16 +760,16 @@ proof -
   then have offset: "?k \<in> nat"
     by typecheck
   from shift_machine_type[OF offset machine_M] have shifted_machine:
-    "shift_machine(?k,M) \<in> machine" .
+    "shift_machine(?k,M) \<in> tm_machine" .
   then have suffix:
     "shift_machine(?k,M) \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   have empty_prefix: "[] \<in> list(instruction)"
     by simp
   have empty_prefix_length: "length([]) = 2 #* 0"
     by simp
-  have blank_tape: "\<langle>[],[]\<rangle> \<in> tape"
-    unfolding tape_def by typecheck
+  have blank_tape: "\<langle>[],[]\<rangle> \<in> tm_tape"
+    unfolding tm_tape_def by typecheck
   from steps_compiled_actions[
       OF nat_0I empty_prefix empty_prefix_length actions suffix blank_tape]
     offset
@@ -786,29 +786,29 @@ proof -
 qed
 
 lemma step_hardwire_shift:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and configuration: "c \<in> configuration"
-  shows "step(hardwire(M,x),
+  shows "tm_step(hardwire(M,x),
       shift_configuration(length(loader_actions(x)),c)) =
-    shift_configuration(length(loader_actions(x)),step(M,c))"
+    shift_configuration(length(loader_actions(x)),tm_step(M,c))"
 proof -
   let ?k = "length(loader_actions(x))"
   from configuration have state: "fst(c) \<in> nat"
-    and tape: "snd(c) \<in> tape"
+    and tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck+
-  from scan_type[OF tape] have scanned:
+  from scan_type[OF tm_tape] have scanned:
     "scan(snd(c)) \<in> symbol" .
   from fetch_hardwire_shift[OF machine_M input state scanned]
   have shifted_fetch:
     "fetch(hardwire(M,x),shift_state(?k,fst(c)),scan(snd(c))) =
       shift_instruction(?k,fetch(M,fst(c),scan(snd(c))))" .
   from shifted_fetch show ?thesis
-    unfolding step_def Let_def shift_configuration_def by simp
+    unfolding tm_step_def Let_def shift_configuration_def by simp
 qed
 
 lemma steps_hardwire_shift:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and configuration: "c \<in> configuration"
     and time: "n \<in> nat"
@@ -825,22 +825,22 @@ next
   from steps_type[OF machine_M configuration succ.hyps(1)]
   have current_configuration: "steps(M,c,n) \<in> configuration" .
   have "steps(hardwire(M,x),shift_configuration(?k,c),succ(n)) =
-      step(hardwire(M,x),
+      tm_step(hardwire(M,x),
         steps(hardwire(M,x),shift_configuration(?k,c),n))"
     by simp
   also from succ.hyps(2) have "... =
-      step(hardwire(M,x),shift_configuration(?k,steps(M,c,n)))"
+      tm_step(hardwire(M,x),shift_configuration(?k,steps(M,c,n)))"
     by simp
   also from step_hardwire_shift[
       OF machine_M input current_configuration]
-  have "... = shift_configuration(?k,step(M,steps(M,c,n)))" .
+  have "... = shift_configuration(?k,tm_step(M,steps(M,c,n)))" .
   also have "... = shift_configuration(?k,steps(M,c,succ(n)))"
     by simp
   finally show ?case .
 qed
 
 lemma steps_hardwire:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and time: "n \<in> nat"
   shows "steps(hardwire(M,x),initial_config([]),
@@ -875,7 +875,7 @@ proof -
 qed
 
 theorem hardwire_halts_iff:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
   shows "halts_blank(hardwire(M,x)) \<longleftrightarrow> halts_on(M,x)"
 proof -
@@ -889,7 +889,7 @@ proof -
   then have offset: "?k \<in> nat"
     by typecheck
   from hardwire_type[OF machine_M input] have machine_H:
-    "?H \<in> machine" .
+    "?H \<in> tm_machine" .
   have blank_input: "[] \<in> list(symbol)"
     by simp
   from initial_config_type[OF blank_input] have blank_configuration:

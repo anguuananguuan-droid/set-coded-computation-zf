@@ -17,8 +17,8 @@ abbreviation (input) cp_rewind where "cp_rewind \<equiv> succ(succ(succ(succ(suc
 
 text \<open>A temporarily erased stroke marks the current source position.
 The permanent blank between the blocks separates the return scans. Once
-all source strokes have been copied, the machine rewinds to the first block.
-Only the existing binary alphabet and single-tape instructions are used.\<close>
+all source strokes have been copied, the tm_machine rewinds to the first block.
+Only the existing binary alphabet and single-tm_tape instructions are used.\<close>
 
 definition copy_machine :: i where
   "copy_machine \<equiv>
@@ -31,8 +31,8 @@ definition copy_machine :: i where
     \<langle>move_right,initial_state\<rangle>,\<langle>move_right,initial_state\<rangle>,
     \<langle>move_right,final_state\<rangle>,\<langle>move_left,cp_rewind\<rangle>]"
 
-lemma copy_machine_type [TC]: "copy_machine \<in> machine"
-  unfolding copy_machine_def machine_def instruction_def by typecheck
+lemma copy_machine_type [TC]: "copy_machine \<in> tm_machine"
+  unfolding copy_machine_def tm_machine_def instruction_def by typecheck
 
 lemma fetch_copy [simp]:
   "fetch(copy_machine,1,0) = \<langle>move_left,cp_rewind\<rangle>"
@@ -73,7 +73,7 @@ proof -
     \<langle>cp_seek_original,\<langle>?u,Cons(blank_symbol,numeral_input(i))\<rangle>\<rangle>,
     \<langle>cp_seek_output,\<langle>?v,[]\<rangle>\<rangle>)"
   proof (rule reaches_step_then)
-    show "step(copy_machine,\<langle>cp_seek_original,\<langle>?u,Cons(blank_symbol,numeral_input(i))\<rangle>\<rangle>) =
+    show "tm_step(copy_machine,\<langle>cp_seek_original,\<langle>?u,Cons(blank_symbol,numeral_input(i))\<rangle>\<rangle>) =
       \<langle>cp_seek_output,\<langle>Cons(blank_symbol,?u),numeral_input(i)\<rangle>\<rangle>" by simp
     from scan_right_ones[OF fetch_copy(8) i, of "Cons(blank_symbol,?u)" "[]"]
       numeral_input_type[OF i]
@@ -83,7 +83,7 @@ proof -
   have return_output: "reaches(copy_machine,\<langle>cp_seek_output,\<langle>?v,[]\<rangle>\<rangle>,
     \<langle>cp_return_output,\<langle>?u,Cons(blank_symbol,numeral_input(succ(i)))\<rangle>\<rangle>)"
   proof (rule reaches_step_then)
-    show "step(copy_machine,\<langle>cp_seek_output,\<langle>?v,[]\<rangle>\<rangle>) =
+    show "tm_step(copy_machine,\<langle>cp_seek_output,\<langle>?v,[]\<rangle>\<rangle>) =
       \<langle>cp_return_output,\<langle>?v,[one_symbol]\<rangle>\<rangle>" by simp
     from scan_left_ones[OF fetch_copy(10) i, of "Cons(blank_symbol,?u)" "[]"]
       numeral_input_type[OF i]
@@ -145,10 +145,10 @@ proof -
     by (rule reaches_step_then) (simp, rule reaches_refl)
   have start: "config_eq(initial_config(?x @ [blank_symbol]),initial_config(?x))"
     using x half_tape_eq_trailing_blank[OF x]
-    unfolding config_eq_def tape_eq_def configuration_def tape_def by auto
+    unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by auto
   have finish: "config_eq(\<langle>final_state,\<langle>[blank_symbol],?y\<rangle>\<rangle>,
     \<langle>final_state,\<langle>[],?y\<rangle>\<rangle>)"
-    using y unfolding config_eq_def tape_eq_def configuration_def tape_def by auto
+    using y unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by auto
   show ?thesis by (rule computes_tape_from_reaches[OF copy_machine_type x y start
     reaches_trans[OF process reaches_trans[OF rewind exit]] finish])
 qed
@@ -156,7 +156,7 @@ qed
 definition duplicate_arguments_machine :: i where
   "duplicate_arguments_machine \<equiv> sequential_machine(successor_machine,copy_machine)"
 
-lemma duplicate_arguments_machine_type [TC]: "duplicate_arguments_machine \<in> machine"
+lemma duplicate_arguments_machine_type [TC]: "duplicate_arguments_machine \<in> tm_machine"
   unfolding duplicate_arguments_machine_def by typecheck
 
 theorem duplicate_arguments_computes:

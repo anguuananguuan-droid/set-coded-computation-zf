@@ -5,7 +5,9 @@ AFP CANDIDATE
 Set_Coded_Halting_Invariance_ZF constructs an explicit internal halting
 formula for set-coded Turing machines and proves its satisfaction theorem
 in every transitive ZF set model. It closes that formula by naming the
-machine and input. These results do not require the axiom of choice.
+machine and input. The proofs are established directly in M_ZF1_trans,
+which requires transitivity, Zermelo set theory, and four replacement
+instances. The ZF versions remain corollaries. Choice is not required.
 
 The entry then constructs two primitive-recursive many-one reductions from
 self-input halting and its complement to the natural-number codes of
@@ -13,6 +15,9 @@ closed sentences invariant across all transitive ZFC set models. The direct
 semantic premise is that CH is not invariant. A countable transitive ZFC
 set model supplies this premise through Independence_CH. The target
 quantifies over all transitive ZFC set models, not only the countable ones.
+Both reductions instantiate pr_reduces_invariance. This general interface
+requires a uniformly expressed sentence family with primitive-recursive
+codes and a fixed closed sentence on which the models disagree.
 
 The source halting set is proved undecidable in the defined machine model.
 The reducers are certified in Isabelle/ZF's prim_rec class and evaluated on

@@ -71,7 +71,7 @@ theorem self_halting_or_CH_invariant_iff_of_CH_not_invariant:
   assumes CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)" and e: "e \<in> nat"
   shows "zfc_invariant(self_halting_or_CH(e)) \<longleftrightarrow> e \<in> self_halting"
 proof -
-  have P: "decode_machine(e) \<in> machine" using e by (rule
+  have P: "decode_machine(e) \<in> tm_machine" using e by (rule
     decode_machine_type)
   have x: "numeral_input(e) \<in> list(symbol)" using e by (rule
     numeral_input_type)
@@ -95,7 +95,7 @@ theorem self_nonhalting_or_CH_invariant_iff_of_CH_not_invariant:
   assumes CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)" and e: "e \<in> nat"
   shows "zfc_invariant(self_nonhalting_or_CH(e)) \<longleftrightarrow> e \<notin> self_halting"
 proof -
-  have P: "decode_machine(e) \<in> machine" using e by (rule
+  have P: "decode_machine(e) \<in> tm_machine" using e by (rule
     decode_machine_type)
   have x: "numeral_input(e) \<in> list(symbol)" using e by (rule
     numeral_input_type)

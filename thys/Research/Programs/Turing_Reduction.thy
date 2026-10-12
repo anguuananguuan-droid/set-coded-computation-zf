@@ -12,7 +12,7 @@ subsection \<open>Numerical Computation\<close>
 
 definition computes_number :: "[i,i,i] \<Rightarrow> o" where
   "computes_number(M,n,m) \<equiv>
-    M \<in> machine \<and>
+    M \<in> tm_machine \<and>
     n \<in> nat \<and>
     m \<in> nat \<and>
     (\<exists>k\<in>nat.
@@ -21,7 +21,7 @@ definition computes_number :: "[i,i,i] \<Rightarrow> o" where
 
 lemma computes_number_machine:
   assumes computation: "computes_number(M,n,m)"
-  shows "M \<in> machine"
+  shows "M \<in> tm_machine"
   using computation unfolding computes_number_def by auto
 
 lemma computes_number_input:
@@ -64,7 +64,7 @@ next
 qed
 
 lemma final_runs_equal:
-  assumes M: "M \<in> machine" and c: "c \<in> configuration"
+  assumes M: "M \<in> tm_machine" and c: "c \<in> configuration"
     and p: "p \<in> nat" and q: "q \<in> nat"
     and fp: "fst(steps(M,c,p)) = final_state"
     and fq: "fst(steps(M,c,q)) = final_state"
@@ -82,7 +82,7 @@ lemma computes_number_unique:
     and second: "computes_number(M,n,k)"
   shows "m = k"
 proof -
-  from first obtain p where M: "M \<in> machine" and n: "n \<in> nat"
+  from first obtain p where M: "M \<in> tm_machine" and n: "n \<in> nat"
     and m: "m \<in> nat" and p: "p \<in> nat"
     and out_m: "config_eq(steps(M,initial_config(numeral_input(n)),p),
       \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>)"
@@ -101,12 +101,12 @@ proof -
   then show ?thesis by (rule numeral_tape_eq_unique[OF m k])
 qed
 
-text \<open>Literal equality with a numeral output tape requires the output
-to be at least as large as the input. The tape span cannot decrease during
+text \<open>Literal equality with a numeral output tm_tape requires the output
+to be at least as large as the input. The tm_tape span cannot decrease during
 execution. Observational equality avoids this restriction.\<close>
 
 lemma literal_numeral_output_not_smaller:
-  assumes M: "M \<in> machine" and n: "n \<in> nat" and m: "m \<in> nat"
+  assumes M: "M \<in> tm_machine" and n: "n \<in> nat" and m: "m \<in> nat"
     and k: "k \<in> nat"
     and exact: "steps(M,initial_config(numeral_input(n)),k) =
       \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>"
@@ -119,13 +119,13 @@ subsection \<open>Unary Realisation\<close>
 
 definition tm_realises_unary :: "[i,i] \<Rightarrow> o" where
   "tm_realises_unary(M,f) \<equiv>
-    M \<in> machine \<and>
+    M \<in> tm_machine \<and>
     f \<in> list(nat) -> nat \<and>
     (\<forall>n\<in>nat. computes_number(M,n,f`[n]))"
 
 lemma tm_realises_unary_machine:
   assumes realisation: "tm_realises_unary(M,f)"
-  shows "M \<in> machine"
+  shows "M \<in> tm_machine"
   using realisation unfolding tm_realises_unary_def by auto
 
 lemma tm_realises_unary_function:
@@ -154,12 +154,12 @@ theorem computes_number_sequential:
   assumes first: "computes_number(R,n,m)" and second: "computes_number(S,m,p)"
   shows "computes_number(sequential_machine(R,S),n,p)"
 proof -
-  from first obtain k where R: "R \<in> machine" and n: "n \<in> nat"
+  from first obtain k where R: "R \<in> tm_machine" and n: "n \<in> nat"
     and k: "k \<in> nat"
     and out_R: "config_eq(steps(R,initial_config(numeral_input(n)),k),
       \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>)"
     unfolding computes_number_def by auto
-  from second obtain l where S: "S \<in> machine" and p: "p \<in> nat"
+  from second obtain l where S: "S \<in> tm_machine" and p: "p \<in> nat"
     and l: "l \<in> nat"
     and out_S: "config_eq(steps(S,initial_config(numeral_input(m)),l),
       \<langle>final_state,\<langle>[],numeral_input(p)\<rangle>\<rangle>)"
@@ -197,12 +197,12 @@ lemma computes_number_then_yields:
     and result: "yields(D,numeral_input(m),b)"
   shows "yields(sequential_machine(R,D),numeral_input(n),b)"
 proof -
-  from computation obtain k where R: "R \<in> machine" and n: "n \<in> nat"
+  from computation obtain k where R: "R \<in> tm_machine" and n: "n \<in> nat"
     and m: "m \<in> nat" and k: "k \<in> nat"
     and out: "config_eq(steps(R,initial_config(numeral_input(n)),k),
       \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>)"
     unfolding computes_number_def by auto
-  from result obtain l where D: "D \<in> machine" and b: "b \<in> symbol"
+  from result obtain l where D: "D \<in> tm_machine" and b: "b \<in> symbol"
     and l: "l \<in> nat"
     and final: "fst(steps(D,initial_config(numeral_input(m)),l)) = final_state"
     and output_b: "scan(snd(steps(D,initial_config(numeral_input(m)),l))) = b"
@@ -236,11 +236,11 @@ proof -
 qed
 
 lemma yields_sequential_imp:
-  assumes computation: "computes_number(R,n,m)" and D: "D \<in> machine"
+  assumes computation: "computes_number(R,n,m)" and D: "D \<in> tm_machine"
     and result: "yields(sequential_machine(R,D),numeral_input(n),b)"
   shows "yields(D,numeral_input(m),b)"
 proof -
-  from computation obtain k where R: "R \<in> machine" and n: "n \<in> nat"
+  from computation obtain k where R: "R \<in> tm_machine" and n: "n \<in> nat"
     and m: "m \<in> nat" and k: "k \<in> nat"
     and out: "config_eq(steps(R,initial_config(numeral_input(n)),k),
       \<langle>final_state,\<langle>[],numeral_input(m)\<rangle>\<rangle>)"
@@ -294,7 +294,7 @@ qed
 
 theorem computes_number_then_yields_iff:
   assumes computation: "computes_number(R,n,m)"
-    and machine_D: "D \<in> machine"
+    and machine_D: "D \<in> tm_machine"
   shows "yields(sequential_machine(R,D),numeral_input(n),b) \<longleftrightarrow>
     yields(D,numeral_input(m),b)"
 proof
@@ -309,7 +309,7 @@ qed
 
 theorem accepts_number_sequential_iff:
   assumes computation: "computes_number(R,n,m)"
-    and machine_D: "D \<in> machine"
+    and machine_D: "D \<in> tm_machine"
   shows "accepts_number(sequential_machine(R,D),n) \<longleftrightarrow>
     accepts_number(D,m)"
   unfolding accepts_number_def
@@ -317,7 +317,7 @@ theorem accepts_number_sequential_iff:
 
 theorem rejects_number_sequential_iff:
   assumes computation: "computes_number(R,n,m)"
-    and machine_D: "D \<in> machine"
+    and machine_D: "D \<in> tm_machine"
   shows "rejects_number(sequential_machine(R,D),n) \<longleftrightarrow>
     rejects_number(D,m)"
   unfolding rejects_number_def
@@ -327,7 +327,7 @@ subsection \<open>Many-One Reduction\<close>
 
 definition tm_reduces :: "[i,i,i] \<Rightarrow> o" where
   "tm_reduces(R,A,B) \<equiv>
-    R \<in> machine \<and>
+    R \<in> tm_machine \<and>
     A \<subseteq> nat \<and>
     B \<subseteq> nat \<and>
     (\<forall>n\<in>nat. \<exists>m\<in>nat.
@@ -340,7 +340,7 @@ definition tm_many_one_reducible :: "[i,i] \<Rightarrow> o" where
 
 lemma tm_reduces_machine:
   assumes reduction: "tm_reduces(R,A,B)"
-  shows "R \<in> machine"
+  shows "R \<in> tm_machine"
   using reduction unfolding tm_reduces_def by auto
 
 theorem tm_many_one_decidable:
@@ -356,15 +356,15 @@ proof -
         computes_number(R,n,m) \<and>
         (n \<in> A \<longleftrightarrow> m \<in> B)"
     unfolding tm_reduces_def by auto
-  from reduction_R have machine_R: "R \<in> machine"
+  from reduction_R have machine_R: "R \<in> tm_machine"
     by (rule tm_reduces_machine)
   from decidable obtain D where decision_D: "decides(D,B)"
     unfolding tm_decidable_def by auto
-  from decision_D have machine_D: "D \<in> machine"
+  from decision_D have machine_D: "D \<in> tm_machine"
     by (rule decides_machine)
   have decision: "decides(sequential_machine(R,D),A)"
   proof (unfold decides_def, intro conjI)
-    show "sequential_machine(R,D) \<in> machine"
+    show "sequential_machine(R,D) \<in> tm_machine"
       by (rule sequential_machine_type[OF machine_R machine_D])
     show "A \<subseteq> nat" by (rule subset_A)
     show "\<forall>n\<in>nat.

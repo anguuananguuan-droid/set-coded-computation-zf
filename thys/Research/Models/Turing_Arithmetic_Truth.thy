@@ -113,7 +113,7 @@ proof -
     from A.nat_into_M[OF n] show "n \<in> A" by simp
   qed
   show ?thesis unfolding arith_exists_fm_def
-    using env p nat_in_A sats_nat_member_fm[OF transitive_zfc_model_imp_zf[OF model]] by auto
+    using env p nat_in_A sats_nat_member_fm[OF transitive_zf_M_ZF1_trans[OF transitive_zfc_model_imp_zf[OF model]]] by auto
 qed
 
 theorem sats_arith_forall_fm:
@@ -129,7 +129,7 @@ proof -
     from A.nat_into_M[OF n] show "n \<in> A" by simp
   qed
   show ?thesis unfolding arith_forall_fm_def
-    using env p nat_in_A sats_nat_member_fm[OF transitive_zfc_model_imp_zf[OF model]] by auto
+    using env p nat_in_A sats_nat_member_fm[OF transitive_zf_M_ZF1_trans[OF transitive_zfc_model_imp_zf[OF model]]] by auto
 qed
 
 end

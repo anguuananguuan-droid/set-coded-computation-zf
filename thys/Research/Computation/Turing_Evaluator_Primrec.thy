@@ -8,10 +8,10 @@ theory Turing_Evaluator_Primrec
   imports "Turing_Evaluator" "Set_Coded_Halting_Invariance_ZF.Turing_Instruction_Normalization"
 begin
 
-text \<open>The one-step evaluator and its finite iteration have
+text \<open>The one-tm_step evaluator and its finite iteration have
 primitive-recursive certificates. An application theorem identifies the iteration certificate with
 the numerical evaluator at every natural time bound.
-This is a result about numerical evaluation, not a universal machine.\<close>
+This is a result about numerical evaluation, not a universal tm_machine.\<close>
 
 subsection \<open>Tape Inspection\<close>
 
@@ -493,13 +493,13 @@ lemma pr_step_instruction_apply:
     code_fetch(e,pair_left_code(z),code_scan(pair_right_code(z)))"
 proof -
   from configuration_code have state: "pair_left_code(z) \<in> nat"
-    and tape: "pair_right_code(z) \<in> nat"
+    and tm_tape: "pair_right_code(z) \<in> nat"
     by typecheck+
-  from tape have scanned: "code_scan(pair_right_code(z)) \<in> nat"
+  from tm_tape have scanned: "code_scan(pair_right_code(z)) \<in> nat"
     by typecheck
   show ?thesis
     unfolding pr_step_instruction_def
-    using machine_number configuration_code tail state tape scanned
+    using machine_number configuration_code tail state tm_tape scanned
     by (simp add: COMP_3 COMP_1 PROJ_0
         pr_pair_left_code_apply pr_step_tape_apply
         pr_code_scan_apply pr_code_fetch_apply)
@@ -529,11 +529,11 @@ proof -
     "code_fetch(e,pair_left_code(z),code_scan(pair_right_code(z)))"
   have instruction_number: "?ins \<in> nat"
     by typecheck
-  from configuration_code have tape: "pair_right_code(z) \<in> nat"
+  from configuration_code have tm_tape: "pair_right_code(z) \<in> nat"
     by typecheck
   show ?thesis
     unfolding pr_step_updated_tape_def
-    using machine_number configuration_code tail instruction_number tape
+    using machine_number configuration_code tail instruction_number tm_tape
     by (simp add: COMP_2 COMP_1 pr_step_instruction_apply
         pr_pair_left_code_apply pr_step_tape_apply pr_code_update_apply)
 qed

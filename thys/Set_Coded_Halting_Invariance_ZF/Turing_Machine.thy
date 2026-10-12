@@ -10,15 +10,18 @@ begin
 
 subsection \<open>Machine Representation\<close>
 
-text \<open>A machine is a finite instruction list. An instruction contains an
+text \<open>A tm_machine is a finite instruction list. An instruction contains an
 action number and a next-state number. Actions 0 and 1 write symbols, 2 and
-3 move the head, and 4 leaves the tape unchanged. State 1 is initial and
+3 move the head, and 4 leaves the tm_tape unchanged. State 1 is initial and
 state 0 is final. The named actions, states, and symbols are input
 abbreviations for these natural numbers; printed propositions may show the
 numbers instead of their names.\<close>
 
 definition symbol :: i where
   "symbol \<equiv> 2"
+
+lemma symbol_nat: "a \<in> symbol \<Longrightarrow> a \<in> nat"
+  unfolding symbol_def by auto
 
 definition action :: i where
   "action \<equiv> succ(succ(succ(2)))"
@@ -50,17 +53,17 @@ abbreviation (input) move_right :: i where
 abbreviation (input) nop :: i where
   "nop \<equiv> succ(succ(2))"
 
-definition tape :: i where
-  "tape \<equiv> list(symbol) \<times> list(symbol)"
+definition tm_tape :: i where
+  "tm_tape \<equiv> list(symbol) \<times> list(symbol)"
 
 definition instruction :: i where
   "instruction \<equiv> action \<times> nat"
 
-definition machine :: i where
-  "machine \<equiv> list(instruction)"
+definition tm_machine :: i where
+  "tm_machine \<equiv> list(instruction)"
 
 definition configuration :: i where
-  "configuration \<equiv> nat \<times> tape"
+  "configuration \<equiv> nat \<times> tm_tape"
 
 lemma symbol_type [simp,TC]:
   shows "blank_symbol \<in> symbol"
@@ -78,14 +81,14 @@ lemma action_type [simp,TC]:
 lemma tapeI [intro]:
   assumes left: "l \<in> list(symbol)"
     and right: "r \<in> list(symbol)"
-  shows "\<langle>l,r\<rangle> \<in> tape"
-  using left right unfolding tape_def by typecheck
+  shows "\<langle>l,r\<rangle> \<in> tm_tape"
+  using left right unfolding tm_tape_def by typecheck
 
 lemma tapeD:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "fst(t) \<in> list(symbol)"
     and "snd(t) \<in> list(symbol)"
-  using tape unfolding tape_def by typecheck+
+  using tm_tape unfolding tm_tape_def by typecheck+
 
 subsection \<open>Tape Semantics\<close>
 
@@ -104,10 +107,10 @@ lemma hd_symbol_type:
   by (erule_tac a=xs in list.cases) auto
 
 lemma scan_type [TC]:
-  assumes tape: "t \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
   shows "scan(t) \<in> symbol"
 proof -
-  from tape have "snd(t) \<in> list(symbol)" by (rule tapeD)
+  from tm_tape have "snd(t) \<in> list(symbol)" by (rule tapeD)
   then show ?thesis
     unfolding scan_def by (rule hd_symbol_type)
 qed
@@ -129,10 +132,10 @@ definition tm_update :: "[i,i] \<Rightarrow> i" where
     else t"
 
 lemma tm_update_type [TC]:
-  assumes tape: "t \<in> tape"
-  shows "tm_update(a,t) \<in> tape"
+  assumes tm_tape: "t \<in> tm_tape"
+  shows "tm_update(a,t) \<in> tm_tape"
 proof -
-  from tape
+  from tm_tape
   have left: "fst(t) \<in> list(symbol)"
     and right: "snd(t) \<in> list(symbol)"
     by (rule tapeD)+
@@ -146,7 +149,7 @@ proof -
     by (rule tl_type)
   show ?thesis
     unfolding tm_update_def
-    using tape left right left_head right_head left_tail right_tail
+    using tm_tape left right left_head right_head left_tail right_tail
     by auto
 qed
 
@@ -178,7 +181,7 @@ subsection \<open>One-Step Semantics\<close>
 
 text \<open>For a nonfinal state q and scanned symbol b, the instruction slot
 is 2 * pred(q) + b. A missing slot enters the final state without changing
-the tape. The final state is absorbing.\<close>
+the tm_tape. The final state is absorbing.\<close>
 
 definition slot :: "[i,i] \<Rightarrow> i" where
   "slot(q,b) \<equiv> 2 #* pred(q) #+ b"
@@ -202,10 +205,10 @@ definition fetch :: "[i,i,i] \<Rightarrow> i" where
     else \<langle>nop,final_state\<rangle>"
 
 lemma fetch_type [TC]:
-  assumes machine: "M \<in> machine"
+  assumes tm_machine: "M \<in> tm_machine"
   shows "fetch(M,q,b) \<in> instruction"
-  using machine
-  unfolding fetch_def machine_def instruction_def
+  using tm_machine
+  unfolding fetch_def tm_machine_def instruction_def
   by (auto intro: nth_type)
 
 lemma fetch_final [simp]:
@@ -223,41 +226,41 @@ lemma fetch_out_of_range [simp]:
   shows "fetch(M,q,b) = \<langle>nop,final_state\<rangle>"
   using out_of_range unfolding fetch_def by simp
 
-definition step :: "[i,i] \<Rightarrow> i" where
-  "step(M,c) \<equiv>
+definition tm_step :: "[i,i] \<Rightarrow> i" where
+  "tm_step(M,c) \<equiv>
     let ins = fetch(M,fst(c),scan(snd(c)))
     in \<langle>snd(ins),tm_update(fst(ins),snd(c))\<rangle>"
 
 lemma step_type [TC]:
-  assumes machine: "M \<in> machine"
+  assumes tm_machine: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
-  shows "step(M,c) \<in> configuration"
+  shows "tm_step(M,c) \<in> configuration"
 proof -
   have fetched_instruction:
     "fetch(M,fst(c),scan(snd(c))) \<in> instruction"
-    using machine by (rule fetch_type)
-  have current_tape: "snd(c) \<in> tape"
+    using tm_machine by (rule fetch_type)
+  have current_tape: "snd(c) \<in> tm_tape"
     using configuration unfolding configuration_def by typecheck
   show ?thesis
-    unfolding step_def Let_def configuration_def
+    unfolding tm_step_def Let_def configuration_def
     using fetched_instruction current_tape
     unfolding instruction_def by typecheck
 qed
 
 lemma step_pair [simp]:
-  "step(M,\<langle>q,t\<rangle>) =
+  "tm_step(M,\<langle>q,t\<rangle>) =
     \<langle>snd(fetch(M,q,scan(t))),
       tm_update(fst(fetch(M,q,scan(t))),t)\<rangle>"
-  unfolding step_def Let_def by simp
+  unfolding tm_step_def Let_def by simp
 
 lemma step_final [simp]:
-  "step(M,\<langle>final_state,t\<rangle>) = \<langle>final_state,t\<rangle>"
-  unfolding step_def Let_def by simp
+  "tm_step(M,\<langle>final_state,t\<rangle>) = \<langle>final_state,t\<rangle>"
+  unfolding tm_step_def Let_def by simp
 
 lemma step_final_configuration [simp]:
   assumes configuration: "c \<in> configuration"
     and final: "fst(c) = final_state"
-  shows "step(M,c) = c"
+  shows "tm_step(M,c) = c"
 proof -
   from configuration obtain q t where representation: "c = \<langle>q,t\<rangle>"
     unfolding configuration_def by auto
@@ -268,23 +271,23 @@ qed
 subsection \<open>Finite Computations\<close>
 
 text \<open>A finite run is a set-theoretic function on succ(n). The
-equivalence theorem identifies such a run with n iterations of the step
+equivalence theorem identifies such a run with n iterations of the tm_step
 function. This witness form supports internal descriptions of finite
 computations in set-theoretic models.\<close>
 
 definition steps :: "[i,i,i] \<Rightarrow> i" where
-  "steps(M,c,n) \<equiv> (\<lambda>x. step(M,x))^n (c)"
+  "steps(M,c,n) \<equiv> (\<lambda>x. tm_step(M,x))^n (c)"
 
 lemma steps_0 [simp]:
   "steps(M,c,0) = c"
   unfolding steps_def by simp
 
 lemma steps_succ [simp]:
-  "steps(M,c,succ(n)) = step(M,steps(M,c,n))"
+  "steps(M,c,succ(n)) = tm_step(M,steps(M,c,n))"
   unfolding steps_def by simp
 
 lemma steps_type [TC]:
-  assumes machine: "M \<in> machine"
+  assumes tm_machine: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and time: "n \<in> nat"
   shows "steps(M,c,n) \<in> configuration"
@@ -294,7 +297,7 @@ proof (rule iterates_type)
   show "c \<in> configuration" by (rule configuration)
   fix x
   assume "x \<in> configuration"
-  with machine show "step(M,x) \<in> configuration"
+  with tm_machine show "tm_step(M,x) \<in> configuration"
     by (rule step_type)
 qed
 
@@ -320,41 +323,8 @@ lemma steps_final [simp]:
   using time unfolding steps_def
   by (rule iterates_triv) simp
 
-lemma steps_final_mono:
-  assumes machine_M: "M \<in> machine"
-    and configuration: "c \<in> configuration"
-    and earlier: "m \<in> nat"
-    and later: "n \<in> nat"
-    and ordered: "m \<le> n"
-    and final: "fst(steps(M,c,m)) = final_state"
-  shows "fst(steps(M,c,n)) = final_state"
-proof -
-  let ?d = "n #- m"
-  let ?z = "steps(M,c,m)"
-  have difference: "?d \<in> nat"
-    by typecheck
-  from add_diff_inverse[OF ordered later] have decomposition:
-    "m #+ ?d = n" .
-  from steps_type[OF machine_M configuration earlier]
-  have reached: "?z \<in> configuration" .
-  from reached have pair:
-    "\<langle>fst(?z),snd(?z)\<rangle> = ?z"
-    unfolding configuration_def by (rule Pair_fst_snd_eq)
-  from pair final have final_pair:
-    "?z = \<langle>final_state,snd(?z)\<rangle>"
-    by simp
-  from steps_final[OF difference, of M "snd(?z)"] final_pair
-  have absorbed: "steps(M,?z,?d) = ?z"
-    by simp
-  from steps_add[OF earlier difference, of M c]
-  have split:
-    "steps(M,c,m #+ ?d) = steps(M,?z,?d)" .
-  from decomposition split absorbed final show ?thesis
-    by simp
-qed
-
 lemma steps_final_absorb:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and earlier: "m \<in> nat"
     and later: "n \<in> nat"
@@ -383,12 +353,22 @@ proof -
   from decomposition split absorbed show ?thesis by simp
 qed
 
+lemma steps_final_mono:
+  assumes machine_M: "M \<in> tm_machine"
+    and configuration: "c \<in> configuration"
+    and earlier: "m \<in> nat"
+    and later: "n \<in> nat"
+    and ordered: "m \<le> n"
+    and final: "fst(steps(M,c,m)) = final_state"
+  shows "fst(steps(M,c,n)) = final_state"
+  using steps_final_absorb[OF assms] final by simp
+
 definition finite_run :: "[i,i,i] \<Rightarrow> o" where
   "finite_run(M,n,r) \<equiv>
     relation(r) \<and>
     function(r) \<and>
     domain(r) = succ(n) \<and>
-    (\<forall>k\<in>n. r`succ(k) = step(M,r`k))"
+    (\<forall>k\<in>n. r`succ(k) = tm_step(M,r`k))"
 
 lemma finite_run_iff_steps:
   assumes time: "n \<in> nat"
@@ -400,7 +380,7 @@ proof
     and functional: "function(r)"
     and domain: "domain(r) = succ(n)"
     and initial: "r`0 = c"
-    and next_step: "\<And>k. k \<in> n \<Longrightarrow> r`succ(k) = step(M,r`k)"
+    and next_step: "\<And>k. k \<in> n \<Longrightarrow> r`succ(k) = tm_step(M,r`k)"
     unfolding finite_run_def by auto
   from function_imp_Pi[OF functional relational] domain
   have run_type: "r \<in> succ(n) \<rightarrow> range(r)"
@@ -446,7 +426,7 @@ next
   have next_step:
     "\<And>k. k \<in> n \<Longrightarrow>
       (\<lambda>j\<in>succ(n). steps(M,c,j))`succ(k) =
-      step(M,(\<lambda>j\<in>succ(n). steps(M,c,j))`k)"
+      tm_step(M,(\<lambda>j\<in>succ(n). steps(M,c,j))`k)"
   proof -
     fix k
     assume before_end: "k \<in> n"
@@ -456,7 +436,7 @@ next
     have next_within: "succ(k) \<in> succ(n)"
       by (simp add: Ord_succ_mem_iff)
     show "(\<lambda>j\<in>succ(n). steps(M,c,j))`succ(k) =
-      step(M,(\<lambda>j\<in>succ(n). steps(M,c,j))`k)"
+      tm_step(M,(\<lambda>j\<in>succ(n). steps(M,c,j))`k)"
       using within next_within by simp
   qed
   from time have zero_within: "0 \<in> succ(n)"
@@ -477,18 +457,18 @@ abbreviation initial_config :: "i \<Rightarrow> i" where
 lemma initial_config_type [TC]:
   assumes input: "x \<in> list(symbol)"
   shows "initial_config(x) \<in> configuration"
-  using input unfolding configuration_def tape_def by typecheck
+  using input unfolding configuration_def tm_tape_def by typecheck
 
 definition halts_on :: "[i,i] \<Rightarrow> o" where
   "halts_on(M,x) \<equiv>
-    M \<in> machine \<and>
+    M \<in> tm_machine \<and>
     x \<in> list(symbol) \<and>
     (\<exists>n\<in>nat.
       fst(steps(M,initial_config(x),n)) = final_state)"
 
 theorem halts_on_iff_finite_run:
   "halts_on(M,x) \<longleftrightarrow>
-    M \<in> machine \<and>
+    M \<in> tm_machine \<and>
     x \<in> list(symbol) \<and>
     (\<exists>n\<in>nat. \<exists>r.
       finite_run(M,n,r) \<and>
@@ -497,7 +477,7 @@ theorem halts_on_iff_finite_run:
 proof
   assume halts: "halts_on(M,x)"
   then obtain n where
-    machine: "M \<in> machine"
+    tm_machine: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and time: "n \<in> nat"
     and final: "fst(steps(M,initial_config(x),n)) = final_state"
@@ -510,23 +490,23 @@ proof
     using time by simp
   have final_run: "fst(?r`n) = final_state"
     using endpoint final by simp
-  show "M \<in> machine \<and>
+  show "M \<in> tm_machine \<and>
     x \<in> list(symbol) \<and>
     (\<exists>n\<in>nat. \<exists>r.
       finite_run(M,n,r) \<and>
       r`0 = initial_config(x) \<and>
       fst(r`n) = final_state)"
-    using machine input time run final_run by blast
+    using tm_machine input time run final_run by blast
 next
   assume witness:
-    "M \<in> machine \<and>
+    "M \<in> tm_machine \<and>
       x \<in> list(symbol) \<and>
       (\<exists>n\<in>nat. \<exists>r.
         finite_run(M,n,r) \<and>
         r`0 = initial_config(x) \<and>
         fst(r`n) = final_state)"
   then obtain n r where
-    machine: "M \<in> machine"
+    tm_machine: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and time: "n \<in> nat"
     and run: "finite_run(M,n,r)"
@@ -545,7 +525,7 @@ next
     using final endpoint by simp
   show "halts_on(M,x)"
     unfolding halts_on_def
-    using machine input time final_step by blast
+    using tm_machine input time final_step by blast
 qed
 
 abbreviation halts_blank :: "i \<Rightarrow> o" where

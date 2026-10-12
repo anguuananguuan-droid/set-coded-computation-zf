@@ -33,8 +33,8 @@ definition addition_machine :: i where
     \<langle>write_blank,add_move_third\<rangle>,\<langle>write_blank,add_move_third\<rangle>,
     \<langle>move_right,final_state\<rangle>,\<langle>move_right,final_state\<rangle>]"
 
-lemma addition_machine_type [TC]: "addition_machine \<in> machine"
-  unfolding addition_machine_def machine_def instruction_def by typecheck
+lemma addition_machine_type [TC]: "addition_machine \<in> tm_machine"
+  unfolding addition_machine_def tm_machine_def instruction_def by typecheck
 
 lemma fetch_addition [simp]:
   "fetch(addition_machine,1,0) = \<langle>write_one,2\<rangle>"
@@ -94,12 +94,12 @@ proof -
   have right: "half_tape_eq(?x,arguments([n,m]))"
     using half_tape_eq_sym[OF half_tape_eq_trailing_blank[OF x]] args by simp
   have start: "config_eq(initial_config(?x),initial_config(arguments([n,m])))"
-    using x input right unfolding config_eq_def tape_eq_def configuration_def tape_def by auto
+    using x input right unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by auto
   have blanks: "half_tape_eq(?blanks,[])"
     using half_tape_eq_blank_repeat[of "succ(succ(2))"] by simp
   have finish: "config_eq(\<langle>final_state,\<langle>?blanks,?y\<rangle>\<rangle>,
     \<langle>final_state,\<langle>[],?y\<rangle>\<rangle>)"
-    using y blanks unfolding config_eq_def tape_eq_def configuration_def tape_def by auto
+    using y blanks unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by auto
   show ?thesis by (rule computes_tape_from_reaches[OF addition_machine_type input y start
     addition_run[OF n m] finish])
 qed
@@ -107,7 +107,7 @@ qed
 definition doubling_machine :: i where
   "doubling_machine \<equiv> sequential_machine(duplicate_arguments_machine,addition_machine)"
 
-lemma doubling_machine_type [TC]: "doubling_machine \<in> machine"
+lemma doubling_machine_type [TC]: "doubling_machine \<in> tm_machine"
   unfolding doubling_machine_def by typecheck
 
 theorem doubling_computes:

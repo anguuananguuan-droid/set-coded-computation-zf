@@ -334,7 +334,7 @@ lemma code_shift_machine_in_machine_code:
 proof -
   from shift_machine_type[
       OF offset decode_machine_type[OF machine_number]]
-  have shifted: "shift_machine(k,decode_machine(e)) \<in> machine" .
+  have shifted: "shift_machine(k,decode_machine(e)) \<in> tm_machine" .
   from code_shift_machine_correct[OF offset machine_number]
     encode_machine_type[OF shifted]
   show ?thesis by simp
@@ -348,7 +348,7 @@ theorem decode_code_shift_machine:
 proof -
   from shift_machine_type[
       OF offset decode_machine_type[OF machine_number]]
-  have shifted: "shift_machine(k,decode_machine(e)) \<in> machine" .
+  have shifted: "shift_machine(k,decode_machine(e)) \<in> tm_machine" .
   from code_shift_machine_correct[OF offset machine_number]
     decode_encode_machine[OF shifted]
   show ?thesis by simp
@@ -558,12 +558,12 @@ lemma code_prepend_loader_block_type [TC]:
 
 lemma code_prepend_loader_block_correct:
   assumes index: "i \<in> nat"
-    and machine_M: "M \<in> machine"
+    and machine_M: "M \<in> tm_machine"
   shows "code_prepend_loader_block(i,encode_machine(M)) =
     encode_machine(loader_block(succ(i #+ i)) @ M)"
 proof -
   from machine_M have instructions: "M \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   from index have state: "succ(i #+ i) \<in> nat"
     by typecheck
   from loader_block_type[OF state] have block:
@@ -600,7 +600,7 @@ lemma code_loader_prefix_aux_type [TC]:
 lemma code_loader_prefix_aux_correct:
   assumes count: "j \<in> nat"
     and total: "n \<in> nat"
-    and machine_M: "M \<in> machine"
+    and machine_M: "M \<in> tm_machine"
     and bounded: "j \<le> n"
   shows "code_loader_prefix_aux(j,n,encode_machine(M)) =
     encode_machine(
@@ -650,11 +650,11 @@ next
       \<in> list(instruction)"
     by simp
   from machine_M have instructions: "M \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   from compiled instructions have suffix:
     "compile_actions(loader_actions(numeral_input(j)),?qnext) @ M
-      \<in> machine"
-    unfolding machine_def by typecheck
+      \<in> tm_machine"
+    unfolding tm_machine_def by typecheck
   from code_prepend_loader_block_correct[OF reverse_index suffix]
     prefix
   have prepended:
@@ -690,7 +690,7 @@ lemma code_loader_prefix_type [TC]:
 
 lemma code_loader_prefix_correct:
   assumes natural: "n \<in> nat"
-    and machine_M: "M \<in> machine"
+    and machine_M: "M \<in> tm_machine"
   shows "code_loader_prefix(n,encode_machine(M)) =
     encode_machine(
       compile_actions(loader_actions(numeral_input(n)),initial_state) @ M)"
@@ -904,11 +904,11 @@ proof -
   let ?M = "decode_machine(e)"
   let ?k = "n #+ n"
   from decode_machine_type[OF machine_number] have machine_M:
-    "?M \<in> machine" .
+    "?M \<in> tm_machine" .
   from input_number have offset: "?k \<in> nat"
     by typecheck
   from shift_machine_type[OF offset machine_M] have shifted:
-    "shift_machine(?k,?M) \<in> machine" .
+    "shift_machine(?k,?M) \<in> tm_machine" .
   from code_shift_machine_correct[OF offset machine_number]
   have shifted_code:
     "code_shift_machine(?k,e) = encode_machine(shift_machine(?k,?M))" .
@@ -937,7 +937,7 @@ proof -
   from decode_machine_type[OF machine_number]
     numeral_input_type[OF input_number]
   have transformed:
-    "hardwire(decode_machine(e),numeral_input(n)) \<in> machine"
+    "hardwire(decode_machine(e),numeral_input(n)) \<in> tm_machine"
     by typecheck
   from hardwire_code_correct[OF machine_number input_number]
     encode_machine_type[OF transformed]
@@ -953,7 +953,7 @@ proof -
   from decode_machine_type[OF machine_number]
     numeral_input_type[OF input_number]
   have transformed:
-    "hardwire(decode_machine(e),numeral_input(n)) \<in> machine"
+    "hardwire(decode_machine(e),numeral_input(n)) \<in> tm_machine"
     by typecheck
   from hardwire_code_correct[OF machine_number input_number]
     decode_encode_machine[OF transformed]

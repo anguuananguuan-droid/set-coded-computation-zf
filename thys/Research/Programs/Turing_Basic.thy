@@ -10,21 +10,21 @@ begin
 
 text \<open>These concrete finite machines exercise the numerical contract on
 identity, growth, and erasure. In particular, erasure must work on every
-natural input, including zero, without deleting represented tape cells.\<close>
+natural input, including zero, without deleting represented tm_tape cells.\<close>
 
-lemma empty_machine_type [TC]: "[] \<in> machine"
-  unfolding machine_def by typecheck
+lemma empty_machine_type [TC]: "[] \<in> tm_machine"
+  unfolding tm_machine_def by typecheck
 
 lemma identity_computes:
   assumes n: "n \<in> nat"
   shows "computes_number([],n,n)"
 proof -
-  have step: "steps([],initial_config(numeral_input(n)),1) =
+  have tm_step: "steps([],initial_config(numeral_input(n)),1) =
     \<langle>final_state,\<langle>[],numeral_input(n)\<rangle>\<rangle>"
     by (simp add: fetch_def)
   have c: "\<langle>final_state,\<langle>[],numeral_input(n)\<rangle>\<rangle> \<in> configuration"
     using numeral_input_type[OF n] unfolding configuration_def by typecheck
-  from config_eq_refl[OF c] step n empty_machine_type
+  from config_eq_refl[OF c] tm_step n empty_machine_type
   show ?thesis unfolding computes_number_def by (auto intro!: bexI[of _ 1])
 qed
 
@@ -33,21 +33,21 @@ definition successor_machine :: i where
     [\<langle>move_left,2\<rangle>,\<langle>move_left,2\<rangle>,
      \<langle>write_one,final_state\<rangle>,\<langle>write_one,final_state\<rangle>]"
 
-lemma successor_machine_type [TC]: "successor_machine \<in> machine"
-  unfolding successor_machine_def machine_def instruction_def by typecheck
+lemma successor_machine_type [TC]: "successor_machine \<in> tm_machine"
+  unfolding successor_machine_def tm_machine_def instruction_def by typecheck
 
 lemma successor_computes:
   assumes n: "n \<in> nat"
   shows "computes_number(successor_machine,n,succ(n))"
 proof -
-  have step: "steps(successor_machine,initial_config(numeral_input(n)),2) =
+  have tm_step: "steps(successor_machine,initial_config(numeral_input(n)),2) =
     \<langle>final_state,\<langle>[],numeral_input(succ(n))\<rangle>\<rangle>"
     using n
     by (induct n rule: nat_induct)
       (simp_all add: successor_machine_def numeral_input_def fetch_def slot_def)
   have c: "\<langle>final_state,\<langle>[],numeral_input(succ(n))\<rangle>\<rangle> \<in> configuration"
     using numeral_input_type[OF nat_succI[OF n]] unfolding configuration_def by typecheck
-  from config_eq_refl[OF c] step n successor_machine_type
+  from config_eq_refl[OF c] tm_step n successor_machine_type
   show ?thesis unfolding computes_number_def by (auto intro!: bexI[of _ 2])
 qed
 
@@ -56,8 +56,8 @@ definition zero_machine :: i where
     [\<langle>nop,final_state\<rangle>,\<langle>write_blank,2\<rangle>,
      \<langle>move_right,initial_state\<rangle>,\<langle>move_right,initial_state\<rangle>]"
 
-lemma zero_machine_type [TC]: "zero_machine \<in> machine"
-  unfolding zero_machine_def machine_def instruction_def by typecheck
+lemma zero_machine_type [TC]: "zero_machine \<in> tm_machine"
+  unfolding zero_machine_def tm_machine_def instruction_def by typecheck
 
 lemma zero_machine_erases:
   assumes n: "n \<in> nat" and l: "l \<in> list(symbol)"
@@ -99,10 +99,10 @@ proof -
   have run: "steps(zero_machine,initial_config(numeral_input(n)),succ(n #+ n)) =
     \<langle>final_state,\<langle>repeat(blank_symbol,n),[]\<rangle>\<rangle>"
     by (simp add: zero_machine_def fetch_def slot_def)
-  from repeated have tape: "\<langle>repeat(blank_symbol,n),[]\<rangle> \<in> tape"
+  from repeated have tm_tape: "\<langle>repeat(blank_symbol,n),[]\<rangle> \<in> tm_tape"
     by (rule tapeI) typecheck
-  have blank: "\<langle>[],[]\<rangle> \<in> tape" by (rule tapeI) typecheck+
-  from tape blank half_tape_eq_blank_repeat[OF n]
+  have blank: "\<langle>[],[]\<rangle> \<in> tm_tape" by (rule tapeI) typecheck+
+  from tm_tape blank half_tape_eq_blank_repeat[OF n]
   have eq: "tape_eq(\<langle>repeat(blank_symbol,n),[]\<rangle>,\<langle>[],[]\<rangle>)"
     unfolding tape_eq_def by simp
   from config_eq_pair[OF nat_0I eq] run n zero_machine_type
@@ -115,7 +115,7 @@ corollary zero_realises_constant:
   unfolding tm_realises_unary_def
   using zero_computes zero_machine_type by (auto simp add: CONSTANT_def)
 
-text \<open>This composition runs on the actual blank-padded tape left by
+text \<open>This composition runs on the actual blank-padded tm_tape left by
 zero_machine; no list normalisation is performed between the programs.\<close>
 
 corollary zero_then_successor_computes_one:

@@ -14,7 +14,7 @@ abbreviation reaches :: "[i,i,i] \<Rightarrow> o" where
 lemma reaches_refl: "reaches(M,c,c)"
   by (rule bexI[of _ 0]) auto
 
-lemma reaches_step: "reaches(M,c,step(M,c))"
+lemma reaches_step: "reaches(M,c,tm_step(M,c))"
   by (rule bexI[of _ 1]) auto
 
 lemma reaches_trans:
@@ -28,7 +28,7 @@ proof -
 qed
 
 lemma reaches_step_then:
-  "\<lbrakk>step(M,c) = d; reaches(M,d,e)\<rbrakk> \<Longrightarrow> reaches(M,c,e)"
+  "\<lbrakk>tm_step(M,c) = d; reaches(M,d,e)\<rbrakk> \<Longrightarrow> reaches(M,c,e)"
   using reaches_step[of M c] by (blast intro: reaches_trans)
 
 lemma numeral_input_zero [simp]: "numeral_input(0) = []"
@@ -61,7 +61,7 @@ proof (induct n arbitrary: l rule: nat_induct)
   case 0 then show ?case by (simp add: reaches_refl)
 next
   case (succ n)
-  have first: "step(M,\<langle>q,\<langle>l,numeral_input(succ(n)) @ r\<rangle>\<rangle>) =
+  have first: "tm_step(M,\<langle>q,\<langle>l,numeral_input(succ(n)) @ r\<rangle>\<rangle>) =
     \<langle>q,\<langle>Cons(one_symbol,l),numeral_input(n) @ r\<rangle>\<rangle>"
     by (simp add: loop)
   from succ.hyps(2)[of "Cons(one_symbol,l)"] numeral_append_cons[OF succ.hyps(1), of l]
@@ -82,7 +82,7 @@ proof (induct n arbitrary: r rule: nat_induct)
     (simp add: loop, simp add: reaches_refl)
 next
   case (succ n)
-  have first: "step(M,\<langle>q,\<langle>numeral_input(succ(n)) @ l,Cons(one_symbol,r)\<rangle>\<rangle>) =
+  have first: "tm_step(M,\<langle>q,\<langle>numeral_input(succ(n)) @ l,Cons(one_symbol,r)\<rangle>\<rangle>) =
     \<langle>q,\<langle>numeral_input(n) @ l,Cons(one_symbol,Cons(one_symbol,r))\<rangle>\<rangle>"
     by (simp add: loop)
   from succ.hyps(2)[of "Cons(one_symbol,r)"] numeral_append_cons[OF nat_succI[OF succ.hyps(1)], of r]
@@ -106,7 +106,7 @@ proof -
     (simp add: fetch_entry 0, simp add: 0 reaches_refl)
 next
   case (succ k)
-  have first: "step(M,\<langle>p,\<langle>numeral_input(n) @ l,r\<rangle>\<rangle>) =
+  have first: "tm_step(M,\<langle>p,\<langle>numeral_input(n) @ l,r\<rangle>\<rangle>) =
     \<langle>q,\<langle>numeral_input(k) @ l,Cons(one_symbol,r)\<rangle>\<rangle>"
     using fetch_entry succ by simp
   have rest: "reaches(M,\<langle>q,\<langle>numeral_input(k) @ l,Cons(one_symbol,r)\<rangle>\<rangle>,
@@ -117,7 +117,7 @@ next
 qed
 
 definition computes_tape :: "[i,i,i] \<Rightarrow> o" where
-  "computes_tape(M,x,y) \<equiv> M \<in> machine \<and> x \<in> list(symbol) \<and>
+  "computes_tape(M,x,y) \<equiv> M \<in> tm_machine \<and> x \<in> list(symbol) \<and>
     y \<in> list(symbol) \<and> (\<exists>k\<in>nat.
       config_eq(steps(M,initial_config(x),k),\<langle>final_state,\<langle>[],y\<rangle>\<rangle>))"
 
@@ -127,7 +127,7 @@ lemma computes_number_iff_tape:
   unfolding computes_number_def computes_tape_def using numeral_input_type by blast
 
 lemma computes_tape_from_reaches:
-  assumes M: "M \<in> machine" and x: "x \<in> list(symbol)" and y: "y \<in> list(symbol)"
+  assumes M: "M \<in> tm_machine" and x: "x \<in> list(symbol)" and y: "y \<in> list(symbol)"
     and start: "config_eq(c,initial_config(x))"
     and run: "reaches(M,c,d)"
     and finish: "config_eq(d,\<langle>final_state,\<langle>[],y\<rangle>\<rangle>)"
@@ -145,13 +145,13 @@ lemma computes_tape_output_eq:
     and eq: "half_tape_eq(y,z)"
   shows "computes_tape(M,x,z)"
 proof -
-  from computation obtain k where M: "M \<in> machine" and x: "x \<in> list(symbol)"
+  from computation obtain k where M: "M \<in> tm_machine" and x: "x \<in> list(symbol)"
     and y: "y \<in> list(symbol)" and k: "k \<in> nat"
     and out: "config_eq(steps(M,initial_config(x),k),\<langle>final_state,\<langle>[],y\<rangle>\<rangle>)"
     unfolding computes_tape_def by auto
   from y z eq have finals:
     "config_eq(\<langle>final_state,\<langle>[],y\<rangle>\<rangle>,\<langle>final_state,\<langle>[],z\<rangle>\<rangle>)"
-    unfolding config_eq_def tape_eq_def configuration_def tape_def by auto
+    unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by auto
   from config_eq_trans[OF out finals] M x z k
   show ?thesis unfolding computes_tape_def by blast
 qed
@@ -160,11 +160,11 @@ theorem computes_tape_sequential:
   assumes first: "computes_tape(R,x,y)" and second: "computes_tape(S,y,z)"
   shows "computes_tape(sequential_machine(R,S),x,z)"
 proof -
-  from first obtain k where R: "R \<in> machine" and x: "x \<in> list(symbol)"
+  from first obtain k where R: "R \<in> tm_machine" and x: "x \<in> list(symbol)"
     and k: "k \<in> nat"
     and out_R: "config_eq(steps(R,initial_config(x),k),\<langle>final_state,\<langle>[],y\<rangle>\<rangle>)"
     unfolding computes_tape_def by auto
-  from second obtain l where S: "S \<in> machine" and z: "z \<in> list(symbol)"
+  from second obtain l where S: "S \<in> tm_machine" and z: "z \<in> list(symbol)"
     and l: "l \<in> nat"
     and out_S: "config_eq(steps(S,initial_config(y),l),\<langle>final_state,\<langle>[],z\<rangle>\<rangle>)"
     unfolding computes_tape_def by auto

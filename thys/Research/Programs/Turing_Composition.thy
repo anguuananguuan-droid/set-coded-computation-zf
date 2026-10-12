@@ -27,13 +27,13 @@ definition sequential_machine :: "[i,i] \<Rightarrow> i" where
     continuation_prefix(M) @ shift_machine(control_bound(M),N)"
 
 lemma continuation_entry_type [TC]:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and natural: "j \<in> nat"
   shows "continuation_entry(M,j) \<in> instruction"
 proof (cases "j < length(M)")
   case True
   from machine_M have instructions: "M \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   from nth_type[OF instructions True] have
     "nth(j,M) \<in> instruction" .
   moreover from machine_M have
@@ -54,7 +54,7 @@ next
 qed
 
 lemma continuation_prefix_type [TC]:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "continuation_prefix(M) \<in> list(instruction)"
 proof -
   from machine_M have control: "control_bound(M) \<in> nat"
@@ -68,25 +68,25 @@ proof -
 qed
 
 lemma sequential_machine_type [TC]:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
-  shows "sequential_machine(M,N) \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
+  shows "sequential_machine(M,N) \<in> tm_machine"
 proof -
   from continuation_prefix_type[OF machine_M] have prefix:
     "continuation_prefix(M) \<in> list(instruction)" .
   from machine_M have control: "control_bound(M) \<in> nat"
     by typecheck
   from shift_machine_type[OF control machine_N] have shifted_machine:
-    "shift_machine(control_bound(M),N) \<in> machine" .
+    "shift_machine(control_bound(M),N) \<in> tm_machine" .
   then have shifted:
     "shift_machine(control_bound(M),N) \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   from prefix shifted show ?thesis
-    unfolding sequential_machine_def machine_def by typecheck
+    unfolding sequential_machine_def tm_machine_def by typecheck
 qed
 
 lemma length_continuation_prefix [simp]:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "length(continuation_prefix(M)) = 2 #* control_bound(M)"
 proof -
   from machine_M have control: "control_bound(M) \<in> nat"
@@ -96,8 +96,8 @@ proof -
 qed
 
 lemma length_sequential_machine [simp]:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
   shows "length(sequential_machine(M,N)) =
     2 #* control_bound(M) #+ length(N)"
 proof -
@@ -106,16 +106,16 @@ proof -
   from machine_M have offset: "control_bound(M) \<in> nat"
     by typecheck
   from shift_machine_type[OF offset machine_N] have shifted_machine:
-    "shift_machine(control_bound(M),N) \<in> machine" .
+    "shift_machine(control_bound(M),N) \<in> tm_machine" .
   then have shifted:
     "shift_machine(control_bound(M),N) \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   from length_app[OF prefix shifted] machine_M machine_N
   show ?thesis unfolding sequential_machine_def by simp
 qed
 
 lemma nth_continuation_prefix:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and natural: "j \<in> nat"
     and in_range: "j < 2 #* control_bound(M)"
   shows "nth(j,continuation_prefix(M)) = continuation_entry(M,j)"
@@ -131,8 +131,8 @@ proof -
 qed
 
 lemma fetch_sequential_prefix:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and state: "q \<in> control_bound(M)"
     and nonfinal: "q \<noteq> final_state"
     and scanned: "b \<in> symbol"
@@ -190,8 +190,8 @@ proof -
 qed
 
 lemma fetch_sequential_tail:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and state: "q \<in> nat"
     and scanned: "b \<in> symbol"
   shows "fetch(sequential_machine(M,N),
@@ -213,17 +213,17 @@ qed
 subsection \<open>First-Phase Simulation\<close>
 
 lemma step_sequential_running:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and state: "fst(c) \<in> control_bound(M)"
     and nonfinal: "fst(c) \<noteq> final_state"
-    and next_nonfinal: "fst(step(M,c)) \<noteq> final_state"
-  shows "step(sequential_machine(M,N),c) = step(M,c)"
+    and next_nonfinal: "fst(tm_step(M,c)) \<noteq> final_state"
+  shows "tm_step(sequential_machine(M,N),c) = tm_step(M,c)"
 proof -
-  from configuration have tape: "snd(c) \<in> tape"
+  from configuration have tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck
-  from scan_type[OF tape] have scanned: "scan(snd(c)) \<in> symbol" .
+  from scan_type[OF tm_tape] have scanned: "scan(snd(c)) \<in> symbol" .
   from fetch_sequential_prefix[
       OF machine_M machine_N state nonfinal scanned]
   have transformed:
@@ -234,15 +234,15 @@ proof -
     "fetch(M,fst(c),scan(snd(c))) \<in> instruction" .
   from next_nonfinal have target_nonfinal:
     "snd(fetch(M,fst(c),scan(snd(c)))) \<noteq> final_state"
-    unfolding step_def Let_def by simp
+    unfolding tm_step_def Let_def by simp
   from redirect_final_nonfinal_eq[OF fetched target_nonfinal] transformed
   show ?thesis
-    unfolding step_def Let_def by simp
+    unfolding tm_step_def Let_def by simp
 qed
 
 lemma steps_sequential_running:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and initial: "fst(c) \<in> control_bound(M)"
     and time: "n \<in> nat"
@@ -280,21 +280,21 @@ next
 qed
 
 lemma step_sequential_handoff:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and state: "fst(c) \<in> control_bound(M)"
     and nonfinal: "fst(c) \<noteq> final_state"
-    and next_final: "fst(step(M,c)) = final_state"
-  shows "step(sequential_machine(M,N),c) =
+    and next_final: "fst(tm_step(M,c)) = final_state"
+  shows "tm_step(sequential_machine(M,N),c) =
     shift_configuration(control_bound(M),
-      \<langle>initial_state,snd(step(M,c))\<rangle>)"
+      \<langle>initial_state,snd(tm_step(M,c))\<rangle>)"
 proof -
   from machine_M have offset: "control_bound(M) \<in> nat"
     by typecheck
-  from configuration have tape: "snd(c) \<in> tape"
+  from configuration have tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck
-  from scan_type[OF tape] have scanned: "scan(snd(c)) \<in> symbol" .
+  from scan_type[OF tm_tape] have scanned: "scan(snd(c)) \<in> symbol" .
   from fetch_sequential_prefix[
       OF machine_M machine_N state nonfinal scanned]
   have transformed:
@@ -303,16 +303,16 @@ proof -
         fetch(M,fst(c),scan(snd(c))))" .
   from next_final have target_final:
     "snd(fetch(M,fst(c),scan(snd(c)))) = final_state"
-    unfolding step_def Let_def by simp
+    unfolding tm_step_def Let_def by simp
   from transformed target_final offset show ?thesis
-    unfolding step_def Let_def redirect_final_def
+    unfolding tm_step_def Let_def redirect_final_def
       shift_configuration_def shift_state_def
     by simp
 qed
 
 lemma steps_sequential_handoff:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and initial_below: "fst(c) \<in> control_bound(M)"
     and initial_nonfinal: "fst(c) \<noteq> final_state"
@@ -357,9 +357,9 @@ next
       OF machine_M machine_N current current_below False]
       succ.prems
     have handoff:
-      "step(sequential_machine(M,N),?d) =
+      "tm_step(sequential_machine(M,N),?d) =
         shift_configuration(control_bound(M),
-          \<langle>initial_state,snd(step(M,?d))\<rangle>)"
+          \<langle>initial_state,snd(tm_step(M,?d))\<rangle>)"
       by simp
     have reached:
       "steps(sequential_machine(M,N),c,succ(n)) =
@@ -373,24 +373,24 @@ qed
 subsection \<open>Second-Phase Simulation\<close>
 
 lemma step_sequential_shift:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and configuration: "c \<in> configuration"
-  shows "step(sequential_machine(M,N),shift_configuration(control_bound(M),c)) =
-    shift_configuration(control_bound(M),step(N,c))"
+  shows "tm_step(sequential_machine(M,N),shift_configuration(control_bound(M),c)) =
+    shift_configuration(control_bound(M),tm_step(N,c))"
 proof -
   from configuration have state: "fst(c) \<in> nat"
-    and tape: "snd(c) \<in> tape"
+    and tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck+
-  from scan_type[OF tape] have scanned: "scan(snd(c)) \<in> symbol" .
+  from scan_type[OF tm_tape] have scanned: "scan(snd(c)) \<in> symbol" .
   from fetch_sequential_tail[OF machine_M machine_N state scanned]
   show ?thesis
-    unfolding step_def Let_def shift_configuration_def by simp
+    unfolding tm_step_def Let_def shift_configuration_def by simp
 qed
 
 lemma steps_sequential_shift:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and time: "n \<in> nat"
   shows "steps(sequential_machine(M,N),shift_configuration(control_bound(M),c),n) =
@@ -405,17 +405,17 @@ next
   have current: "steps(N,c,n) \<in> configuration" .
   have "steps(sequential_machine(M,N),
       shift_configuration(control_bound(M),c),succ(n)) =
-    step(sequential_machine(M,N),
+    tm_step(sequential_machine(M,N),
       steps(sequential_machine(M,N),
         shift_configuration(control_bound(M),c),n))"
     by simp
   also from succ.hyps(2) have "... =
-    step(sequential_machine(M,N),
+    tm_step(sequential_machine(M,N),
       shift_configuration(control_bound(M),steps(N,c,n)))"
     by simp
   also from step_sequential_shift[OF machine_M machine_N current]
   have "... = shift_configuration(control_bound(M),
-      step(N,steps(N,c,n)))" .
+      tm_step(N,steps(N,c,n)))" .
   also have "... = shift_configuration(control_bound(M),
       steps(N,c,succ(n)))"
     by simp
@@ -423,8 +423,8 @@ next
 qed
 
 lemma steps_sequential_after_handoff:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and next_configuration: "d \<in> configuration"
     and handoff_time: "m \<in> nat"
     and continuation_time: "n \<in> nat"
@@ -452,8 +452,8 @@ qed
 subsection \<open>Termination\<close>
 
 theorem steps_sequential_after_halting:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and initial_below: "fst(c) \<in> control_bound(M)"
     and initial_nonfinal: "fst(c) \<noteq> final_state"
@@ -467,11 +467,11 @@ theorem steps_sequential_after_halting:
 proof -
   from steps_type[OF machine_M configuration halting_time]
   have endpoint: "steps(M,c,m) \<in> configuration" .
-  then have tape: "snd(steps(M,c,m)) \<in> tape"
+  then have tm_tape: "snd(steps(M,c,m)) \<in> tm_tape"
     unfolding configuration_def by typecheck
   have next_configuration:
     "\<langle>initial_state,snd(steps(M,c,m))\<rangle> \<in> configuration"
-    unfolding configuration_def using tape by typecheck
+    unfolding configuration_def using tm_tape by typecheck
   from steps_sequential_handoff[
       OF machine_M machine_N configuration initial_below initial_nonfinal
         halting_time final]
@@ -494,8 +494,8 @@ proof -
 qed
 
 theorem steps_sequential_finalD:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and initial_below: "fst(c) \<in> control_bound(M)"
     and initial_nonfinal: "fst(c) \<noteq> final_state"
@@ -536,11 +536,11 @@ proof -
     "h #+ ?r = n" .
   from steps_type[OF machine_M configuration time]
   have source_endpoint: "steps(M,c,n) \<in> configuration" .
-  then have tape: "snd(steps(M,c,n)) \<in> tape"
+  then have tm_tape: "snd(steps(M,c,n)) \<in> tm_tape"
     unfolding configuration_def by typecheck
   have next_configuration:
     "\<langle>initial_state,snd(steps(M,c,n))\<rangle> \<in> configuration"
-    unfolding configuration_def using tape by typecheck
+    unfolding configuration_def using tm_tape by typecheck
   from steps_sequential_after_handoff[
       OF machine_M machine_N next_configuration handoff_time
         continuation_time handoff]
@@ -565,8 +565,8 @@ proof -
 qed
 
 theorem sequential_machine_terminates_iff:
-  assumes machine_M: "M \<in> machine"
-    and machine_N: "N \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+    and machine_N: "N \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and initial_below: "fst(c) \<in> control_bound(M)"
     and initial_nonfinal: "fst(c) \<noteq> final_state"

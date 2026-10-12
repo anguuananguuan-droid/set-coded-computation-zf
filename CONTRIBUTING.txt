@@ -31,6 +31,6 @@ priority and completion claims.
 
 5 PUBLICATION
 
-Retain applicable attribution and license notices. Record substantial AI
-assistance accurately. Only the project owner may authorize AFP submission
+Retain applicable attribution and license notices. Record AI
+contributions and human review accurately. Only the project owner may authorize AFP submission
 or contact with reviewers. A verified candidate is not an accepted entry.

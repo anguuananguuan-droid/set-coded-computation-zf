@@ -20,6 +20,16 @@ witness to be a finite function. An external run supplies a canonical finite
 function belonging to the model. Conversely, induction recovers the required
 finite sequence from any internal witness.\<close>
 
+text \<open>The formulas \<open>drop_fm\<close> and \<open>fetch_fm\<close>
+are internal components of this construction. The public satisfaction
+interface is \<open>M_ZF1_trans.sats_halt_fm\<close> and its ZF corollary.
+The existing list-indexing absoluteness theorem \<open>M_datatypes.nth_abs\<close>
+uses a locale with additional replacement assumptions, including
+\<open>nth_replacement\<close>. No interpretation of that locale is required
+here. Instead, list traversal uses explicit finite witnesses under
+\<open>M_ZF1_trans\<close>. This does not claim that the additional assumptions
+are independent of this locale.\<close>
+
 subsection \<open>Names for natural numbers\<close>
 
 definition nat_name_fm :: "i \<Rightarrow> i" where
@@ -54,19 +64,19 @@ next
 qed
 
 lemma sats_nat_name_fm:
-  assumes model: "transitive_zf_model(A)" and n: "n \<in> nat"
+  assumes model: "M_ZF1_trans(A)" and n: "n \<in> nat"
   shows "\<And>x env. x \<in> A \<Longrightarrow> env \<in> list(A) \<Longrightarrow>
     (A, Cons(x,env) \<Turnstile> nat_name_fm(n)) \<longleftrightarrow> x = n"
   using n
 proof (induct n rule: nat_induct)
   case 0
-  from model have trans: "Transset(A)" unfolding transitive_zf_model_def by
-    simp
+  interpret A: M_ZF1_trans A by (rule model)
+  have trans: "Transset(A)" by (rule A.trans_M)
   from Transset_sats_empty_fm_eq_0[of 0 "Cons(x,env)" A] 0 trans show ?case by
     simp
 next
   case (succ n)
-  interpret A: M_trivial "##A" by (rule transitive_zf_M_trivial[OF model])
+  interpret A: M_ZF1_trans A by (rule model)
   have nA: "n \<in> A" using A.nat_into_M[OF succ.hyps(1)] by simp
   have h1: "(A, Cons(x,env) \<Turnstile> nat_name_fm(succ(n))) \<longleftrightarrow>
       (\<exists>y\<in>A. (A, Cons(y,Cons(x,env)) \<Turnstile> nat_name_fm(n)) \<and> x = succ(y))"
@@ -84,58 +94,50 @@ lemma const_fm_type [TC]: "\<lbrakk>k \<in> nat; i \<in> nat\<rbrakk> \<Longrigh
   unfolding const_fm_def by simp
 
 lemma sats_const_fm:
-  assumes model: "transitive_zf_model(A)" and k: "k \<in> nat" and i: "i \<in> nat"
+  assumes model: "M_ZF1_trans(A)" and k: "k \<in> nat" and i: "i \<in> nat"
     and env: "env \<in> list(A)"
   shows "(A, env \<Turnstile> const_fm(k,i)) \<longleftrightarrow> nth(i,env) = k"
 proof -
-  interpret A: M_trivial "##A" by (rule transitive_zf_M_trivial[OF model])
+  interpret A: M_ZF1_trans A by (rule model)
   have kA: "k \<in> A" using A.nat_into_M[OF k] by simp
   have "(A, env \<Turnstile> const_fm(k,i)) \<longleftrightarrow> (\<exists>y\<in>A. y = k \<and> y = nth(i,env))"
     unfolding const_fm_def using env i k sats_nat_name_fm[OF model k] by auto
   then show ?thesis using kA by auto
 qed
 
-subsection \<open>Model and tape updates\<close>
+subsection \<open>Model and tm_tape updates\<close>
 
-text \<open>The locale \<open>tm_model\<close> fixes a transitive set model of
-ZF.\<close>
+text \<open>The satisfaction proofs use \<open>M_ZF1_trans\<close>, a
+transitive model of Zermelo set theory with the four replacement instances
+specified by the imported locale. A transitive ZF set model interprets this
+locale. No minimality claim about these assumptions is made.\<close>
 
-locale tm_model =
-  fixes A
-  assumes model: "transitive_zf_model(A)"
-
-sublocale tm_model \<subseteq> M_ZF1_trans A
-  by (rule transitive_zf_M_ZF1_trans[OF model])
-
-context tm_model
+context M_ZF1_trans
 begin
 
 lemma tm_const [simp]:
-  "\<lbrakk>k \<in> nat; i \<in> nat; env \<in> list(A)\<rbrakk> \<Longrightarrow>
-    (A, env \<Turnstile> const_fm(k,i)) \<longleftrightarrow> nth(i,env) = k"
-  by (rule sats_const_fm[OF model])
+  "\<lbrakk>k \<in> nat; i \<in> nat; env \<in> list(M)\<rbrakk> \<Longrightarrow>
+    (M, env \<Turnstile> const_fm(k,i)) \<longleftrightarrow> nth(i,env) = k"
+  by (rule sats_const_fm[OF M_ZF1_trans_axioms])
 
 lemma list_in_A:
-  assumes l: "l \<in> list(B)" and el: "\<And>a. a \<in> B \<Longrightarrow> a \<in> A"
-  shows "l \<in> A"
+  assumes l: "l \<in> list(B)" and el: "\<And>a. a \<in> B \<Longrightarrow> a \<in> M"
+  shows "l \<in> M"
   using tm_list_closed[OF l] el by simp
 
-lemma nat_in_A [simp]: "n \<in> nat \<Longrightarrow> n \<in> A"
+lemma nat_in_A [simp]: "n \<in> nat \<Longrightarrow> n \<in> M"
   using nat_into_M by simp
 
-lemma pair_in_A [simp]: "\<langle>a,b\<rangle> \<in> A \<longleftrightarrow> a \<in> A \<and> b \<in> A"
+lemma pair_in_A [simp]: "\<langle>a,b\<rangle> \<in> M \<longleftrightarrow> a \<in> M \<and> b \<in> M"
   using pair_in_M_iff by simp
 
-lemma Nil_in_A [simp]: "[] \<in> A"
+lemma Nil_in_A [simp]: "[] \<in> M"
   using Nil_in_M by simp
 
-lemma Cons_in_A [simp]: "Cons(a,l) \<in> A \<longleftrightarrow> a \<in> A \<and> l \<in> A"
+lemma Cons_in_A [simp]: "Cons(a,l) \<in> M \<longleftrightarrow> a \<in> M \<and> l \<in> M"
   using Cons_in_M_iff by simp
 
-lemma symbol_nat: "a \<in> symbol \<Longrightarrow> a \<in> nat"
-  unfolding symbol_def by auto
-
-lemma symbols_in_A [simp]: "l \<in> list(symbol) \<Longrightarrow> l \<in> A"
+lemma symbols_in_A [simp]: "l \<in> list(symbol) \<Longrightarrow> l \<in> M"
   by (erule list_in_A) (simp add: symbol_nat)
 
 lemma hd'_list [simp]: "l \<in> list(B) \<Longrightarrow> hd'(l) = hd(l)"
@@ -144,13 +146,13 @@ lemma hd'_list [simp]: "l \<in> list(B) \<Longrightarrow> hd'(l) = hd(l)"
 lemma tl'_list [simp]: "l \<in> list(B) \<Longrightarrow> tl'(l) = tl(l)"
   by (simp add: tl'_def list_imp_quasilist)
 
-lemma hd_symbol_in_A [simp]: "l \<in> list(symbol) \<Longrightarrow> hd(l) \<in> A"
+lemma hd_symbol_in_A [simp]: "l \<in> list(symbol) \<Longrightarrow> hd(l) \<in> M"
   by (rule nat_in_A, rule symbol_nat, erule hd_symbol_type)
 
 lemma tl_symbols [simp]: "l \<in> list(symbol) \<Longrightarrow> tl(l) \<in> list(symbol)"
   by (rule list.cases[of l]) auto
 
-lemma tl_symbols_in_A [simp]: "l \<in> list(symbol) \<Longrightarrow> tl(l) \<in> A"
+lemma tl_symbols_in_A [simp]: "l \<in> list(symbol) \<Longrightarrow> tl(l) \<in> M"
   by simp
 
 end
@@ -178,18 +180,18 @@ lemma upd_fm_type [TC]:
     \<Longrightarrow> upd_fm(a,l,r,l2,r2) \<in> formula"
   unfolding upd_fm_def by simp
 
-context tm_model
+context M_ZF1_trans
 begin
 
 lemma sats_upd_fm:
   assumes idx: "ia \<in> nat" "il \<in> nat" "ir \<in> nat" "il2 \<in> nat" "ir2 \<in> nat"
-    and env: "env \<in> list(A)"
+    and env: "env \<in> list(M)"
     and a: "nth(ia,env) = a"
     and l: "nth(il,env) = l" "l \<in> list(symbol)"
     and r: "nth(ir,env) = r" "r \<in> list(symbol)"
-    and l2: "nth(il2,env) = l2" "l2 \<in> A"
-    and r2: "nth(ir2,env) = r2" "r2 \<in> A"
-  shows "(A, env \<Turnstile> upd_fm(ia,il,ir,il2,ir2)) \<longleftrightarrow> \<langle>l2,r2\<rangle> = tm_update(a,\<langle>l,r\<rangle>)"
+    and l2: "nth(il2,env) = l2" "l2 \<in> M"
+    and r2: "nth(ir2,env) = r2" "r2 \<in> M"
+  shows "(M, env \<Turnstile> upd_fm(ia,il,ir,il2,ir2)) \<longleftrightarrow> \<langle>l2,r2\<rangle> = tm_update(a,\<langle>l,r\<rangle>)"
   using idx env a l r l2 r2
   by (simp add: upd_fm_def tm_update_def)
 
@@ -248,32 +250,32 @@ next
   then show ?case using succ by (simp add: drop_succ tl'_def list_imp_quasilist)
 qed
 
-context tm_model
+context M_ZF1_trans
 begin
 
 lemma sats_drop_fm_witness:
-  assumes idx: "jn \<in> nat" "il \<in> nat" "jd \<in> nat" and env: "env \<in> list(A)"
+  assumes idx: "jn \<in> nat" "il \<in> nat" "jd \<in> nat" and env: "env \<in> list(M)"
     and n: "nth(jn,env) = n" "n \<in> nat"
-    and l: "nth(il,env) = l" "l \<in> A"
-    and d: "nth(jd,env) = d" "d \<in> A"
-  shows "(A, env \<Turnstile> drop_fm(jn,il,jd)) \<longleftrightarrow> (\<exists>f\<in>A. drop_witness(f,n,l,d))"
+    and l: "nth(il,env) = l" "l \<in> M"
+    and d: "nth(jd,env) = d" "d \<in> M"
+  shows "(M, env \<Turnstile> drop_fm(jn,il,jd)) \<longleftrightarrow> (\<exists>f\<in>M. drop_witness(f,n,l,d))"
 proof -
-  have nA: "n \<in> A" using n by simp
+  have nA: "n \<in> M" using n by simp
   have k_nat: "\<And>k. k \<in> n \<Longrightarrow> k \<in> nat" using n by
     (blast intro: Ord_trans)
-  have k_A: "\<And>k. k \<in> n \<Longrightarrow> k \<in> A" using k_nat by simp
-  have sk_A: "\<And>k. k \<in> n \<Longrightarrow> succ(k) \<in> A" using k_nat
+  have k_A: "\<And>k. k \<in> n \<Longrightarrow> k \<in> M" using k_nat by simp
+  have sk_A: "\<And>k. k \<in> n \<Longrightarrow> succ(k) \<in> M" using k_nat
     by simp
-  have ap_A: "\<And>f x. f \<in> A \<Longrightarrow> x \<in> A \<Longrightarrow> f`x \<in> A" using apply_closed by simp
+  have ap_A: "\<And>f x. f \<in> M \<Longrightarrow> x \<in> M \<Longrightarrow> f`x \<in> M" using apply_closed by simp
   show ?thesis
     unfolding drop_fm_def drop_witness_def
     using idx env n l d nA k_A sk_A ap_A by (auto simp add: zero_in_M)
 qed
 
-lemma tl'_in_A [simp]: "x \<in> A \<Longrightarrow> tl'(x) \<in> A"
+lemma tl'_in_A [simp]: "x \<in> M \<Longrightarrow> tl'(x) \<in> M"
 proof (cases "quasilist(x)")
   case True
-  assume xA: "x \<in> A"
+  assume xA: "x \<in> M"
   from True show ?thesis
   proof (unfold quasilist_def, elim disjE exE)
     assume "x = []" then show ?thesis using Nil_in_M by (simp add: tl'_def)
@@ -286,15 +288,15 @@ next
 qed
 
 lemma tm_drop_tail_in_A [simp]:
-  assumes l: "l \<in> A" and n: "n \<in> nat"
-  shows "tm_drop_tail(n,l) \<in> A"
+  assumes l: "l \<in> M" and n: "n \<in> nat"
+  shows "tm_drop_tail(n,l) \<in> M"
   using n by (induct n rule: nat_induct) (simp_all add: l)
 
 lemma drop_witness_iff:
-  assumes n: "n \<in> nat" and l: "l \<in> A" and d: "d \<in> A"
-  shows "(\<exists>f\<in>A. drop_witness(f,n,l,d)) \<longleftrightarrow> d = tm_drop_tail(n,l)"
+  assumes n: "n \<in> nat" and l: "l \<in> M" and d: "d \<in> M"
+  shows "(\<exists>f\<in>M. drop_witness(f,n,l,d)) \<longleftrightarrow> d = tm_drop_tail(n,l)"
 proof
-  assume "\<exists>f\<in>A. drop_witness(f,n,l,d)"
+  assume "\<exists>f\<in>M. drop_witness(f,n,l,d)"
   then obtain f where f0: "f`0 = l" and fs: "\<And>k. k \<in> n \<Longrightarrow> f`succ(k) = tl'(f`k)"
     and fn: "f`n = d" unfolding drop_witness_def by blast
   have "\<And>k. k \<in> nat \<Longrightarrow> k \<le> n \<longrightarrow> f`k = tm_drop_tail(k,l)"
@@ -311,7 +313,8 @@ proof
         then have kn: "k \<in> n" using succ.hyps(1) n by (simp add: ltD)
         have "k \<le> n" using le by (blast intro: leI)
         then have "f`k = tm_drop_tail(k,l)" using succ.hyps(2) by blast
-        then show "f`succ(k) = tm_drop_tail(succ(k),l)" using fs[OF kn] succ.hyps(1)
+        then show "f`succ(k) = tm_drop_tail(succ(k),l)"
+          using fs[OF kn] succ.hyps(1)
           by simp
       qed
     qed
@@ -320,13 +323,13 @@ proof
 next
   assume dd: "d = tm_drop_tail(n,l)"
   let ?f = "\<lambda>k\<in>succ(n). tm_drop_tail(k,l)"
-  have fA: "?f \<in> A"
+  have fA: "?f \<in> M"
   proof -
-    have "(##A)(?f)"
+    have "(##M)(?f)"
     proof (rule tm_finite_lambda_closed[OF nat_succI[OF n]])
       fix k assume "k \<in> succ(n)"
       then have "k \<in> nat" using n by (blast intro: Ord_trans)
-      then show "(##A)(tm_drop_tail(k,l))" using l by simp
+      then show "(##M)(tm_drop_tail(k,l))" using l by simp
     qed
     then show ?thesis by simp
   qed
@@ -342,14 +345,14 @@ next
     moreover have "k \<in> succ(n)" using k by (rule succI2)
     ultimately show "?f`succ(k) = tl'(?f`k)" using knat by simp
   qed
-  with fA show "\<exists>f\<in>A. drop_witness(f,n,l,d)" by blast
+  with fA show "\<exists>f\<in>M. drop_witness(f,n,l,d)" by blast
 qed
 
 lemma sats_drop_fm [simp]:
-  assumes idx: "jn \<in> nat" "il \<in> nat" "jd \<in> nat" and env: "env \<in> list(A)"
-    and n: "nth(jn,env) \<in> nat" and l: "nth(il,env) \<in> A" and d:
-      "nth(jd,env) \<in> A"
-  shows "(A, env \<Turnstile> drop_fm(jn,il,jd)) \<longleftrightarrow>
+  assumes idx: "jn \<in> nat" "il \<in> nat" "jd \<in> nat" and env: "env \<in> list(M)"
+    and n: "nth(jn,env) \<in> nat" and l: "nth(il,env) \<in> M" and d:
+      "nth(jd,env) \<in> M"
+  shows "(M, env \<Turnstile> drop_fm(jn,il,jd)) \<longleftrightarrow>
     nth(jd,env) = tm_drop_tail(nth(jn,env),nth(il,env))"
   using sats_drop_fm_witness[OF idx env refl n refl l refl d]
     drop_witness_iff[OF n l d]
@@ -434,40 +437,40 @@ lemma fetch_fm_type [TC]:
   "\<lbrakk>p \<in> nat; q \<in> nat; b \<in> nat; ins \<in> nat\<rbrakk> \<Longrightarrow> fetch_fm(p,q,b,ins) \<in> formula"
   unfolding fetch_fm_def by simp
 
-context tm_model
+context M_ZF1_trans
 begin
 
-lemma nth_in_A [simp]: "env \<in> list(A) \<Longrightarrow> i \<in> nat \<Longrightarrow> nth(i,env) \<in> A"
+lemma nth_in_A [simp]: "env \<in> list(M) \<Longrightarrow> i \<in> nat \<Longrightarrow> nth(i,env) \<in> M"
 proof (cases "i < length(env)")
   case True
-  assume "env \<in> list(A)" then show ?thesis using True by (rule nth_type)
+  assume "env \<in> list(M)" then show ?thesis using True by (rule nth_type)
 next
   case False
-  assume "env \<in> list(A)" "i \<in> nat"
+  assume "env \<in> list(M)" "i \<in> nat"
   then have "nth(i,env) = 0" using False by (simp add: nth_eq_0 not_lt_iff_le)
   then show ?thesis using zero_in_M by simp
 qed
 
-lemma nop_in_A [simp]: "nop \<in> A"
+lemma nop_in_A [simp]: "nop \<in> M"
   by (rule nat_in_A) simp
 
 lemma sats_nop_instr_fm [simp]:
-  "\<lbrakk>i \<in> nat; env \<in> list(A)\<rbrakk> \<Longrightarrow> (A, env \<Turnstile> nop_instr_fm(i)) \<longleftrightarrow> nth(i,env) = \<langle>nop,0\<rangle>"
+  "\<lbrakk>i \<in> nat; env \<in> list(M)\<rbrakk> \<Longrightarrow> (M, env \<Turnstile> nop_instr_fm(i)) \<longleftrightarrow> nth(i,env) = \<langle>nop,0\<rangle>"
   unfolding nop_instr_fm_def by auto
 
-lemma machine_in_A [simp]: "P \<in> machine \<Longrightarrow> P \<in> A"
+lemma machine_in_A [simp]: "P \<in> tm_machine \<Longrightarrow> P \<in> M"
   using tm_machine_closed by simp
 
 lemma sats_fetch_fm:
   assumes idx: "ip \<in> nat" "iq \<in> nat" "ib \<in> nat" "ii \<in> nat" and
-    env: "env \<in> list(A)"
-    and P: "nth(ip,env) = P" "P \<in> machine"
+    env: "env \<in> list(M)"
+    and P: "nth(ip,env) = P" "P \<in> tm_machine"
     and q: "nth(iq,env) = q" "q \<in> nat"
     and b: "nth(ib,env) = b" "b \<in> nat"
-    and ins: "nth(ii,env) = ins" "ins \<in> A"
-  shows "(A, env \<Turnstile> fetch_fm(ip,iq,ib,ii)) \<longleftrightarrow> ins = fetch(P,q,b)"
+    and ins: "nth(ii,env) = ins" "ins \<in> M"
+  shows "(M, env \<Turnstile> fetch_fm(ip,iq,ib,ii)) \<longleftrightarrow> ins = fetch(P,q,b)"
 proof -
-  have PL: "P \<in> list(instruction)" using P(2) unfolding machine_def .
+  have PL: "P \<in> list(instruction)" using P(2) unfolding tm_machine_def .
   show ?thesis
   proof (cases "q = 0")
     case True
@@ -481,12 +484,12 @@ proof -
     have D2: "drop(p,drop(p,P)) \<in> list(instruction)" using p D1 by simp
     have D3: "drop(b,drop(p,drop(p,P))) \<in> list(instruction)" using b D2 by
       simp
-    have D1A: "drop(p,P) \<in> A"
+    have D1A: "drop(p,P) \<in> M"
       using tm_drop_tail_in_A[OF machine_in_A[OF P(2)] p]
         tm_drop_tail_list[OF PL p] by simp
-    have D2A: "drop(p,drop(p,P)) \<in> A"
+    have D2A: "drop(p,drop(p,P)) \<in> M"
       using tm_drop_tail_in_A[OF D1A p] tm_drop_tail_list[OF D1 p] by simp
-    have D3A: "drop(b,drop(p,drop(p,P))) \<in> A"
+    have D3A: "drop(b,drop(p,drop(p,P))) \<in> M"
       using tm_drop_tail_in_A[OF D2A b(2)] tm_drop_tail_list[OF D2 b(2)] by simp
     show ?thesis using idx env P q b ins PL qp p D1 D2 D3 D1A D2A D3A
       by (simp add: fetch_fm_def fetch_via_drop[OF PL nat_succI[OF p] b(2)]
@@ -495,22 +498,22 @@ proof -
 qed
 
 lemma sats_upd_fm_simp [simp]:
-  "\<lbrakk>ia \<in> nat; il \<in> nat; ir \<in> nat; il2 \<in> nat; ir2 \<in> nat; env \<in> list(A);
+  "\<lbrakk>ia \<in> nat; il \<in> nat; ir \<in> nat; il2 \<in> nat; ir2 \<in> nat; env \<in> list(M);
     nth(il,env) \<in> list(symbol); nth(ir,env) \<in> list(symbol)\<rbrakk> \<Longrightarrow>
-   (A, env \<Turnstile> upd_fm(ia,il,ir,il2,ir2)) \<longleftrightarrow> \<langle>nth(il2,env),nth(ir2,env)\<rangle> =
+   (M, env \<Turnstile> upd_fm(ia,il,ir,il2,ir2)) \<longleftrightarrow> \<langle>nth(il2,env),nth(ir2,env)\<rangle> =
        tm_update(nth(ia,env),\<langle>nth(il,env),nth(ir,env)\<rangle>)"
   by (rule sats_upd_fm) simp_all
 
 lemma sats_fetch_fm_simp [simp]:
-  "\<lbrakk>ip \<in> nat; iq \<in> nat; ib \<in> nat; ii \<in> nat; env \<in> list(A);
-    nth(ip,env) \<in> machine; nth(iq,env) \<in> nat; nth(ib,env) \<in> nat\<rbrakk> \<Longrightarrow>
-   (A, env \<Turnstile> fetch_fm(ip,iq,ib,ii)) \<longleftrightarrow>
+  "\<lbrakk>ip \<in> nat; iq \<in> nat; ib \<in> nat; ii \<in> nat; env \<in> list(M);
+    nth(ip,env) \<in> tm_machine; nth(iq,env) \<in> nat; nth(ib,env) \<in> nat\<rbrakk> \<Longrightarrow>
+   (M, env \<Turnstile> fetch_fm(ip,iq,ib,ii)) \<longleftrightarrow>
      nth(ii,env) = fetch(nth(ip,env),nth(iq,env),nth(ib,env))"
   by (rule sats_fetch_fm) simp_all
 
 end
 
-subsection \<open>One step\<close>
+subsection \<open>One tm_step\<close>
 
 definition step_fm :: "[i,i,i] \<Rightarrow> i" where
   "step_fm(p,c,d) \<equiv>
@@ -536,43 +539,43 @@ The original configuration is \<open>\<langle>q,t\<rangle>\<close> with
 machine and the two configurations shift by eleven. The final pair clause
 assembles the output configuration \<open>\<langle>q',t'\<rangle>\<close>.
 Each conjunction therefore corresponds to one component of the external
-\<open>step\<close> definition.\<close>
+\<open>tm_step\<close> definition.\<close>
 
 lemma step_fm_type [TC]:
   "\<lbrakk>p \<in> nat; c \<in> nat; d \<in> nat\<rbrakk> \<Longrightarrow> step_fm(p,c,d) \<in> formula"
   unfolding step_fm_def by simp
 
-context tm_model
+context M_ZF1_trans
 begin
 
-lemma configuration_in_A [simp]: "c \<in> configuration \<Longrightarrow> c \<in> A"
+lemma configuration_in_A [simp]: "c \<in> configuration \<Longrightarrow> c \<in> M"
   using tm_configuration_closed by simp
 
 lemma sats_step_fm:
-  assumes idx: "ip \<in> nat" "ic \<in> nat" "jd \<in> nat" and env: "env \<in> list(A)"
-    and P: "nth(ip,env) = P" "P \<in> machine"
+  assumes idx: "ip \<in> nat" "ic \<in> nat" "jd \<in> nat" and env: "env \<in> list(M)"
+    and P: "nth(ip,env) = P" "P \<in> tm_machine"
     and c: "nth(ic,env) = c" "c \<in> configuration"
-    and d: "nth(jd,env) = d" "d \<in> A"
-  shows "(A, env \<Turnstile> step_fm(ip,ic,jd)) \<longleftrightarrow> d = step(P,c)"
+    and d: "nth(jd,env) = d" "d \<in> M"
+  shows "(M, env \<Turnstile> step_fm(ip,ic,jd)) \<longleftrightarrow> d = tm_step(P,c)"
 proof -
   from c(2) obtain q l r where cq: "c = \<langle>q,\<langle>l,r\<rangle>\<rangle>" and q: "q \<in> nat"
     and l: "l \<in> list(symbol)" and r: "r \<in> list(symbol)"
-    unfolding configuration_def tape_def by blast
+    unfolding configuration_def tm_tape_def by blast
   have b: "hd(r) \<in> nat" using r by (blast intro: symbol_nat hd_symbol_type)
-  have lrA: "\<langle>l,r\<rangle> \<in> A" using pair_in_M_iff l r by simp
+  have lrA: "\<langle>l,r\<rangle> \<in> M" using pair_in_M_iff l r by simp
   have "fetch(P,q,hd(r)) \<in> instruction" using P(2) by (rule fetch_type)
   then obtain fa fq where fe: "fetch(P,q,hd(r)) = \<langle>fa,fq\<rangle>" and
     fa: "fa \<in> action"
     and fq: "fq \<in> nat" unfolding instruction_def by blast
-  have faA: "fa \<in> A" using fa action_in_nat Ord_nat by (blast dest: OrdmemD
+  have faA: "fa \<in> M" using fa action_in_nat Ord_nat by (blast dest: OrdmemD
     intro: nat_in_A)
-  have "tm_update(fa,\<langle>l,r\<rangle>) \<in> tape" by (rule tm_update_type)
-    (simp add: l r tape_def)
+  have "tm_update(fa,\<langle>l,r\<rangle>) \<in> tm_tape" by (rule tm_update_type)
+    (simp add: l r tm_tape_def)
   then obtain u1 u2 where ue: "tm_update(fa,\<langle>l,r\<rangle>) = \<langle>u1,u2\<rangle>"
     and u1: "u1 \<in> list(symbol)" and u2: "u2 \<in> list(symbol)" unfolding
-      tape_def by blast
-  have feA: "\<langle>fa,fq\<rangle> \<in> A" using pair_in_M_iff faA fq by simp
-  have ueA: "\<langle>u1,u2\<rangle> \<in> A" using pair_in_M_iff u1 u2 by simp
+      tm_tape_def by blast
+  have feA: "\<langle>fa,fq\<rangle> \<in> M" using pair_in_M_iff faA fq by simp
+  have ueA: "\<langle>u1,u2\<rangle> \<in> M" using pair_in_M_iff u1 u2 by simp
   show ?thesis
     using idx env P c d cq q l r b lrA fe fa fq faA ue u1 u2 feA ueA
     by (simp add: step_fm_def)
@@ -638,51 +641,51 @@ lemma final_fm_type [TC]: "\<lbrakk>r \<in> nat; n \<in> nat\<rbrakk> \<Longrigh
 lemma halt_fm_type [TC]: "halt_fm \<in> formula"
   unfolding halt_fm_def by simp
 
-context tm_model
+context M_ZF1_trans
 begin
 
-lemma ap_in_A [simp]: "f \<in> A \<Longrightarrow> a \<in> A \<Longrightarrow> f`a \<in> A"
+lemma ap_in_A [simp]: "f \<in> M \<Longrightarrow> a \<in> M \<Longrightarrow> f`a \<in> M"
   using apply_closed by simp
 
 lemma sats_init_fm [simp]:
-  "\<lbrakk>ir \<in> nat; ix \<in> nat; env \<in> list(A)\<rbrakk> \<Longrightarrow>
-    (A, env \<Turnstile> init_fm(ir,ix)) \<longleftrightarrow> nth(ir,env)`0 = initial_config(nth(ix,env))"
+  "\<lbrakk>ir \<in> nat; ix \<in> nat; env \<in> list(M)\<rbrakk> \<Longrightarrow>
+    (M, env \<Turnstile> init_fm(ir,ix)) \<longleftrightarrow> nth(ir,env)`0 = initial_config(nth(ix,env))"
   unfolding init_fm_def by (auto simp add: zero_in_M)
 
 lemma sats_final_fm [simp]:
-  "\<lbrakk>ir \<in> nat; jn \<in> nat; env \<in> list(A)\<rbrakk> \<Longrightarrow>
-    (A, env \<Turnstile> final_fm(ir,jn)) \<longleftrightarrow>
-      (\<exists>t\<in>A. nth(ir,env)`nth(jn,env) = \<langle>0,t\<rangle>)"
+  "\<lbrakk>ir \<in> nat; jn \<in> nat; env \<in> list(M)\<rbrakk> \<Longrightarrow>
+    (M, env \<Turnstile> final_fm(ir,jn)) \<longleftrightarrow>
+      (\<exists>t\<in>M. nth(ir,env)`nth(jn,env) = \<langle>0,t\<rangle>)"
   unfolding final_fm_def by (auto simp add: zero_in_M)
 
 lemma sats_trans_fm [simp]:
-  assumes "ip \<in> nat" "ir \<in> nat" "jn \<in> nat" "env \<in> list(A)"
+  assumes "ip \<in> nat" "ir \<in> nat" "jn \<in> nat" "env \<in> list(M)"
     "nth(jn,env) \<in> nat"
-  shows "(A, env \<Turnstile> trans_fm(ip,ir,jn)) \<longleftrightarrow>
-    (\<forall>k\<in>nth(jn,env). (A, Cons(nth(ir,env)`succ(k),
+  shows "(M, env \<Turnstile> trans_fm(ip,ir,jn)) \<longleftrightarrow>
+    (\<forall>k\<in>nth(jn,env). (M, Cons(nth(ir,env)`succ(k),
       Cons(nth(ir,env)`k,
         Cons(succ(k), Cons(k, env)))) \<Turnstile> step_fm(ip#+4,1,0)))"
 proof -
-  have kA: "\<And>k. k \<in> nth(jn,env) \<Longrightarrow> k \<in> A \<and> succ(k) \<in> A"
+  have kA: "\<And>k. k \<in> nth(jn,env) \<Longrightarrow> k \<in> M \<and> succ(k) \<in> M"
     using assms(5) by (blast intro: Ord_trans nat_in_A)
   show ?thesis unfolding trans_fm_def using assms kA by auto
 qed
 
 lemma halting_witness_iff:
-  assumes P: "P \<in> machine" and x: "x \<in> list(symbol)"
-  shows "(\<exists>n\<in>A. n \<in> nat \<and> (\<exists>r\<in>A. r`0 = initial_config(x) \<and>
-      (\<forall>k\<in>n. (A, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
-        [r,n,P,x])))) \<Turnstile> step_fm(6,1,0))) \<and> (\<exists>t\<in>A. r`n = \<langle>0,t\<rangle>))) \<longleftrightarrow>
+  assumes P: "P \<in> tm_machine" and x: "x \<in> list(symbol)"
+  shows "(\<exists>n\<in>M. n \<in> nat \<and> (\<exists>r\<in>M. r`0 = initial_config(x) \<and>
+      (\<forall>k\<in>n. (M, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
+        [r,n,P,x])))) \<Turnstile> step_fm(6,1,0))) \<and> (\<exists>t\<in>M. r`n = \<langle>0,t\<rangle>))) \<longleftrightarrow>
         halts_on(P,x)"
 proof
-  assume "\<exists>n\<in>A. n \<in> nat \<and> (\<exists>r\<in>A. r`0 = initial_config(x) \<and>
-      (\<forall>k\<in>n. (A, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
-        [r,n,P,x])))) \<Turnstile> step_fm(6,1,0))) \<and> (\<exists>t\<in>A. r`n = \<langle>0,t\<rangle>))"
-  then obtain n r t where n: "n \<in> nat" "n \<in> A" and rA: "r \<in> A"
+  assume "\<exists>n\<in>M. n \<in> nat \<and> (\<exists>r\<in>M. r`0 = initial_config(x) \<and>
+      (\<forall>k\<in>n. (M, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
+        [r,n,P,x])))) \<Turnstile> step_fm(6,1,0))) \<and> (\<exists>t\<in>M. r`n = \<langle>0,t\<rangle>))"
+  then obtain n r t where n: "n \<in> nat" "n \<in> M" and rA: "r \<in> M"
     and r0: "r`0 = initial_config(x)"
-    and rs: "\<And>k. k \<in> n \<Longrightarrow> (A, Cons(r`succ(k), Cons(r`k,
+    and rs: "\<And>k. k \<in> n \<Longrightarrow> (M, Cons(r`succ(k), Cons(r`k,
       Cons(succ(k), Cons(k, [r,n,P,x])))) \<Turnstile> step_fm(6,1,0))"
-    and tA: "t \<in> A" and rn: "r`n = \<langle>0,t\<rangle>"
+    and tA: "t \<in> M" and rn: "r`n = \<langle>0,t\<rangle>"
     by blast
   have init: "initial_config(x) \<in> configuration" using x by (rule
     initial_config_type)
@@ -703,12 +706,12 @@ proof
           blast
         have conf: "r`k \<in> configuration" using rk steps_type[OF P init
           succ.hyps(1)] by simp
-        have kA: "k \<in> A" "succ(k) \<in> A" using succ.hyps(1) by simp_all
-        have xA: "x \<in> A" using x by simp
+        have kA: "k \<in> M" "succ(k) \<in> M" using succ.hyps(1) by simp_all
+        have xA: "x \<in> M" using x by simp
         have envA: "Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
-          [r,n,P,x])))) \<in> list(A)"
+          [r,n,P,x])))) \<in> list(M)"
           using rA kA n xA P by simp
-        have "r`succ(k) = step(P,r`k)"
+        have "r`succ(k) = tm_step(P,r`k)"
           using sats_step_fm[OF _ _ _ envA, of 6 1 0 P "r`k" "r`succ(k)"] rs[OF
             kn] P conf rA kA
           by simp
@@ -728,11 +731,11 @@ next
   have init: "initial_config(x) \<in> configuration" using x by (rule
     initial_config_type)
   let ?r = "\<lambda>k\<in>succ(n). steps(P,initial_config(x),k)"
-  have rA: "?r \<in> A" using tm_trace_closed[OF P init n] by simp
-  have nA: "n \<in> A" using n by simp
-  have xA: "x \<in> A" using x by simp
+  have rA: "?r \<in> M" using tm_trace_closed[OF P init n] by simp
+  have nA: "n \<in> M" using n by simp
+  have xA: "x \<in> M" using x by simp
   have r0: "?r`0 = initial_config(x)" using ltD[OF nat_0_le[OF n]] by simp
-  have rs: "\<And>k. k \<in> n \<Longrightarrow> (A, Cons(?r`succ(k), Cons(?r`k,
+  have rs: "\<And>k. k \<in> n \<Longrightarrow> (M, Cons(?r`succ(k), Cons(?r`k,
     Cons(succ(k), Cons(k, [?r,n,P,x])))) \<Turnstile> step_fm(6,1,0))"
   proof -
     fix k assume k: "k \<in> n"
@@ -743,11 +746,11 @@ next
       steps_type[OF P init knat] .
     have conf2: "steps(P,initial_config(x),succ(k)) \<in> configuration"
       using steps_type[OF P init nat_succI[OF knat]] .
-    have kA: "k \<in> A" "succ(k) \<in> A" using knat by simp_all
+    have kA: "k \<in> M" "succ(k) \<in> M" using knat by simp_all
     have envA: "Cons(?r`succ(k), Cons(?r`k, Cons(succ(k), Cons(k, [?r,n,P,x]))))
-      \<in> list(A)"
+      \<in> list(M)"
       using rA kA nA xA P conf conf2 sk k1 by simp
-    show "(A, Cons(?r`succ(k), Cons(?r`k, Cons(succ(k), Cons(k, [?r,n,P,x]))))
+    show "(M, Cons(?r`succ(k), Cons(?r`k, Cons(succ(k), Cons(k, [?r,n,P,x]))))
       \<Turnstile> step_fm(6,1,0))"
       using sats_step_fm[OF _ _ _ envA, of 6 1 0 P "?r`k" "?r`succ(k)"] P conf
         conf2 sk k1 knat
@@ -756,34 +759,36 @@ next
   have "steps(P,initial_config(x),n) \<in> configuration" using steps_type[OF P
     init n] .
   then obtain t where st: "steps(P,initial_config(x),n) = \<langle>0,t\<rangle>"
-    and t: "t \<in> tape"
+    and t: "t \<in> tm_tape"
     using fin unfolding configuration_def by auto
-  have tA: "t \<in> A" using t pair_in_M_iff unfolding tape_def by auto
+  have tA: "t \<in> M" using t pair_in_M_iff unfolding tm_tape_def by auto
   have rn: "?r`n = \<langle>0,t\<rangle>" using st by simp
-  show "\<exists>n\<in>A. n \<in> nat \<and> (\<exists>r\<in>A. r`0 = initial_config(x) \<and>
-      (\<forall>k\<in>n. (A, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
-        [r,n,P,x])))) \<Turnstile> step_fm(6,1,0))) \<and> (\<exists>t\<in>A. r`n = \<langle>0,t\<rangle>))"
+  show "\<exists>n\<in>M. n \<in> nat \<and> (\<exists>r\<in>M. r`0 = initial_config(x) \<and>
+      (\<forall>k\<in>n. (M, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
+        [r,n,P,x])))) \<Turnstile> step_fm(6,1,0))) \<and> (\<exists>t\<in>M. r`n = \<langle>0,t\<rangle>))"
     using nA n rA r0 rs tA rn by blast
 qed
 
 theorem sats_halt_fm:
-  assumes P: "P \<in> machine" and x: "x \<in> list(symbol)"
-  shows "(A, [P,x] \<Turnstile> halt_fm) \<longleftrightarrow> halts_on(P,x)"
+  assumes P: "P \<in> tm_machine" and x: "x \<in> list(symbol)"
+  shows "(M, [P,x] \<Turnstile> halt_fm) \<longleftrightarrow> halts_on(P,x)"
 proof -
-  have xA: "x \<in> A" using x by simp
-  have "(A, [P,x] \<Turnstile> halt_fm) \<longleftrightarrow> (\<exists>n\<in>A. n \<in> nat \<and> (\<exists>r\<in>A. r`0 = initial_config(x) \<and>
-      (\<forall>k\<in>n. (A, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
-        [r,n,P,x])))) \<Turnstile> step_fm(6,1,0))) \<and> (\<exists>t\<in>A. r`n = \<langle>0,t\<rangle>)))"
-    using P xA sats_nat_member_fm[OF model] by (auto simp add: halt_fm_def)
+  have xA: "x \<in> M" using x by simp
+  have "(M, [P,x] \<Turnstile> halt_fm) \<longleftrightarrow> (\<exists>n\<in>M. n \<in> nat \<and> (\<exists>r\<in>M. r`0 = initial_config(x) \<and>
+      (\<forall>k\<in>n. (M, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
+        [r,n,P,x])))) \<Turnstile> step_fm(6,1,0))) \<and> (\<exists>t\<in>M. r`n = \<langle>0,t\<rangle>)))"
+    using P xA sats_nat_member_fm[OF M_ZF1_trans_axioms]
+    by (auto simp add: halt_fm_def)
   then show ?thesis using halting_witness_iff[OF P x] by simp
 qed
 
 end
 
 theorem transitive_model_halt_fm_iff:
-  assumes "transitive_zf_model(A)" "P \<in> machine" "x \<in> list(symbol)"
+  assumes "transitive_zf_model(A)" "P \<in> tm_machine" "x \<in> list(symbol)"
   shows "(A, [P,x] \<Turnstile> halt_fm) \<longleftrightarrow> halts_on(P,x)"
-  using tm_model.sats_halt_fm[of A P x] assms unfolding tm_model_def by simp
+  by (rule M_ZF1_trans.sats_halt_fm[OF transitive_zf_M_ZF1_trans[OF assms(1)]
+      assms(2,3)])
 
 subsection \<open>Arities\<close>
 

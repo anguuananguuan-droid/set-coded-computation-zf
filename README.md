@@ -7,13 +7,16 @@ Tang Ziyi
 This development constructs a set-theoretic formula for machine halting and
 proves that its satisfaction in every transitive ZF set model agrees with
 external finite execution. The machine and its input are then named inside
-closed sentences. These results do not require the axiom of choice.
+closed sentences. The proofs use the weaker `M_ZF1_trans` locale, with ZF
+versions retained as corollaries. These results do not require choice.
 
 Assuming a countable transitive ZFC set model exists, two explicit
 primitive-recursive maps reduce self-input halting and its complement to the
 natural-number codes of sentences invariant across all transitive ZFC set
 models. CH supplies a sentence on which two such models disagree. The
 reductions also hold under the direct premise that CH is not invariant.
+Both instantiate a general theorem for uniformly expressed sentence families
+with primitive-recursive codes.
 
 The two maps are proved members of Isabelle/ZF's `prim_rec` class, with
 application equations identifying their outputs with the intended sentence
@@ -78,10 +81,12 @@ adequacy and AFP acceptance require separate review.
 
 ## 4 Attribution and maintenance
 
-Tang Ziyi formulated the research question and wrote the original EPQ
-argument and initial formalisation. Subsequent definitions, proofs, and
-repository engineering include substantial AI assistance, recorded in
-[AI assistance](AI_USAGE.txt).
+Tang Ziyi wrote the original EPQ paper, conceived the initial formalisation,
+and constructed initial formal objects. The author has led and
+participated throughout. OpenAI Codex and ChatGPT have assisted development
+since August 2026. Aristotle and Anthropic Claude participated in internal
+review and cross-checking. The tools' roles and verification requirements are
+recorded in [AI assistance](AI_USAGE.txt).
 
 The operational machine design follows
 [Universal Turing Machine](https://isa-afp.org/entries/Universal_Turing_Machine.html),

@@ -18,7 +18,7 @@ lemma realised_pr_reduction:
     and reduction: "pr_reduces(f,A,B)"
   shows "tm_reduces(M,A,B)"
 proof -
-  from realisation have machine_M: "M \<in> machine"
+  from realisation have machine_M: "M \<in> tm_machine"
     and computes: "\<forall>n\<in>nat. computes_number(M,n,f`[n])"
     unfolding tm_realises_unary_def by auto
   from reduction have primitive: "f \<in> prim_rec"
@@ -29,7 +29,7 @@ proof -
   show ?thesis
     unfolding tm_reduces_def
   proof (intro conjI ballI)
-    show "M \<in> machine" by (rule machine_M)
+    show "M \<in> tm_machine" by (rule machine_M)
     show "A \<subseteq> nat" by (rule subset_A)
     show "B \<subseteq> nat" by (rule subset_B)
     fix n

@@ -7,7 +7,10 @@ fun check_submission_oracles description thms =
 local
   val entry = "Set_Coded_Halting_Invariance_ZF.";
   val endpoints =
-    [("Turing_Halting_Formula", "transitive_model_halt_fm_iff"),
+    [("Turing_Halting_Formula", "M_ZF1_trans.sats_halt_fm"),
+     ("Turing_Halting_Sentences", "M_ZF1_trans.sats_halt_sentence_iff"),
+     ("Turing_Effective_Invariance", "pr_reduces_invariance"),
+     ("Turing_Halting_Formula", "transitive_model_halt_fm_iff"),
      ("Turing_Halting_Sentences", "sats_halt_sentence_iff"),
      ("Turing_Rejection", "self_halting_not_tm_decidable"),
      ("Formula_Coding", "formula_code_injective"),

@@ -618,18 +618,18 @@ definition decode_machine_list :: "i \<Rightarrow> i" where
   "decode_machine_list(l) \<equiv> map(decode_instruction,l)"
 
 lemma machine_code_list_type [TC]:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "machine_code_list(M) \<in> list(instruction_code)"
 proof -
   from machine_M have instructions: "M \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   show ?thesis
     unfolding machine_code_list_def
     using instructions by (rule map_type) (rule encode_instruction_type)
 qed
 
 lemma machine_code_list_natural:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "machine_code_list(M) \<in> list(nat)"
 proof -
   from machine_code_list_type[OF machine_M]
@@ -639,19 +639,19 @@ qed
 
 lemma decode_machine_list_type [TC]:
   assumes codes: "l \<in> list(nat)"
-  shows "decode_machine_list(l) \<in> machine"
+  shows "decode_machine_list(l) \<in> tm_machine"
 proof -
   have "map(decode_instruction,l) \<in> list(instruction)"
     using codes by (rule map_type) (rule decode_instruction_type)
   then show ?thesis
-    unfolding decode_machine_list_def machine_def .
+    unfolding decode_machine_list_def tm_machine_def .
 qed
 
 theorem decode_machine_list_code:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "decode_machine_list(machine_code_list(M)) = M"
   using machine_M
-  unfolding machine_def machine_code_list_def decode_machine_list_def
+  unfolding tm_machine_def machine_code_list_def decode_machine_list_def
 proof (induct M rule: list.induct)
   case Nil
   then show ?case by simp
@@ -695,7 +695,7 @@ lemma machine_code_subset_nat:
   unfolding machine_code_def by blast
 
 lemma encode_machine_type [TC]:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "encode_machine(M) \<in> machine_code"
 proof -
   from machine_code_list_type[OF machine_M] have codes:
@@ -714,7 +714,7 @@ qed
 
 lemma decode_machine_type [TC]:
   assumes natural: "n \<in> nat"
-  shows "decode_machine(n) \<in> machine"
+  shows "decode_machine(n) \<in> tm_machine"
 proof -
   from natural have "nat_list_decode(n) \<in> list(nat)"
     by (rule nat_list_decode_type)
@@ -723,7 +723,7 @@ proof -
 qed
 
 theorem decode_encode_machine:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "decode_machine(encode_machine(M)) = M"
 proof -
   from machine_code_list_natural[OF machine_M] show ?thesis
@@ -747,22 +747,22 @@ proof -
 qed
 
 theorem machine_numbering_bij:
-  "(\<lambda>M\<in>machine. encode_machine(M))
-    \<in> bij(machine,machine_code)"
+  "(\<lambda>M\<in>tm_machine. encode_machine(M))
+    \<in> bij(tm_machine,machine_code)"
 proof (rule lam_bijective)
   fix M
-  assume "M \<in> machine"
+  assume "M \<in> tm_machine"
   then show "encode_machine(M) \<in> machine_code"
     by (rule encode_machine_type)
 next
   fix n
   assume "n \<in> machine_code"
   with machine_code_subset_nat have "n \<in> nat" by blast
-  then show "decode_machine(n) \<in> machine"
+  then show "decode_machine(n) \<in> tm_machine"
     by (rule decode_machine_type)
 next
   fix M
-  assume "M \<in> machine"
+  assume "M \<in> tm_machine"
   then show "decode_machine(encode_machine(M)) = M"
     by (rule decode_encode_machine)
 next
@@ -774,22 +774,22 @@ qed
 
 theorem decode_machine_surj:
   "(\<lambda>n\<in>nat. decode_machine(n))
-    \<in> surj(nat,machine)"
+    \<in> surj(nat,tm_machine)"
 proof (rule lam_surjective)
   fix n
   assume "n \<in> nat"
-  then show "decode_machine(n) \<in> machine"
+  then show "decode_machine(n) \<in> tm_machine"
     by (rule decode_machine_type)
 next
   fix M
-  assume "M \<in> machine"
+  assume "M \<in> tm_machine"
   then have "encode_machine(M) \<in> machine_code"
     by (rule encode_machine_type)
   with machine_code_subset_nat show "encode_machine(M) \<in> nat"
     by blast
 next
   fix M
-  assume "M \<in> machine"
+  assume "M \<in> tm_machine"
   then show "decode_machine(encode_machine(M)) = M"
     by (rule decode_encode_machine)
 qed

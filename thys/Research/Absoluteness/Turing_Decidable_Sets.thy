@@ -15,14 +15,14 @@ and Separation collects the accepted natural numbers in the model.\<close>
 
 subsection \<open>Runs with an arbitrary outer environment\<close>
 
-context tm_model
+context M_ZF1_trans
 begin
 
 lemma trans_run_steps:
-  assumes env: "env \<in> list(A)" and p: "p \<in> nat" and P: "nth(p,env) = P" "P \<in> machine"
-    and c0: "c0 \<in> configuration" and n: "n \<in> nat" and rA: "r \<in> A" and r0: "r`0 = c0"
+  assumes env: "env \<in> list(M)" and p: "p \<in> nat" and P: "nth(p,env) = P" "P \<in> tm_machine"
+    and c0: "c0 \<in> configuration" and n: "n \<in> nat" and rA: "r \<in> M" and r0: "r`0 = c0"
     and rs: "\<And>k. k \<in> n \<Longrightarrow>
-      (A, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, env)))) \<Turnstile> step_fm(p#+4,1,0))"
+      (M, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, env)))) \<Turnstile> step_fm(p#+4,1,0))"
   shows "r`n = steps(P,c0,n)"
 proof -
   have "\<And>k. k \<in> nat \<Longrightarrow> k \<le> n \<longrightarrow> r`k = steps(P,c0,k)"
@@ -40,10 +40,10 @@ proof -
         have "k \<le> n" using le by (blast intro: leI succ_leE)
         then have rk: "r`k = steps(P,c0,k)" using succ.hyps(2) by blast
         have conf: "r`k \<in> configuration" using rk steps_type[OF P(2) c0 succ.hyps(1)] by simp
-        have kA: "k \<in> A" "succ(k) \<in> A" using succ.hyps(1) by simp_all
-        have envA: "Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, env)))) \<in> list(A)"
+        have kA: "k \<in> M" "succ(k) \<in> M" using succ.hyps(1) by simp_all
+        have envA: "Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, env)))) \<in> list(M)"
           using rA kA env by simp
-        have "r`succ(k) = step(P,r`k)"
+        have "r`succ(k) = tm_step(P,r`k)"
           using sats_step_fm[OF _ _ _ envA, of "p#+4" 1 0 P "r`k" "r`succ(k)"] rs[OF kn] P p conf rA kA
           by simp
         then show "r`succ(k) = steps(P,c0,succ(k))" using rk succ.hyps(1) by simp
@@ -54,9 +54,9 @@ proof -
 qed
 
 lemma trace_trans:
-  assumes env: "env \<in> list(A)" and p: "p \<in> nat" and P: "nth(p,env) = P" "P \<in> machine"
+  assumes env: "env \<in> list(M)" and p: "p \<in> nat" and P: "nth(p,env) = P" "P \<in> tm_machine"
     and c0: "c0 \<in> configuration" and n: "n \<in> nat" and k: "k \<in> n"
-  shows "(A, Cons((\<lambda>j\<in>succ(n). steps(P,c0,j))`succ(k), Cons((\<lambda>j\<in>succ(n). steps(P,c0,j))`k,
+  shows "(M, Cons((\<lambda>j\<in>succ(n). steps(P,c0,j))`succ(k), Cons((\<lambda>j\<in>succ(n). steps(P,c0,j))`k,
       Cons(succ(k), Cons(k, env)))) \<Turnstile> step_fm(p#+4,1,0))"
 proof -
   have knat: "k \<in> nat" using k n by (blast intro: Ord_trans Ord_nat)
@@ -65,8 +65,8 @@ proof -
   have conf: "steps(P,c0,k) \<in> configuration" using steps_type[OF P(2) c0 knat] .
   have conf2: "steps(P,c0,succ(k)) \<in> configuration"
     using steps_type[OF P(2) c0 nat_succI[OF knat]] .
-  have kA: "k \<in> A" "succ(k) \<in> A" using knat by simp_all
-  have envA: "Cons(steps(P,c0,succ(k)), Cons(steps(P,c0,k), Cons(succ(k), Cons(k, env)))) \<in> list(A)"
+  have kA: "k \<in> M" "succ(k) \<in> M" using knat by simp_all
+  have envA: "Cons(steps(P,c0,succ(k)), Cons(steps(P,c0,k), Cons(succ(k), Cons(k, env)))) \<in> list(M)"
     using kA env conf conf2 by simp
   show ?thesis
     using sats_step_fm[OF _ _ _ envA, of "p#+4" 1 0 P "steps(P,c0,k)" "steps(P,c0,succ(k))"]
@@ -93,10 +93,10 @@ lemma rep_fm_type [TC]: "\<lbrakk>n \<in> nat; x \<in> nat\<rbrakk> \<Longrighta
 definition rep_witness :: "[i,i,i] \<Rightarrow> o" where
   "rep_witness(g,n,x) \<equiv> g`0 = [] \<and> (\<forall>k\<in>n. g`succ(k) = Cons(1,g`k)) \<and> g`n = x"
 
-context tm_model
+context M_ZF1_trans
 begin
 
-lemma repeat_in_A [simp]: "k \<in> nat \<Longrightarrow> repeat(1,k) \<in> A"
+lemma repeat_in_A [simp]: "k \<in> nat \<Longrightarrow> repeat(1,k) \<in> M"
 proof (rule symbols_in_A)
   assume k: "k \<in> nat"
   have "1 \<in> symbol" by (simp add: symbol_def)
@@ -104,11 +104,11 @@ proof (rule symbols_in_A)
 qed
 
 lemma sats_rep_fm_witness:
-  assumes idx: "jn \<in> nat" "jx \<in> nat" and env: "env \<in> list(A)"
+  assumes idx: "jn \<in> nat" "jx \<in> nat" and env: "env \<in> list(M)"
     and n: "nth(jn,env) \<in> nat"
-  shows "(A, env \<Turnstile> rep_fm(jn,jx)) \<longleftrightarrow> (\<exists>g\<in>A. rep_witness(g,nth(jn,env),nth(jx,env)))"
+  shows "(M, env \<Turnstile> rep_fm(jn,jx)) \<longleftrightarrow> (\<exists>g\<in>M. rep_witness(g,nth(jn,env),nth(jx,env)))"
 proof -
-  have k_A: "\<And>k. k \<in> nth(jn,env) \<Longrightarrow> k \<in> A \<and> succ(k) \<in> A"
+  have k_A: "\<And>k. k \<in> nth(jn,env) \<Longrightarrow> k \<in> M \<and> succ(k) \<in> M"
     using n by (blast intro: Ord_trans Ord_nat nat_in_A nat_succI)
   show ?thesis
     unfolding rep_fm_def rep_witness_def
@@ -116,10 +116,10 @@ proof -
 qed
 
 lemma rep_witness_iff:
-  assumes n: "n \<in> nat" and x: "x \<in> A"
-  shows "(\<exists>g\<in>A. rep_witness(g,n,x)) \<longleftrightarrow> x = repeat(1,n)"
+  assumes n: "n \<in> nat" and x: "x \<in> M"
+  shows "(\<exists>g\<in>M. rep_witness(g,n,x)) \<longleftrightarrow> x = repeat(1,n)"
 proof
-  assume "\<exists>g\<in>A. rep_witness(g,n,x)"
+  assume "\<exists>g\<in>M. rep_witness(g,n,x)"
   then obtain g where g0: "g`0 = []" and gs: "\<And>k. k \<in> n \<Longrightarrow> g`succ(k) = Cons(1,g`k)"
     and gn: "g`n = x" unfolding rep_witness_def by blast
   have "\<And>k. k \<in> nat \<Longrightarrow> k \<le> n \<longrightarrow> g`k = repeat(1,k)"
@@ -144,13 +144,13 @@ proof
 next
   assume xx: "x = repeat(1,n)"
   let ?g = "\<lambda>k\<in>succ(n). repeat(1,k)"
-  have gA: "?g \<in> A"
+  have gA: "?g \<in> M"
   proof -
-    have "(##A)(?g)"
+    have "(##M)(?g)"
     proof (rule tm_finite_lambda_closed[OF nat_succI[OF n]])
       fix k assume "k \<in> succ(n)"
       then have "k \<in> nat" using n by (blast intro: Ord_trans Ord_nat)
-      then show "(##A)(repeat(1,k))" by simp
+      then show "(##M)(repeat(1,k))" by simp
     qed
     then show ?thesis by simp
   qed
@@ -165,12 +165,12 @@ next
     moreover have "k \<in> succ(n)" using k by (rule succI2)
     ultimately show "?g`succ(k) = Cons(1,?g`k)" by simp
   qed
-  with gA show "\<exists>g\<in>A. rep_witness(g,n,x)" by blast
+  with gA show "\<exists>g\<in>M. rep_witness(g,n,x)" by blast
 qed
 
 lemma sats_rep_fm [simp]:
-  assumes "jn \<in> nat" "jx \<in> nat" "env \<in> list(A)" "nth(jn,env) \<in> nat"
-  shows "(A, env \<Turnstile> rep_fm(jn,jx)) \<longleftrightarrow> nth(jx,env) = repeat(1,nth(jn,env))"
+  assumes "jn \<in> nat" "jx \<in> nat" "env \<in> list(M)" "nth(jn,env) \<in> nat"
+  shows "(M, env \<Turnstile> rep_fm(jn,jx)) \<longleftrightarrow> nth(jx,env) = repeat(1,nth(jn,env))"
   using sats_rep_fm_witness[OF assms] rep_witness_iff[OF assms(4) nth_in_A[OF assms(3) assms(2)]]
   by simp
 
@@ -203,44 +203,44 @@ lemma yields_fm_type [TC]:
 lemma accept_fm_type [TC]: "accept_fm \<in> formula"
   unfolding accept_fm_def by simp
 
-context tm_model
+context M_ZF1_trans
 begin
 
 lemma sats_yield_final_fm [simp]:
-  "\<lbrakk>ir \<in> nat; jn \<in> nat; ib \<in> nat; env \<in> list(A)\<rbrakk> \<Longrightarrow>
-    (A, env \<Turnstile> yield_final_fm(ir,jn,ib)) \<longleftrightarrow>
-      (\<exists>l\<in>A. \<exists>rr\<in>A. nth(ir,env)`nth(jn,env) = \<langle>0,\<langle>l,rr\<rangle>\<rangle> \<and> nth(ib,env) = hd'(rr))"
+  "\<lbrakk>ir \<in> nat; jn \<in> nat; ib \<in> nat; env \<in> list(M)\<rbrakk> \<Longrightarrow>
+    (M, env \<Turnstile> yield_final_fm(ir,jn,ib)) \<longleftrightarrow>
+      (\<exists>l\<in>M. \<exists>rr\<in>M. nth(ir,env)`nth(jn,env) = \<langle>0,\<langle>l,rr\<rangle>\<rangle> \<and> nth(ib,env) = hd'(rr))"
   unfolding yield_final_fm_def by (auto simp add: zero_in_M)
 
 lemma sats_yields_fm:
-  assumes idx: "ip \<in> nat" "ix \<in> nat" "ib \<in> nat" and env: "env \<in> list(A)"
-    and P: "nth(ip,env) = P" "P \<in> machine"
+  assumes idx: "ip \<in> nat" "ix \<in> nat" "ib \<in> nat" and env: "env \<in> list(M)"
+    and P: "nth(ip,env) = P" "P \<in> tm_machine"
     and x: "nth(ix,env) = x" "x \<in> list(symbol)"
     and b: "nth(ib,env) = b" "b \<in> symbol"
-  shows "(A, env \<Turnstile> yields_fm(ip,ix,ib)) \<longleftrightarrow> yields(P,x,b)"
+  shows "(M, env \<Turnstile> yields_fm(ip,ix,ib)) \<longleftrightarrow> yields(P,x,b)"
 proof -
   have init: "initial_config(x) \<in> configuration" using x(2) by (rule initial_config_type)
-  have unf: "(A, env \<Turnstile> yields_fm(ip,ix,ib)) \<longleftrightarrow>
-    (\<exists>n\<in>A. n \<in> nat \<and> (\<exists>r\<in>A. r`0 = initial_config(x) \<and>
-      (\<forall>k\<in>n. (A, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, Cons(r, Cons(n, env)))))) \<Turnstile>
+  have unf: "(M, env \<Turnstile> yields_fm(ip,ix,ib)) \<longleftrightarrow>
+    (\<exists>n\<in>M. n \<in> nat \<and> (\<exists>r\<in>M. r`0 = initial_config(x) \<and>
+      (\<forall>k\<in>n. (M, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, Cons(r, Cons(n, env)))))) \<Turnstile>
          step_fm(ip#+2#+4,1,0))) \<and>
-      (\<exists>l\<in>A. \<exists>rr\<in>A. r`n = \<langle>0,\<langle>l,rr\<rangle>\<rangle> \<and> b = hd'(rr))))"
-    using idx env P x b sats_nat_member_fm[OF model] by (auto simp add: yields_fm_def)
+      (\<exists>l\<in>M. \<exists>rr\<in>M. r`n = \<langle>0,\<langle>l,rr\<rangle>\<rangle> \<and> b = hd'(rr))))"
+    using idx env P x b sats_nat_member_fm[OF M_ZF1_trans_axioms] by (auto simp add: yields_fm_def)
   show ?thesis
   proof
-    assume "A, env \<Turnstile> yields_fm(ip,ix,ib)"
-    with unf obtain n r l rr where n: "n \<in> nat" "n \<in> A" and rA: "r \<in> A"
+    assume "M, env \<Turnstile> yields_fm(ip,ix,ib)"
+    with unf obtain n r l rr where n: "n \<in> nat" "n \<in> M" and rA: "r \<in> M"
       and r0: "r`0 = initial_config(x)"
-      and rs: "\<And>k. k \<in> n \<Longrightarrow> (A, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, Cons(r, Cons(n, env)))))) \<Turnstile>
+      and rs: "\<And>k. k \<in> n \<Longrightarrow> (M, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, Cons(r, Cons(n, env)))))) \<Turnstile>
          step_fm(ip#+2#+4,1,0))"
       and fin: "r`n = \<langle>0,\<langle>l,rr\<rangle>\<rangle>" and out: "b = hd'(rr)"
       by blast
-    have env2: "Cons(r, Cons(n, env)) \<in> list(A)" using env rA n by simp
+    have env2: "Cons(r, Cons(n, env)) \<in> list(M)" using env rA n by simp
     have Pn: "nth(ip#+2, Cons(r, Cons(n, env))) = P" using P idx by simp
     have rn: "r`n = steps(P,initial_config(x),n)"
       by (rule trans_run_steps[OF env2 _ Pn P(2) init n(1) rA r0 rs]) (simp add: idx)
     have st: "steps(P,initial_config(x),n) \<in> configuration" using steps_type[OF P(2) init n(1)] .
-    with rn fin have rr: "rr \<in> list(symbol)" unfolding configuration_def tape_def by auto
+    with rn fin have rr: "rr \<in> list(symbol)" unfolding configuration_def tm_tape_def by auto
     have stq: "steps(P,initial_config(x),n) = \<langle>0,\<langle>l,rr\<rangle>\<rangle>" using rn fin by simp
     have "fst(steps(P,initial_config(x),n)) = final_state" using stq by simp
     moreover have "scan(snd(steps(P,initial_config(x),n))) = b" using stq out rr by simp
@@ -251,37 +251,37 @@ proof -
       and out: "scan(snd(steps(P,initial_config(x),n))) = b"
       unfolding yields_def by blast
     let ?r = "\<lambda>k\<in>succ(n). steps(P,initial_config(x),k)"
-    have rA: "?r \<in> A" using tm_trace_closed[OF P(2) init n] by simp
-    have nA: "n \<in> A" using n by simp
+    have rA: "?r \<in> M" using tm_trace_closed[OF P(2) init n] by simp
+    have nA: "n \<in> M" using n by simp
     have r0: "?r`0 = initial_config(x)" using ltD[OF nat_0_le[OF n]] by simp
-    have env2: "Cons(?r, Cons(n, env)) \<in> list(A)" using env rA nA by simp
+    have env2: "Cons(?r, Cons(n, env)) \<in> list(M)" using env rA nA by simp
     have Pn: "nth(ip#+2, Cons(?r, Cons(n, env))) = P" using P idx by simp
-    have rs: "\<And>k. k \<in> n \<Longrightarrow> (A, Cons(?r`succ(k), Cons(?r`k, Cons(succ(k), Cons(k, Cons(?r, Cons(n, env)))))) \<Turnstile>
+    have rs: "\<And>k. k \<in> n \<Longrightarrow> (M, Cons(?r`succ(k), Cons(?r`k, Cons(succ(k), Cons(k, Cons(?r, Cons(n, env)))))) \<Turnstile>
          step_fm(ip#+2#+4,1,0))"
       by (rule trace_trans[OF env2 _ Pn P(2) init n]) (simp_all add: idx)
     have "steps(P,initial_config(x),n) \<in> configuration" using steps_type[OF P(2) init n] .
     then obtain l rr where st: "steps(P,initial_config(x),n) = \<langle>0,\<langle>l,rr\<rangle>\<rangle>"
       and l: "l \<in> list(symbol)" and rr: "rr \<in> list(symbol)"
-      using fin unfolding configuration_def tape_def by auto
+      using fin unfolding configuration_def tm_tape_def by auto
     have rn: "?r`n = \<langle>0,\<langle>l,rr\<rangle>\<rangle>" using st by simp
     have bo: "b = hd'(rr)" using out st rr by simp
-    have lA: "l \<in> A" "rr \<in> A" using l rr by simp_all
-    show "A, env \<Turnstile> yields_fm(ip,ix,ib)"
+    have lA: "l \<in> M" "rr \<in> M" using l rr by simp_all
+    show "M, env \<Turnstile> yields_fm(ip,ix,ib)"
       using unf nA n rA r0 rs rn bo lA by blast
   qed
 qed
 
 lemma sats_accept_fm:
-  assumes P: "P \<in> machine" and n: "n \<in> nat"
-  shows "(A, [n,P] \<Turnstile> accept_fm) \<longleftrightarrow> accepts_number(P,n)"
+  assumes P: "P \<in> tm_machine" and n: "n \<in> nat"
+  shows "(M, [n,P] \<Turnstile> accept_fm) \<longleftrightarrow> accepts_number(P,n)"
 proof -
   have x: "numeral_input(n) \<in> list(symbol)" using n by (rule numeral_input_type)
-  have xA: "numeral_input(n) \<in> A" using x by simp
+  have xA: "numeral_input(n) \<in> M" using x by simp
   have one: "1 \<in> symbol" by (simp add: symbol_def)
-  have h1: "(A, [n,P] \<Turnstile> accept_fm) \<longleftrightarrow>
-      (A, [1, numeral_input(n), n, P] \<Turnstile> yields_fm(3,1,0))"
+  have h1: "(M, [n,P] \<Turnstile> accept_fm) \<longleftrightarrow>
+      (M, [1, numeral_input(n), n, P] \<Turnstile> yields_fm(3,1,0))"
     using P n xA by (auto simp add: accept_fm_def numeral_input_def)
-  have h2: "(A, [1, numeral_input(n), n, P] \<Turnstile> yields_fm(3,1,0)) \<longleftrightarrow> yields(P,numeral_input(n),1)"
+  have h2: "(M, [1, numeral_input(n), n, P] \<Turnstile> yields_fm(3,1,0)) \<longleftrightarrow> yields(P,numeral_input(n),1)"
     by (rule sats_yields_fm) (simp_all add: P n x one)
   from h1 h2 show ?thesis unfolding accepts_number_def by simp
 qed
@@ -307,9 +307,10 @@ theorem tm_decidable_in_transitive_model:
   assumes model: "transitive_zfc_model(A)" and dec: "tm_decidable(X)"
   shows "X \<in> A"
 proof -
-  interpret tm_model A by unfold_locales (rule transitive_zfc_model_imp_zf[OF model])
+  interpret M_ZF1_trans A
+    by (rule transitive_zf_M_ZF1_trans[OF transitive_zfc_model_imp_zf[OF model]])
   from dec obtain P where dP: "decides(P,X)" unfolding tm_decidable_def by blast
-  then have P: "P \<in> machine" and XN: "X \<subseteq> nat"
+  then have P: "P \<in> tm_machine" and XN: "X \<subseteq> nat"
     and acc: "\<And>n. n \<in> nat \<Longrightarrow> accepts_number(P,n) \<longleftrightarrow> n \<in> X"
     unfolding decides_def by auto
   have PA: "P \<in> A" using P by simp

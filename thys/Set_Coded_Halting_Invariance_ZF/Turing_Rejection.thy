@@ -8,11 +8,11 @@ theory Turing_Rejection
   imports "Turing_Decidability"
 begin
 
-text \<open>Given a machine M, the construction reserves a fresh control
+text \<open>Given a tm_machine M, the construction reserves a fresh control
 state above the states and instruction slots used by M. Transitions that
 would terminate M enter that state. A blank scanned there terminates the
-new machine; a 1 makes it loop. The projection lemmas relate runs of the
-new machine to runs of M, including termination caused by a missing
+new tm_machine; a 1 makes it loop. The projection lemmas relate runs of the
+new tm_machine to runs of M, including termination caused by a missing
 instruction. The final theorem instantiates the diagonal argument with this
 explicit finite instruction list.\<close>
 
@@ -26,9 +26,9 @@ primrec
     succ(snd(ins) #+ control_bound(M))"
 
 lemma control_bound_type [TC]:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "control_bound(M) \<in> nat"
-  using machine_M unfolding machine_def
+  using machine_M unfolding tm_machine_def
 proof (induct M rule: list.induct)
   case Nil
   then show ?case by simp
@@ -44,9 +44,9 @@ next
 qed
 
 lemma one_lt_control_bound:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "1 < control_bound(M)"
-  using machine_M unfolding machine_def
+  using machine_M unfolding tm_machine_def
 proof (induct M rule: list.induct)
   case Nil
   then show ?case by simp
@@ -57,8 +57,8 @@ next
   note bound_IH = Cons.hyps(3)
   from instruction have target: "snd(ins) \<in> nat"
     unfolding instruction_def by typecheck
-  from tail have tail_machine: "M \<in> machine"
-    unfolding machine_def .
+  from tail have tail_machine: "M \<in> tm_machine"
+    unfolding tm_machine_def .
   from control_bound_type[OF tail_machine] have bound_natural:
     "control_bound(M) \<in> nat" .
   from bound_natural have bound_le_sum:
@@ -75,9 +75,9 @@ next
 qed
 
 lemma length_lt_control_bound:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "length(M) < control_bound(M)"
-  using machine_M unfolding machine_def
+  using machine_M unfolding tm_machine_def
 proof (induct M rule: list.induct)
   case Nil
   then show ?case by simp
@@ -88,8 +88,8 @@ next
   note bound_IH = Cons.hyps(3)
   from instruction have target: "snd(ins) \<in> nat"
     unfolding instruction_def by typecheck
-  from tail have tail_machine: "M \<in> machine"
-    unfolding machine_def .
+  from tail have tail_machine: "M \<in> tm_machine"
+    unfolding tm_machine_def .
   from control_bound_type[OF tail_machine] have bound_natural:
     "control_bound(M) \<in> nat" .
   from bound_natural have bound_le_sum:
@@ -102,10 +102,10 @@ next
 qed
 
 lemma control_bound_target:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and member: "ins \<in> set_of_list(M)"
   shows "snd(ins) < control_bound(M)"
-  using machine_M member unfolding machine_def
+  using machine_M member unfolding tm_machine_def
 proof (induct M rule: list.induct)
   case Nil
   then show ?case by simp
@@ -119,8 +119,8 @@ next
     by simp
   from head_instruction have head_target: "snd(head) \<in> nat"
     unfolding instruction_def by typecheck
-  from tail have tail_machine: "M \<in> machine"
-    unfolding machine_def .
+  from tail have tail_machine: "M \<in> tm_machine"
+    unfolding tm_machine_def .
   show ?case
   proof (cases "ins = head")
     case True
@@ -151,7 +151,7 @@ lemma nth_in_set_of_list:
   by auto
 
 lemma fetch_target_below_control:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and state: "q \<in> control_bound(M)"
     and nonfinal: "q \<noteq> final_state"
     and scanned: "b \<in> symbol"
@@ -159,7 +159,7 @@ lemma fetch_target_below_control:
 proof (cases "slot(q,b) < length(M)")
   case True
   from machine_M have instructions: "M \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   from machine_M have control: "control_bound(M) \<in> nat"
     by (rule control_bound_type)
   from state control have natural: "q \<in> nat"
@@ -180,26 +180,26 @@ next
 qed
 
 lemma step_state_below_control:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and state: "fst(c) \<in> control_bound(M)"
     and nonfinal: "fst(c) \<noteq> final_state"
-  shows "fst(step(M,c)) \<in> control_bound(M)"
+  shows "fst(tm_step(M,c)) \<in> control_bound(M)"
 proof -
-  from configuration have tape: "snd(c) \<in> tape"
+  from configuration have tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck
-  from scan_type[OF tape] have scanned: "scan(snd(c)) \<in> symbol" .
+  from scan_type[OF tm_tape] have scanned: "scan(snd(c)) \<in> symbol" .
   from fetch_target_below_control[
       OF machine_M state nonfinal scanned]
   have "snd(fetch(M,fst(c),scan(snd(c)))) < control_bound(M)" .
   then have "snd(fetch(M,fst(c),scan(snd(c)))) \<in> control_bound(M)"
     by (rule ltD)
   then show ?thesis
-    unfolding step_def Let_def by simp
+    unfolding tm_step_def Let_def by simp
 qed
 
 lemma steps_state_below_control:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and initial: "fst(c) \<in> control_bound(M)"
     and time: "n \<in> nat"
@@ -271,12 +271,12 @@ proof -
 qed
 
 lemma rejecting_entry_type [TC]:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and natural: "j \<in> nat"
   shows "rejecting_entry(M,j) \<in> instruction"
 proof -
   from machine_M have instructions: "M \<in> list(instruction)"
-    unfolding machine_def .
+    unfolding tm_machine_def .
   from machine_M have control: "control_bound(M) \<in> nat"
     by (rule control_bound_type)
   show ?thesis
@@ -296,8 +296,8 @@ proof -
 qed
 
 lemma rejecting_machine_type [TC]:
-  assumes machine_M: "M \<in> machine"
-  shows "rejecting_machine(M) \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
+  shows "rejecting_machine(M) \<in> tm_machine"
 proof -
   from machine_M have control: "control_bound(M) \<in> nat"
     by (rule control_bound_type)
@@ -308,11 +308,11 @@ proof -
       upt(0,2 #* control_bound(M))) \<in> list(instruction)"
     using indices by (rule map_type) (rule rejecting_entry_type[OF machine_M])
   then show ?thesis
-    unfolding rejecting_machine_def machine_def .
+    unfolding rejecting_machine_def tm_machine_def .
 qed
 
 lemma length_rejecting_machine [simp]:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "length(rejecting_machine(M)) = 2 #* control_bound(M)"
 proof -
   from machine_M have control: "control_bound(M) \<in> nat"
@@ -322,7 +322,7 @@ proof -
 qed
 
 lemma nth_rejecting_machine:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and natural: "j \<in> nat"
     and in_range: "j < 2 #* control_bound(M)"
   shows "nth(j,rejecting_machine(M)) = rejecting_entry(M,j)"
@@ -383,7 +383,7 @@ next
 qed
 
 lemma slot_control_in_range:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and state: "q \<in> succ(control_bound(M))"
     and nonfinal: "q \<noteq> final_state"
     and scanned: "b \<in> symbol"
@@ -443,7 +443,7 @@ next
 qed
 
 lemma checker_slot_after_machine:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and scanned: "b \<in> symbol"
   shows "\<not> slot(control_bound(M),b) < length(M)"
 proof -
@@ -472,7 +472,7 @@ proof -
 qed
 
 lemma fetch_rejecting_machine:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and state: "q \<in> control_bound(M)"
     and nonfinal: "q \<noteq> final_state"
     and scanned: "b \<in> symbol"
@@ -522,7 +522,7 @@ proof -
 qed
 
 lemma fetch_rejecting_checker:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and scanned: "b \<in> symbol"
   shows "fetch(rejecting_machine(M),control_bound(M),b) =
     (if b = blank_symbol then \<langle>nop,final_state\<rangle>
@@ -592,11 +592,11 @@ lemma erase_configuration_type [TC]:
   shows "erase_configuration(k,c) \<in> configuration"
 proof -
   from configuration have state: "fst(c) \<in> nat"
-    and tape: "snd(c) \<in> tape"
+    and tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck+
   show ?thesis
     unfolding erase_configuration_def erase_state_def configuration_def
-    using control state tape by typecheck
+    using control state tm_tape by typecheck
 qed
 
 lemma erase_redirect_final:
@@ -639,16 +639,16 @@ proof -
 qed
 
 lemma step_rejecting_running:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and state: "fst(c) \<in> control_bound(M)"
     and nonfinal: "fst(c) \<noteq> final_state"
   shows "erase_configuration(control_bound(M),
-      step(rejecting_machine(M),c)) = step(M,c)"
+      tm_step(rejecting_machine(M),c)) = tm_step(M,c)"
 proof -
-  from configuration have tape: "snd(c) \<in> tape"
+  from configuration have tm_tape: "snd(c) \<in> tm_tape"
     unfolding configuration_def by typecheck
-  from scan_type[OF tape] have scanned:
+  from scan_type[OF tm_tape] have scanned:
     "scan(snd(c)) \<in> symbol" .
   from fetch_rejecting_machine[OF machine_M state nonfinal scanned]
   have transformed_fetch:
@@ -664,39 +664,39 @@ proof -
         fetch(M,fst(c),scan(snd(c)))))) =
       snd(fetch(M,fst(c),scan(snd(c))))" .
   show ?thesis
-    unfolding erase_configuration_def step_def Let_def
+    unfolding erase_configuration_def tm_step_def Let_def
     using transformed_fetch erased_target
     unfolding redirect_final_def by simp
 qed
 
 lemma step_rejecting_checker:
-  assumes machine_M: "M \<in> machine"
-    and tape: "t \<in> tape"
+  assumes machine_M: "M \<in> tm_machine"
+    and tm_tape: "t \<in> tm_tape"
   shows "erase_configuration(control_bound(M),
-      step(rejecting_machine(M),
+      tm_step(rejecting_machine(M),
         \<langle>control_bound(M),t\<rangle>)) =
     \<langle>final_state,t\<rangle>"
 proof -
-  from scan_type[OF tape] have scanned: "scan(t) \<in> symbol" .
+  from scan_type[OF tm_tape] have scanned: "scan(t) \<in> symbol" .
   from scanned have cases:
     "scan(t) = blank_symbol \<or> scan(t) = one_symbol"
     unfolding symbol_def by auto
   from fetch_rejecting_checker[OF machine_M scanned] cases
   show ?thesis
-    unfolding step_def Let_def erase_configuration_def erase_state_def
+    unfolding tm_step_def Let_def erase_configuration_def erase_state_def
       tm_update_def
     by auto
 qed
 
 lemma step_rejecting_erases:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and bounded: "fst(c) \<in> succ(control_bound(M))"
   shows "erase_configuration(control_bound(M),
-      step(rejecting_machine(M),c)) =
-    step(M,erase_configuration(control_bound(M),c))"
+      tm_step(rejecting_machine(M),c)) =
+    tm_step(M,erase_configuration(control_bound(M),c))"
 proof -
-  from configuration obtain q t where tape: "t \<in> tape"
+  from configuration obtain q t where tm_tape: "t \<in> tm_tape"
     and representation: "c = \<langle>q,t\<rangle>"
     unfolding configuration_def by auto
   from bounded representation have state_bounded:
@@ -720,7 +720,7 @@ proof -
       from True representation have checker_configuration:
         "c = \<langle>control_bound(M),t\<rangle>"
         by simp
-      from step_rejecting_checker[OF machine_M tape]
+      from step_rejecting_checker[OF machine_M tm_tape]
       show ?thesis
         unfolding checker_configuration by simp
     next
@@ -743,10 +743,10 @@ proof -
 qed
 
 lemma step_rejecting_bounded:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and bounded: "fst(c) \<in> succ(control_bound(M))"
-  shows "fst(step(rejecting_machine(M),c)) \<in>
+  shows "fst(tm_step(rejecting_machine(M),c)) \<in>
     succ(control_bound(M))"
 proof -
   let ?k = "control_bound(M)"
@@ -754,7 +754,7 @@ proof -
     by (rule control_bound_type)
   from control have zero_bounded: "0 \<in> succ(?k)"
     by (rule nat_0_le[THEN ltD])
-  from configuration obtain q t where tape: "t \<in> tape"
+  from configuration obtain q t where tm_tape: "t \<in> tm_tape"
     and representation: "c = \<langle>q,t\<rangle>"
     unfolding configuration_def by auto
   from bounded representation have state_bounded:
@@ -769,19 +769,19 @@ proof -
     show ?thesis
     proof (cases "q = ?k")
       case True
-      from scan_type[OF tape] have scanned: "scan(t) \<in> symbol" .
+      from scan_type[OF tm_tape] have scanned: "scan(t) \<in> symbol" .
       from scanned have symbols:
         "scan(t) = blank_symbol \<or> scan(t) = one_symbol"
         unfolding symbol_def by auto
       from fetch_rejecting_checker[OF machine_M scanned]
         symbols True zero_bounded
       show ?thesis
-        unfolding representation step_def Let_def by auto
+        unfolding representation tm_step_def Let_def by auto
     next
       case control_False: False
       from state_bounded control_False have below: "q \<in> ?k"
         by auto
-      from scan_type[OF tape] have scanned: "scan(t) \<in> symbol" .
+      from scan_type[OF tm_tape] have scanned: "scan(t) \<in> symbol" .
       from fetch_rejecting_machine[OF machine_M below nonfinal scanned]
       have transformed_fetch:
         "fetch(rejecting_machine(M),q,scan(t)) =
@@ -794,13 +794,13 @@ proof -
         "snd(redirect_final(?k,fetch(M,q,scan(t)))) \<in> succ(?k)"
         .
       from transformed_fetch target_bounded show ?thesis
-        unfolding representation step_def Let_def by simp
+        unfolding representation tm_step_def Let_def by simp
     qed
   qed
 qed
 
 lemma steps_rejecting_bounded:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and bounded: "fst(c) \<in> succ(control_bound(M))"
     and time: "n \<in> nat"
@@ -822,7 +822,7 @@ next
 qed
 
 lemma steps_rejecting_erases:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and bounded: "fst(c) \<in> succ(control_bound(M))"
     and time: "n \<in> nat"
@@ -847,15 +847,15 @@ next
   have "erase_configuration(control_bound(M),
       steps(rejecting_machine(M),c,succ(n))) =
     erase_configuration(control_bound(M),
-      step(rejecting_machine(M),
+      tm_step(rejecting_machine(M),
         steps(rejecting_machine(M),c,n)))"
     by simp
   also from step_rejecting_erases[
       OF machine_M current_configuration current_bounded]
-  have "... = step(M,erase_configuration(control_bound(M),
+  have "... = tm_step(M,erase_configuration(control_bound(M),
       steps(rejecting_machine(M),c,n)))" .
   also from succ.hyps(2) have
-    "... = step(M,
+    "... = tm_step(M,
       steps(M,erase_configuration(control_bound(M),c),n))"
     by simp
   also have "... =
@@ -870,21 +870,21 @@ lemma redirect_final_nonfinal:
   using control_nonfinal unfolding redirect_final_def by auto
 
 lemma step_rejecting_final_blank:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and bounded: "fst(c) \<in> succ(control_bound(M))"
     and final_blank:
       "fst(c) = final_state \<Longrightarrow>
         scan(snd(c)) = blank_symbol"
     and next_final:
-      "fst(step(rejecting_machine(M),c)) = final_state"
-  shows "scan(snd(step(rejecting_machine(M),c))) = blank_symbol"
+      "fst(tm_step(rejecting_machine(M),c)) = final_state"
+  shows "scan(snd(tm_step(rejecting_machine(M),c))) = blank_symbol"
 proof -
   let ?k = "control_bound(M)"
   from one_lt_control_bound[OF machine_M] have control_nonfinal:
     "?k \<noteq> final_state"
     by auto
-  from configuration obtain q t where tape: "t \<in> tape"
+  from configuration obtain q t where tm_tape: "t \<in> tm_tape"
     and representation: "c = \<langle>q,t\<rangle>"
     unfolding configuration_def by auto
   from bounded representation have state_bounded: "q \<in> succ(?k)"
@@ -901,19 +901,19 @@ proof -
     show ?thesis
     proof (cases "q = ?k")
       case True
-      from scan_type[OF tape] have scanned_type: "scan(t) \<in> symbol" .
+      from scan_type[OF tm_tape] have scanned_type: "scan(t) \<in> symbol" .
       from scanned_type have scanned_cases:
         "scan(t) = blank_symbol \<or> scan(t) = one_symbol"
         unfolding symbol_def by auto
       from fetch_rejecting_checker[OF machine_M scanned_type]
         scanned_cases True representation next_final control_nonfinal
       show ?thesis
-        unfolding step_def Let_def tm_update_def by auto
+        unfolding tm_step_def Let_def tm_update_def by auto
     next
       case control_False: False
       from state_bounded control_False have below: "q \<in> ?k"
         by auto
-      from scan_type[OF tape] have scanned_type: "scan(t) \<in> symbol" .
+      from scan_type[OF tm_tape] have scanned_type: "scan(t) \<in> symbol" .
       from fetch_rejecting_machine[OF machine_M below nonfinal scanned_type]
       have transformed_fetch:
         "fetch(rejecting_machine(M),q,scan(t)) =
@@ -924,13 +924,13 @@ proof -
         "snd(redirect_final(?k,fetch(M,q,scan(t)))) \<noteq> final_state" .
       from transformed_fetch transformed_nonfinal representation next_final
       show ?thesis
-        unfolding step_def Let_def by simp
+        unfolding tm_step_def Let_def by simp
     qed
   qed
 qed
 
 lemma steps_rejecting_final_blank:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and configuration: "c \<in> configuration"
     and bounded: "fst(c) \<in> succ(control_bound(M))"
     and initial_final_blank:
@@ -962,12 +962,12 @@ next
 qed
 
 lemma initial_state_below_control:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
   shows "initial_state \<in> control_bound(M)"
   using one_lt_control_bound[OF machine_M] by (rule ltD)
 
 lemma steps_rejecting_initial_bounded:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and time: "n \<in> nat"
   shows "fst(steps(rejecting_machine(M),initial_config(x),n)) \<in>
@@ -982,7 +982,7 @@ proof -
 qed
 
 lemma steps_rejecting_initial_erases:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and time: "n \<in> nat"
   shows "erase_configuration(control_bound(M),
@@ -1006,7 +1006,7 @@ proof -
 qed
 
 lemma steps_rejecting_initial_final_blank:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and time: "n \<in> nat"
     and final:
@@ -1028,10 +1028,10 @@ proof -
 qed
 
 lemma step_rejecting_checker_blank:
-  assumes machine_M: "M \<in> machine"
-    and tape: "t \<in> tape"
+  assumes machine_M: "M \<in> tm_machine"
+    and tm_tape: "t \<in> tm_tape"
     and blank: "scan(t) = blank_symbol"
-  shows "step(rejecting_machine(M),
+  shows "tm_step(rejecting_machine(M),
       \<langle>control_bound(M),t\<rangle>) =
     \<langle>final_state,t\<rangle>"
 proof -
@@ -1041,11 +1041,11 @@ proof -
       \<langle>nop,final_state\<rangle>"
     by simp
   from blank checker_fetch show ?thesis
-    unfolding step_def Let_def tm_update_def by simp
+    unfolding tm_step_def Let_def tm_update_def by simp
 qed
 
 lemma rejecting_machine_halts_imp_yields_blank:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and halts: "halts_on(rejecting_machine(M),x)"
   shows "yields(M,x,blank_symbol)"
@@ -1086,7 +1086,7 @@ proof -
 qed
 
 lemma yields_blank_imp_rejecting_machine_halts:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and rejection: "yields(M,x,blank_symbol)"
   shows "halts_on(rejecting_machine(M),x)"
@@ -1103,7 +1103,7 @@ proof -
   have transformed_configuration: "?z \<in> configuration"
     by (rule steps_type)
   from transformed_configuration have transformed_tape:
-    "snd(?z) \<in> tape"
+    "snd(?z) \<in> tm_tape"
     unfolding configuration_def by typecheck
   from transformed_configuration have transformed_pair:
     "\<langle>fst(?z),snd(?z)\<rangle> = ?z"
@@ -1159,7 +1159,7 @@ proof -
 qed
 
 theorem rejecting_machine_halts_iff_yields_blank:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
   shows "halts_on(rejecting_machine(M),x) \<longleftrightarrow>
     yields(M,x,blank_symbol)"
@@ -1176,7 +1176,7 @@ next
 qed
 
 theorem rejecting_machine_halts_iff_rejects_number:
-  assumes machine_M: "M \<in> machine"
+  assumes machine_M: "M \<in> tm_machine"
     and natural: "n \<in> nat"
   shows "halts_on(rejecting_machine(M),numeral_input(n)) \<longleftrightarrow>
     rejects_number(M,n)"
@@ -1187,12 +1187,12 @@ theorem rejecting_machine_halts_iff_rejects_number:
 interpretation rejection_diagonal: halting_diagonal rejecting_machine
 proof
   fix D
-  assume "D \<in> machine"
-  then show "rejecting_machine(D) \<in> machine"
+  assume "D \<in> tm_machine"
+  then show "rejecting_machine(D) \<in> tm_machine"
     by (rule rejecting_machine_type)
 next
   fix D n
-  assume machine_D: "D \<in> machine"
+  assume machine_D: "D \<in> tm_machine"
     and natural: "n \<in> nat"
   show "halts_on(rejecting_machine(D),numeral_input(n)) \<longleftrightarrow>
     rejects_number(D,n)"

@@ -67,7 +67,7 @@ The saved candidate heap supports the maintained dependency check.
 
     isabelle ML_process -d output/afp-entry/Set_Coded_Halting_Invariance_ZF -l Set_Coded_Halting_Invariance_ZF -f scripts/check_submission_proofs.ML
 
-This check inspects the six principal results for undischarged hypotheses.
+This check inspects the nine principal results for undischarged hypotheses.
 It collects named facts from all nineteen canonical theories and checks
 their proof closure for oracle dependencies. Explicit premises in theorem
 statements remain premises.

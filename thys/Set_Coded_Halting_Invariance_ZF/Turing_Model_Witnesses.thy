@@ -40,15 +40,15 @@ lemma tm_symbol_closed: "a \<in> symbol \<Longrightarrow> M(a)"
 lemma tm_instruction_closed: "ins \<in> instruction \<Longrightarrow> M(ins)"
   unfolding instruction_def action_def by auto
 
-lemma tm_machine_closed: "P \<in> machine \<Longrightarrow> M(P)"
-  unfolding machine_def by (rule tm_list_closed) (auto intro:
+lemma tm_machine_closed: "P \<in> tm_machine \<Longrightarrow> M(P)"
+  unfolding tm_machine_def by (rule tm_list_closed) (auto intro:
     tm_instruction_closed)
 
 lemma tm_input_closed: "x \<in> list(symbol) \<Longrightarrow> M(x)"
   by (rule tm_list_closed) (auto intro: tm_symbol_closed)
 
 lemma tm_configuration_closed: "c \<in> configuration \<Longrightarrow> M(c)"
-  unfolding configuration_def tape_def by (auto intro: tm_input_closed)
+  unfolding configuration_def tm_tape_def by (auto intro: tm_input_closed)
 
 lemma tm_finite_lambda_closed:
   assumes n: "n \<in> nat" and values: "\<And>k. k \<in> n \<Longrightarrow> M(f(k))"
@@ -67,7 +67,7 @@ next
 qed
 
 lemma tm_trace_closed:
-  assumes P: "P \<in> machine" and c: "c \<in> configuration" and n: "n \<in> nat"
+  assumes P: "P \<in> tm_machine" and c: "c \<in> configuration" and n: "n \<in> nat"
   shows "M(\<lambda>k\<in>succ(n). steps(P,c,k))"
 proof (rule tm_finite_lambda_closed[OF nat_succI[OF n]])
   fix k assume k: "k \<in> succ(n)"
@@ -110,7 +110,7 @@ qed
 subsection \<open>Machine objects in a set model\<close>
 
 theorem transitive_zf_contains_machine:
-  "\<lbrakk>transitive_zf_model(A); P \<in> machine\<rbrakk> \<Longrightarrow> P \<in> A"
+  "\<lbrakk>transitive_zf_model(A); P \<in> tm_machine\<rbrakk> \<Longrightarrow> P \<in> A"
   using M_trivial.tm_machine_closed[OF transitive_zf_M_trivial] by simp
 
 theorem transitive_zf_contains_configuration:
@@ -122,7 +122,7 @@ corollary transitive_zf_contains_decoded_machine:
   by (rule transitive_zf_contains_machine) (auto intro: decode_machine_type)
 
 theorem transitive_zf_contains_trace:
-  "\<lbrakk>transitive_zf_model(A); P \<in> machine; c \<in> configuration; n \<in> nat\<rbrakk> \<Longrightarrow>
+  "\<lbrakk>transitive_zf_model(A); P \<in> tm_machine; c \<in> configuration; n \<in> nat\<rbrakk> \<Longrightarrow>
     (\<lambda>k\<in>succ(n). steps(P,c,k)) \<in> A"
   using M_trivial.tm_trace_closed[OF transitive_zf_M_trivial] by simp
 

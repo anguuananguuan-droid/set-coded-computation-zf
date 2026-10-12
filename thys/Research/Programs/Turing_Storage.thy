@@ -35,7 +35,7 @@ proof (induct n arbitrary: r rule: nat_induct)
   show ?case by (rule bexI[of _ 1]) (simp_all add: loop)
 next
   case (succ n)
-  have first: "step(M,\<langle>q,\<langle>repeat(a,succ(n)) @ l,Cons(a,r)\<rangle>\<rangle>) =
+  have first: "tm_step(M,\<langle>q,\<langle>repeat(a,succ(n)) @ l,Cons(a,r)\<rangle>\<rangle>) =
     \<langle>q,\<langle>repeat(a,n) @ l,Cons(a,Cons(a,r))\<rangle>\<rangle>" by (simp add: loop)
   have rest: "reaches(M,\<langle>q,\<langle>repeat(a,n) @ l,Cons(a,Cons(a,r))\<rangle>\<rangle>,
     \<langle>q,\<langle>tl(l),Cons(hd(l),repeat(a,succ(succ(n))) @ r)\<rangle>\<rangle>)"
@@ -54,7 +54,7 @@ proof (cases rule: natE)
   show ?thesis by (rule bexI[of _ 1]) (simp_all add: entry 0)
 next
   case (succ k)
-  have first: "step(M,\<langle>p,\<langle>repeat(a,n) @ l,r\<rangle>\<rangle>) =
+  have first: "tm_step(M,\<langle>p,\<langle>repeat(a,n) @ l,r\<rangle>\<rangle>) =
     \<langle>q,\<langle>repeat(a,k) @ l,Cons(a,r)\<rangle>\<rangle>" using entry succ by simp
   have rest: "reaches(M,\<langle>q,\<langle>repeat(a,k) @ l,Cons(a,r)\<rangle>\<rangle>,
     \<langle>q,\<langle>tl(l),Cons(hd(l),repeat(a,n) @ r)\<rangle>\<rangle>)"
@@ -121,8 +121,8 @@ definition drop_argument_machine :: i where
    [\<langle>move_right,final_state\<rangle>,\<langle>write_blank,2\<rangle>,
     \<langle>move_right,initial_state\<rangle>,\<langle>move_right,initial_state\<rangle>]"
 
-lemma drop_argument_machine_type [TC]: "drop_argument_machine \<in> machine"
-  unfolding drop_argument_machine_def machine_def instruction_def by typecheck
+lemma drop_argument_machine_type [TC]: "drop_argument_machine \<in> tm_machine"
+  unfolding drop_argument_machine_def tm_machine_def instruction_def by typecheck
 
 lemma fetch_drop_argument [simp]:
   "fetch(drop_argument_machine,1,0) = \<langle>move_right,final_state\<rangle>"
@@ -152,7 +152,7 @@ proof -
   have finish: "config_eq(\<langle>final_state,\<langle>?b,?ys\<rangle>\<rangle>,
     \<langle>final_state,\<langle>[],?ys\<rangle>\<rangle>)"
     using n ys half_tape_eq_blank_repeat[OF nat_succI[OF nat_succI[OF n]]]
-    unfolding config_eq_def tape_eq_def configuration_def tape_def by (auto intro: repeat_type)
+    unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by (auto intro: repeat_type)
   show ?thesis by (rule computes_tape_from_reaches[OF drop_argument_machine_type input ys start
     reaches_trans[OF erase last] finish])
 qed
@@ -161,7 +161,7 @@ lemma drop_argument_computes_Nil:
   "computes_tape(drop_argument_machine,[],[])"
 proof -
   have eq: "config_eq(steps(drop_argument_machine,initial_config([]),1),\<langle>final_state,\<langle>[],[]\<rangle>\<rangle>)"
-    unfolding config_eq_def tape_eq_def configuration_def tape_def by simp
+    unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by simp
   from eq drop_argument_machine_type show ?thesis
     unfolding computes_tape_def by (auto intro!: bexI[of _ 1])
 qed

@@ -9,7 +9,7 @@ theory Turing_Realisation
 begin
 
 text \<open>Constants, all projections, and the list-based successor have
-finite machine witnesses. Closure under arbitrary COMP and PREC is not
+finite tm_machine witnesses. Closure under arbitrary COMP and PREC is not
 established by these base cases.\<close>
 
 definition erase_arguments_machine :: i where
@@ -18,8 +18,8 @@ definition erase_arguments_machine :: i where
     \<langle>move_right,succ(2)\<rangle>,\<langle>move_right,succ(2)\<rangle>,
     \<langle>move_right,initial_state\<rangle>,\<langle>write_blank,2\<rangle>]"
 
-lemma erase_arguments_machine_type [TC]: "erase_arguments_machine \<in> machine"
-  unfolding erase_arguments_machine_def machine_def instruction_def by typecheck
+lemma erase_arguments_machine_type [TC]: "erase_arguments_machine \<in> tm_machine"
+  unfolding erase_arguments_machine_def tm_machine_def instruction_def by typecheck
 
 lemma fetch_erase_arguments [simp]:
   "fetch(erase_arguments_machine,1,0) = \<langle>nop,final_state\<rangle>"
@@ -48,7 +48,7 @@ proof -
     by (rule config_eq_refl[OF initial_config_type[OF x]])
   have finish: "config_eq(\<langle>final_state,\<langle>?b,[]\<rangle>\<rangle>,\<langle>final_state,\<langle>[],[]\<rangle>\<rangle>)"
     using b half_tape_eq_blank_repeat[OF len]
-    unfolding config_eq_def tape_eq_def configuration_def tape_def by auto
+    unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by auto
   show ?thesis by (rule computes_tape_from_reaches[OF erase_arguments_machine_type x _ start
     reaches_trans[OF run last] finish]) typecheck
 qed
@@ -59,7 +59,7 @@ primrec
   "numeral_machine(succ(n)) = sequential_machine(numeral_machine(n),successor_machine)"
 
 lemma numeral_machine_type [TC]:
-  "n \<in> nat \<Longrightarrow> numeral_machine(n) \<in> machine"
+  "n \<in> nat \<Longrightarrow> numeral_machine(n) \<in> tm_machine"
   by (induct n rule: nat_induct)
     (auto intro: empty_machine_type sequential_machine_type successor_machine_type)
 
@@ -77,7 +77,7 @@ definition constant_arguments_machine :: "i \<Rightarrow> i" where
   "constant_arguments_machine(n) \<equiv> sequential_machine(erase_arguments_machine,numeral_machine(n))"
 
 lemma constant_arguments_machine_type [TC]:
-  "n \<in> nat \<Longrightarrow> constant_arguments_machine(n) \<in> machine"
+  "n \<in> nat \<Longrightarrow> constant_arguments_machine(n) \<in> tm_machine"
   unfolding constant_arguments_machine_def by typecheck
 
 lemma constant_arguments_computes:
@@ -110,7 +110,7 @@ theorem argument_realiser_to_unary:
   assumes realiser: "tm_realises_arguments(M,f)"
   shows "tm_realises_unary(sequential_machine(successor_machine,M),f)"
 proof -
-  from realiser have M: "M \<in> machine" and f: "f \<in> list(nat) \<rightarrow> nat"
+  from realiser have M: "M \<in> tm_machine" and f: "f \<in> list(nat) \<rightarrow> nat"
     and run: "\<And>ns. ns \<in> list(nat) \<Longrightarrow> computes_tape(M,arguments(ns),numeral_input(f`ns))"
     unfolding tm_realises_arguments_def by auto
   have computes: "\<And>n. n \<in> nat \<Longrightarrow> computes_number(sequential_machine(successor_machine,M),n,f`[n])"

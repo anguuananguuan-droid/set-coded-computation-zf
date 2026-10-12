@@ -28,8 +28,8 @@ definition keep_first_machine :: i where
     \<langle>move_right,kp_next\<rangle>,\<langle>write_blank,kp_move\<rangle>,
     \<langle>move_right,final_state\<rangle>,\<langle>move_left,kp_rewind\<rangle>]"
 
-lemma keep_first_machine_type [TC]: "keep_first_machine \<in> machine"
-  unfolding keep_first_machine_def machine_def instruction_def by typecheck
+lemma keep_first_machine_type [TC]: "keep_first_machine \<in> tm_machine"
+  unfolding keep_first_machine_def tm_machine_def instruction_def by typecheck
 
 lemma fetch_keep_first [simp]:
   "fetch(keep_first_machine,1,0) = \<langle>nop,final_state\<rangle>"
@@ -93,7 +93,7 @@ proof -
     using half_tape_eq_append[OF x half_tape_eq_blank_repeat[OF k]] x by simp
   have finish: "config_eq(\<langle>final_state,\<langle>[blank_symbol],?x @ ?pad\<rangle>\<rangle>,
     \<langle>final_state,\<langle>[],?x\<rangle>\<rangle>)"
-    using x pad right unfolding config_eq_def tape_eq_def configuration_def tape_def by auto
+    using x pad right unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by auto
   show ?thesis by (rule computes_tape_from_reaches[OF keep_first_machine_type input x start
     reaches_trans[OF first reaches_trans[OF seek reaches_trans[OF cross
       reaches_trans[OF erase reaches_trans[OF return_blanks reaches_trans[OF rewind exit]]]]]] finish])
@@ -102,13 +102,13 @@ qed
 lemma keep_first_computes_Nil: "computes_tape(keep_first_machine,[],[])"
 proof -
   have eq: "config_eq(steps(keep_first_machine,initial_config([]),1),\<langle>final_state,\<langle>[],[]\<rangle>\<rangle>)"
-    unfolding config_eq_def tape_eq_def configuration_def tape_def by simp
+    unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by simp
   from eq keep_first_machine_type show ?thesis
     unfolding computes_tape_def by (auto intro!: bexI[of _ 1])
 qed
 
 definition tm_realises_arguments :: "[i,i] \<Rightarrow> o" where
-  "tm_realises_arguments(M,f) \<equiv> M \<in> machine \<and> f \<in> list(nat) \<rightarrow> nat \<and>
+  "tm_realises_arguments(M,f) \<equiv> M \<in> tm_machine \<and> f \<in> list(nat) \<rightarrow> nat \<and>
     (\<forall>ns\<in>list(nat). computes_tape(M,arguments(ns),numeral_input(f`ns)))"
 
 text \<open>This interface quantifies over all argument lists, including empty
@@ -138,8 +138,8 @@ definition predecessor_machine :: i where
    [\<langle>nop,final_state\<rangle>,\<langle>write_blank,2\<rangle>,
     \<langle>move_right,final_state\<rangle>,\<langle>move_right,final_state\<rangle>]"
 
-lemma predecessor_machine_type [TC]: "predecessor_machine \<in> machine"
-  unfolding predecessor_machine_def machine_def instruction_def by typecheck
+lemma predecessor_machine_type [TC]: "predecessor_machine \<in> tm_machine"
+  unfolding predecessor_machine_def tm_machine_def instruction_def by typecheck
 
 lemma predecessor_computes:
   assumes n: "n \<in> nat"
@@ -148,7 +148,7 @@ lemma predecessor_computes:
 proof (cases rule: natE)
   case 0
   have eq: "config_eq(steps(predecessor_machine,initial_config([]),1),\<langle>final_state,\<langle>[],[]\<rangle>\<rangle>)"
-    unfolding config_eq_def tape_eq_def configuration_def tape_def
+    unfolding config_eq_def tape_eq_def configuration_def tm_tape_def
     by (simp add: predecessor_machine_def fetch_def slot_def)
   from eq predecessor_machine_type 0 show ?thesis
     unfolding computes_number_def by (auto intro!: bexI[of _ 1])
@@ -157,7 +157,7 @@ next
   have eq: "config_eq(steps(predecessor_machine,initial_config(numeral_input(n)),2),
     \<langle>final_state,\<langle>[],numeral_input(k)\<rangle>\<rangle>)"
     using numeral_input_type[OF succ(1)] succ(2)
-    unfolding config_eq_def tape_eq_def configuration_def tape_def
+    unfolding config_eq_def tape_eq_def configuration_def tm_tape_def
     by (simp add: predecessor_machine_def fetch_def slot_def)
   from eq predecessor_machine_type succ n show ?thesis
     unfolding computes_number_def by (auto intro!: bexI[of _ 2])
@@ -166,7 +166,7 @@ qed
 definition first_projection_machine :: i where
   "first_projection_machine \<equiv> sequential_machine(keep_first_machine,predecessor_machine)"
 
-lemma first_projection_machine_type [TC]: "first_projection_machine \<in> machine"
+lemma first_projection_machine_type [TC]: "first_projection_machine \<in> tm_machine"
   unfolding first_projection_machine_def by typecheck
 
 lemma first_projection_computes:
@@ -191,7 +191,7 @@ primrec
   "projection_machine(succ(i)) = sequential_machine(drop_argument_machine,projection_machine(i))"
 
 lemma projection_machine_type [TC]:
-  "i \<in> nat \<Longrightarrow> projection_machine(i) \<in> machine"
+  "i \<in> nat \<Longrightarrow> projection_machine(i) \<in> tm_machine"
   by (induct i rule: nat_induct)
     (auto intro: sequential_machine_type first_projection_machine_type drop_argument_machine_type)
 

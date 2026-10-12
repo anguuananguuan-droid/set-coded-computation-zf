@@ -36,14 +36,14 @@ qed
 
 subsection \<open>Halting and Output\<close>
 
-text \<open>Output is the symbol scanned when the machine reaches the final
+text \<open>Output is the symbol scanned when the tm_machine reaches the final
 state. Scanning 1 means acceptance and scanning 0 means rejection. This
 convention differs from output specifications that require a canonical
-literal tape or a numeral remaining on the tape.\<close>
+literal tm_tape or a numeral remaining on the tm_tape.\<close>
 
 definition yields :: "[i,i,i] \<Rightarrow> o" where
   "yields(M,x,b) \<equiv>
-    M \<in> machine \<and>
+    M \<in> tm_machine \<and>
     x \<in> list(symbol) \<and>
     b \<in> symbol \<and>
     (\<exists>n\<in>nat.
@@ -78,7 +78,7 @@ lemma yields_unique:
     and second: "yields(M,x,d)"
   shows "b = d"
 proof -
-  from first obtain m where machine_M: "M \<in> machine"
+  from first obtain m where machine_M: "M \<in> tm_machine"
     and input: "x \<in> list(symbol)"
     and time_m: "m \<in> nat"
     and final_m:
@@ -128,7 +128,7 @@ subsection \<open>Decision Semantics\<close>
 
 definition decides :: "[i,i] \<Rightarrow> o" where
   "decides(M,A) \<equiv>
-    M \<in> machine \<and>
+    M \<in> tm_machine \<and>
     A \<subseteq> nat \<and>
     (\<forall>n\<in>nat.
       (accepts_number(M,n) \<longleftrightarrow> n \<in> A) \<and>
@@ -139,7 +139,7 @@ definition tm_decidable :: "i \<Rightarrow> o" where
 
 lemma decides_machine:
   assumes decision: "decides(M,A)"
-  shows "M \<in> machine"
+  shows "M \<in> tm_machine"
   using decision unfolding decides_def by auto
 
 lemma decides_accepts_iff:
@@ -192,7 +192,7 @@ proof
   assume decidable: "tm_decidable(diagonal_rejection)"
   then obtain D where decision: "decides(D,diagonal_rejection)"
     unfolding tm_decidable_def by auto
-  from decision have machine_D: "D \<in> machine"
+  from decision have machine_D: "D \<in> tm_machine"
     by (rule decides_machine)
   let ?d = "encode_machine(D)"
   from encode_machine_type[OF machine_D] have code_d:
@@ -234,10 +234,10 @@ lemma blank_halting_iff:
 
 subsection \<open>Self-Halting\<close>
 
-text \<open>The self-halting set uses the total machine decoder and the
+text \<open>The self-halting set uses the total tm_machine decoder and the
 unary input for its own code. The diagonal locale separates the
-diagonal argument from the construction of a machine that halts exactly
-when another machine rejects. The next theory supplies that machine.\<close>
+diagonal argument from the construction of a tm_machine that halts exactly
+when another tm_machine rejects. The next theory supplies that tm_machine.\<close>
 
 definition self_halting :: i where
   "self_halting \<equiv>
@@ -256,9 +256,9 @@ lemma self_halting_iff:
 locale halting_diagonal =
   fixes rejection_transform :: "i \<Rightarrow> i"
   assumes rejection_transform_type:
-      "D \<in> machine \<Longrightarrow> rejection_transform(D) \<in> machine"
+      "D \<in> tm_machine \<Longrightarrow> rejection_transform(D) \<in> tm_machine"
     and rejection_transform_halts_iff:
-      "\<lbrakk>D \<in> machine; n \<in> nat\<rbrakk> \<Longrightarrow>
+      "\<lbrakk>D \<in> tm_machine; n \<in> nat\<rbrakk> \<Longrightarrow>
         halts_on(rejection_transform(D),numeral_input(n)) \<longleftrightarrow>
         rejects_number(D,n)"
 begin
@@ -269,11 +269,11 @@ proof
   assume decidable: "tm_decidable(self_halting)"
   then obtain D where decision: "decides(D,self_halting)"
     unfolding tm_decidable_def by auto
-  from decision have machine_D: "D \<in> machine"
+  from decision have machine_D: "D \<in> tm_machine"
     by (rule decides_machine)
   let ?Q = "rejection_transform(D)"
   from rejection_transform_type[OF machine_D] have machine_Q:
-    "?Q \<in> machine" .
+    "?Q \<in> tm_machine" .
   let ?q = "encode_machine(?Q)"
   from encode_machine_type[OF machine_Q] have code_q:
     "?q \<in> machine_code" .

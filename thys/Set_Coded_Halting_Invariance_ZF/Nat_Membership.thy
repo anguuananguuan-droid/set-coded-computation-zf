@@ -25,11 +25,11 @@ lemma nat_member_fm_type [TC]:
   unfolding nat_member_fm_def by typecheck
 
 theorem sats_nat_member_fm:
-  assumes model: "transitive_zf_model(A)" and env: "env \<in> list(A)"
+  assumes model: "M_ZF1_trans(A)" and env: "env \<in> list(A)"
     and i: "i \<in> nat"
   shows "sats(A,nat_member_fm(i),env) \<longleftrightarrow> nth(i,env) \<in> nat"
 proof -
-  interpret A: M_trancl "##A" by (rule transitive_zf_M_trancl[OF model])
+  interpret A: M_ZF1_trans A by (rule model)
   have natA: "nat \<in> A" using A.M_nat by simp
   show ?thesis unfolding nat_member_fm_def
     using env i natA by auto

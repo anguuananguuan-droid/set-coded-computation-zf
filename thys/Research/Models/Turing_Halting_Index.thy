@@ -22,7 +22,7 @@ lemma tm_halting_certificate:
   obtains n r where "n \<in> nat" "M(n)" "M(r)" "finite_run(P,n,r)"
     "r`0 = initial_config(x)" "fst(r`n) = final_state"
 proof -
-  from halts obtain n where P: "P \<in> machine" and x: "x \<in> list(symbol)"
+  from halts obtain n where P: "P \<in> tm_machine" and x: "x \<in> list(symbol)"
     and n: "n \<in> nat" and final: "fst(steps(P,initial_config(x),n)) =
       final_state"
     unfolding halts_on_def by auto
@@ -43,7 +43,7 @@ subsection \<open>Model witnesses\<close>
 
 definition model_halting_witness :: "[i,i,i] \<Rightarrow> o" where
   "model_halting_witness(A,P,x) \<equiv>
-    P \<in> machine \<and> x \<in> list(symbol) \<and> P \<in> A \<and> x \<in> A \<and>
+    P \<in> tm_machine \<and> x \<in> list(symbol) \<and> P \<in> A \<and> x \<in> A \<and>
     (\<exists>n\<in>nat \<inter> A. \<exists>r\<in>A.
       finite_run(P,n,r) \<and> r`0 = initial_config(x) \<and> fst(r`n) = final_state)"
 
@@ -57,7 +57,7 @@ proof
 next
   assume halts: "halts_on(P,x)"
   interpret A: M_trivial "##A" by (rule transitive_zf_M_trivial[OF model])
-  from halts have P: "P \<in> machine" and x: "x \<in> list(symbol)" unfolding
+  from halts have P: "P \<in> tm_machine" and x: "x \<in> list(symbol)" unfolding
     halts_on_def by auto
   obtain n r where
     n: "n \<in> nat" "n \<in> A" and r: "r \<in> A" "finite_run(P,n,r)"

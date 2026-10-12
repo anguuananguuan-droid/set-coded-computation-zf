@@ -186,9 +186,9 @@ lemma pr_machine_reverse_index_in_prim_rec [TC]:
 
 lemma pr_machine_reverse_index_apply:
   assumes acc: "r \<in> nat" and count: "k \<in> nat"
-    and machine: "e \<in> nat" and tail: "l \<in> list(nat)"
+    and tm_machine: "e \<in> nat" and tail: "l \<in> list(nat)"
   shows "pr_machine_reverse_index`Cons(r,Cons(k,Cons(e,l))) = e #- succ(k)"
-  using acc count machine tail unfolding pr_machine_reverse_index_def
+  using acc count tm_machine tail unfolding pr_machine_reverse_index_def
   by (simp add: COMP_2 COMP_1 PROJ_0 SC pr_diff_apply)
 
 definition pr_machine_present :: i where
@@ -201,10 +201,10 @@ lemma pr_machine_present_in_prim_rec [TC]:
 
 lemma pr_machine_present_apply:
   assumes acc: "r \<in> nat" and count: "k \<in> nat"
-    and machine: "e \<in> nat" and tail: "l \<in> list(nat)"
+    and tm_machine: "e \<in> nat" and tail: "l \<in> list(nat)"
   shows "pr_machine_present`Cons(r,Cons(k,Cons(e,l))) =
     code_has_index(e #- succ(k),e)"
-  using acc count machine tail unfolding pr_machine_present_def
+  using acc count tm_machine tail unfolding pr_machine_present_def
   by (simp add: COMP_2 pr_machine_reverse_index_apply
       pr_list_has_index_apply)
 
@@ -218,10 +218,10 @@ lemma pr_machine_element_in_prim_rec [TC]:
 
 lemma pr_machine_element_apply:
   assumes acc: "r \<in> nat" and count: "k \<in> nat"
-    and machine: "e \<in> nat" and tail: "l \<in> list(nat)"
+    and tm_machine: "e \<in> nat" and tail: "l \<in> list(nat)"
   shows "pr_machine_element`Cons(r,Cons(k,Cons(e,l))) =
     code_nth(e #- succ(k),e)"
-  using acc count machine tail unfolding pr_machine_element_def
+  using acc count tm_machine tail unfolding pr_machine_element_def
   by (simp add: COMP_2 pr_machine_reverse_index_apply
       pr_list_nth_apply)
 
@@ -286,11 +286,11 @@ theorem pr_machine_name_iter_apply:
   using n bound
 proof (induct n rule: nat_induct)
   case 0
-  from e have machine: "decode_machine(e) \<in> list(instruction)"
-    using decode_machine_type[OF e] unfolding machine_def by simp
+  from e have tm_machine: "decode_machine(e) \<in> list(instruction)"
+    using decode_machine_type[OF e] unfolding tm_machine_def by simp
   from decode_machine_length[OF e] length_nat_list_decode_le[OF e]
   have length: "length(decode_machine(e)) \<le> e" by simp
-  from drop_all[OF e machine length] have empty:
+  from drop_all[OF e tm_machine length] have empty:
     "drop(e,decode_machine(e)) = []" .
   from e tail empty show ?case
     unfolding pr_machine_name_iter_def
@@ -306,10 +306,10 @@ next
   from succ.hyps(2)[OF kbound] have previous:
     "pr_machine_name_iter`Cons(k,Cons(e,l)) = formula_code(?Q)"
     using succ_diff_succ[OF succ.hyps(1) e succ.prems] by simp
-  from e have machine: "?P \<in> list(instruction)"
-    using decode_machine_type[OF e] unfolding machine_def by simp
+  from e have tm_machine: "?P \<in> list(instruction)"
+    using decode_machine_type[OF e] unfolding tm_machine_def by simp
   from succ.hyps(1) e have j: "?j \<in> nat" by typecheck
-  from j machine have suffix: "?t \<in> list(instruction)" by typecheck
+  from j tm_machine have suffix: "?t \<in> list(instruction)" by typecheck
   from suffix have named: "?Q \<in> formula"
     by (rule list_name_fm_type) (rule instr_name_fm_type)
   from code_has_index_decode[OF e j] decode_machine_length[OF e]
@@ -322,7 +322,7 @@ next
     unfolding pr_machine_name_iter_def
     using succ.hyps(1) e tail by (simp add: PREC_succ)
   from pr_machine_name_step_apply[OF named succ.hyps(1) e tail]
-  have step:
+  have tm_step:
     "pr_machine_name_step`Cons(formula_code(?Q),Cons(k,Cons(e,l))) =
       (if code_has_index(?j,e) = 0 then formula_code(?Q)
        else formula_code(Exists(And(
@@ -331,23 +331,23 @@ next
   show ?case
   proof (cases "?j < length(?P)")
     case True
-    from drop_at_index[OF j machine] True have current:
+    from drop_at_index[OF j tm_machine] True have current:
       "drop(?j,?P) = Cons(nth(?j,?P),?t)" by simp
     from decode_machine_nth[OF e j True] have head:
       "decode_instruction(code_nth(?j,e)) = nth(?j,?P)" by simp
-    from iteration previous step present current head True show ?thesis
+    from iteration previous tm_step present current head True show ?thesis
       by simp
   next
     case False
-    from drop_at_index[OF j machine] False have current:
+    from drop_at_index[OF j tm_machine] False have current:
       "drop(?j,?P) = []" by simp
     from current have tail_empty: "?t = []" by (simp add: drop_succ)
-    from iteration previous step present current tail_empty False show ?thesis
+    from iteration previous tm_step present current tail_empty False show ?thesis
       by simp
   qed
 qed
 
-subsection \<open>Complete machine names\<close>
+subsection \<open>Complete tm_machine names\<close>
 
 definition pr_machine_name_code :: i where
   "pr_machine_name_code \<equiv>

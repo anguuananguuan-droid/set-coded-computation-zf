@@ -8,7 +8,7 @@ theory Turing_Context
   imports "Turing_Realisation"
 begin
 
-text \<open>A numerical realiser is specified on an otherwise blank tape.
+text \<open>A numerical realiser is specified on an otherwise blank tm_tape.
 This does not give a frame rule for executing it beside saved nonblank data.
 The following identity program moves left, erases that cell, and returns.
 It satisfies the standalone numerical contract but destroys a saved stroke.
@@ -21,8 +21,8 @@ definition scratch_identity_machine :: i where
     \<langle>write_blank,succ(2)\<rangle>,\<langle>write_blank,succ(2)\<rangle>,
     \<langle>move_right,final_state\<rangle>,\<langle>move_right,final_state\<rangle>]"
 
-lemma scratch_identity_machine_type [TC]: "scratch_identity_machine \<in> machine"
-  unfolding scratch_identity_machine_def machine_def instruction_def by typecheck
+lemma scratch_identity_machine_type [TC]: "scratch_identity_machine \<in> tm_machine"
+  unfolding scratch_identity_machine_def tm_machine_def instruction_def by typecheck
 
 lemma scratch_identity_computes:
   assumes n: "n \<in> nat"
@@ -35,7 +35,7 @@ proof -
   have eq: "config_eq(\<langle>final_state,\<langle>[blank_symbol],numeral_input(n)\<rangle>\<rangle>,
     \<langle>final_state,\<langle>[],numeral_input(n)\<rangle>\<rangle>)"
     using numeral_input_type[OF n]
-    unfolding config_eq_def tape_eq_def configuration_def tape_def by auto
+    unfolding config_eq_def tape_eq_def configuration_def tm_tape_def by auto
   from run eq n scratch_identity_machine_type
   show ?thesis unfolding computes_number_def by (auto intro!: bexI[of _ "succ(2)"])
 qed

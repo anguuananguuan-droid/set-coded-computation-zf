@@ -34,13 +34,13 @@ The displayed notation abbreviates the nested pairs used by the source.
 This example is a direct evaluation of the definitions.
 
 [Turing_Machine.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Machine.thy) defines
-`step`, its finite iteration `steps`, and `halts_on`. The theorem
+`tm_step`, its finite iteration `steps`, and `halts_on`. The theorem
 `halts_on_iff_finite_run` identifies halting with the existence of a finite
 sequence of configurations that starts at the input configuration, obeys
 every transition, and ends in state 0. The sequence is represented as a
 function on a finite initial segment of the natural numbers.
 
-All these objects are sets in Isabelle/ZF. Membership in `machine`, `tape`,
+All these objects are sets in Isabelle/ZF. Membership in `tm_machine`, `tm_tape`,
 and `configuration` expresses their well formedness. The computation fragment does not use
 an Isabelle/HOL machine datatype or assume the existence of a transitive
 model of ZFC.
