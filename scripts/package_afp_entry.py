@@ -57,7 +57,7 @@ def main():
     if len(names) != len(set(names)):
         raise SystemExit("Submission ROOT repeats a theory")
     sources = {}
-    for directory in ("Turing_Machines_ZF/Core", "Set_Coded_Invariance_ZF"):
+    for directory in (REPOSITORY / "ROOTS").read_text().split():
         for source in (REPOSITORY / directory).glob("*.thy"):
             if source.stem in sources:
                 raise SystemExit(f"Ambiguous theory source {source.stem}")
@@ -68,6 +68,9 @@ def main():
         for name in names:
             if name not in sources:
                 raise SystemExit(f"Missing theory source {name}")
+            if sources[name].parent.relative_to(REPOSITORY).as_posix() not in {
+                    "thys/Computation", "thys/Invariance"}:
+                raise SystemExit(f"Submission includes research theory {name}")
             text = sources[name].read_text(encoding="utf-8")
             # Development sessions share the computation library. The exported
             # entry owns those theories, so its imports are session-local.

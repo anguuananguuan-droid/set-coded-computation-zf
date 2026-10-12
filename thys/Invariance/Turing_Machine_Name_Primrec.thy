@@ -5,8 +5,19 @@
 section \<open>Primitive-Recursive Machine Names\<close>
 
 theory Turing_Machine_Name_Primrec
-  imports Turing_Name_Primrec "Set_Coded_Computation_ZF.Turing_Instruction_Normalization"
+  imports Turing_Name_Primrec
+    "Set_Coded_Computation_ZF.Turing_Instruction_Normalization"
 begin
+
+text \<open>The machine decoder accepts every natural number. Instruction
+normalization supplies valid action and state fields before their names
+are constructed. The decoded instruction list has length at most its
+numeric code \<open>e\<close>. A primitive recursion of length \<open>e\<close>
+  traverses the
+indices in reverse order and constructs the code of the complete list
+name.\<close>
+
+subsection \<open>Instruction names\<close>
 
 definition pr_instr_name_from_fields :: i where
   "pr_instr_name_from_fields \<equiv>
@@ -21,7 +32,7 @@ definition pr_instr_name_from_fields :: i where
 lemma pr_instr_name_from_fields_in_prim_rec [TC]:
   "pr_instr_name_from_fields \<in> prim_rec"
   unfolding pr_instr_name_from_fields_def
-  by (typecheck add: formula_code_type)
+  by typecheck
 
 lemma pr_instr_name_from_fields_apply:
   assumes a: "a \<in> nat" and b: "b \<in> nat"
@@ -34,14 +45,16 @@ proof -
     and right: "nat_name_fm(b) \<in> formula" by (auto intro: nat_name_fm_type)
   from right pair have inner: "And(nat_name_fm(b),pair_fm(1,0,2)) \<in> formula"
     by typecheck
-  from inner have inner_ex: "Exists(And(nat_name_fm(b),pair_fm(1,0,2))) \<in> formula"
+  from inner have inner_ex: "Exists(And(nat_name_fm(b),pair_fm(1,0,2))) \<in>
+    formula"
     by typecheck
   from left inner_ex have outer:
-    "And(nat_name_fm(a),Exists(And(nat_name_fm(b),pair_fm(1,0,2)))) \<in> formula"
+    "And(nat_name_fm(a),Exists(And(nat_name_fm(b),pair_fm(1,0,2)))) \<in>
+      formula"
     by typecheck
   from a b tail pair left right inner inner_ex outer show ?thesis
     unfolding pr_instr_name_from_fields_def instr_name_fm_def
-    by (simp add: COMP_1 COMP_2 PROJ_0 PROJ_1 CONSTANT
+    by (simp add: COMP_1 COMP_2 PROJ_0 CONSTANT
         pr_nat_name_code_apply pr_formula_and_apply
         pr_formula_exists_apply formula_code_type)
 qed
@@ -73,7 +86,8 @@ proof -
   from a b normalized have left:
     "pair_left_code(normalize_instruction_code(n)) = fst(decode_instruction(n))"
     and right:
-    "pair_right_code(normalize_instruction_code(n)) = snd(decode_instruction(n))"
+    "pair_right_code(normalize_instruction_code(n)) =
+      snd(decode_instruction(n))"
     by (simp_all add: pair_left_code_pair_code pair_right_code_pair_code)
   from ins have pair:
     "\<langle>fst(decode_instruction(n)),snd(decode_instruction(n))\<rangle> =
@@ -85,6 +99,8 @@ proof -
         pr_pair_left_code_apply pr_pair_right_code_apply
         pr_instr_name_from_fields_apply normalize_instruction_code_type)
 qed
+
+subsection \<open>Decoded list indices\<close>
 
 lemma drop_at_index:
   assumes k: "k \<in> nat" and l: "l \<in> list(A)"
@@ -153,6 +169,8 @@ proof -
     by (simp add: code_nth_decode[OF e k])
 qed
 
+subsection \<open>Bounded reverse traversal\<close>
+
 definition pr_machine_reverse_index :: i where
   "pr_machine_reverse_index \<equiv>
     COMP(pr_diff,[PROJ(2),COMP(SC,[PROJ(1)])])"
@@ -167,7 +185,7 @@ lemma pr_machine_reverse_index_apply:
   shows "pr_machine_reverse_index`Cons(r,Cons(k,Cons(e,l))) =
     e #- succ(k)"
   using acc count machine tail unfolding pr_machine_reverse_index_def
-  by (simp add: COMP_2 COMP_1 PROJ_0 PROJ_1 PROJ_2 SC pr_diff_apply)
+  by (simp add: COMP_2 COMP_1 PROJ_0 SC pr_diff_apply)
 
 definition pr_machine_present :: i where
   "pr_machine_present \<equiv>
@@ -183,7 +201,7 @@ lemma pr_machine_present_apply:
   shows "pr_machine_present`Cons(r,Cons(k,Cons(e,l))) =
     code_has_index(e #- succ(k),e)"
   using acc count machine tail unfolding pr_machine_present_def
-  by (simp add: COMP_2 PROJ_2 pr_machine_reverse_index_apply
+  by (simp add: COMP_2 pr_machine_reverse_index_apply
       pr_list_has_index_apply)
 
 definition pr_machine_element :: i where
@@ -200,7 +218,7 @@ lemma pr_machine_element_apply:
   shows "pr_machine_element`Cons(r,Cons(k,Cons(e,l))) =
     code_nth(e #- succ(k),e)"
   using acc count machine tail unfolding pr_machine_element_def
-  by (simp add: COMP_2 PROJ_2 pr_machine_reverse_index_apply
+  by (simp add: COMP_2 pr_machine_reverse_index_apply
       pr_list_nth_apply)
 
 definition pr_machine_name_step :: i where
@@ -253,7 +271,7 @@ definition pr_machine_name_iter :: i where
 
 lemma pr_machine_name_iter_in_prim_rec [TC]:
   "pr_machine_name_iter \<in> prim_rec"
-  unfolding pr_machine_name_iter_def by (typecheck add: formula_code_type)
+  unfolding pr_machine_name_iter_def by typecheck
 
 theorem pr_machine_name_iter_apply:
   assumes e: "e \<in> nat" and n: "n \<in> nat"
@@ -325,6 +343,8 @@ next
       by simp
   qed
 qed
+
+subsection \<open>Complete machine names\<close>
 
 definition pr_machine_name_code :: i where
   "pr_machine_name_code \<equiv>

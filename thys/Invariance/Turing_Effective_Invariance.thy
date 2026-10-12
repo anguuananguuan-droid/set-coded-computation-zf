@@ -11,6 +11,16 @@ theory Turing_Effective_Invariance
     "Set_Coded_Computation_ZF.Turing_Primrec_Reductions"
 begin
 
+text \<open>The positive and negative reducing functions construct the
+codes of the closed halting sentence and its negation, each disjoined with
+CH. The reduction equations require that CH is not invariant. A countable
+transitive ZFC set model supplies this premise through
+\<open>CH_not_invariant\<close>.
+The functions belong to \<open>prim_rec\<close>; the conclusions use
+\<open>pr_reduces\<close> and \<open>pr_many_one_reducible\<close>.\<close>
+
+subsection \<open>Closed halting sentence code\<close>
+
 definition pr_halt_sentence_code :: i where
   "pr_halt_sentence_code \<equiv>
     COMP(pr_formula_exists,
@@ -23,7 +33,7 @@ definition pr_halt_sentence_code :: i where
 lemma pr_halt_sentence_code_in_prim_rec [TC]:
   "pr_halt_sentence_code \<in> prim_rec"
   unfolding pr_halt_sentence_code_def
-  by (typecheck add: formula_code_type)
+  by typecheck
 
 theorem pr_halt_sentence_code_apply:
   assumes e: "e \<in> nat" and tail: "l \<in> list(nat)"
@@ -55,6 +65,8 @@ proof -
         pr_formula_and_apply pr_formula_exists_apply formula_code_type)
 qed
 
+subsection \<open>Positive and negative sentence codes\<close>
+
 definition pr_invariance_positive :: i where
   "pr_invariance_positive \<equiv>
     COMP(pr_formula_or,
@@ -63,7 +75,7 @@ definition pr_invariance_positive :: i where
 lemma pr_invariance_positive_in_prim_rec [TC]:
   "pr_invariance_positive \<in> prim_rec"
   unfolding pr_invariance_positive_def
-  by (typecheck add: formula_code_type)
+  by typecheck
 
 theorem pr_invariance_positive_apply:
   assumes e: "e \<in> nat" and tail: "l \<in> list(nat)"
@@ -93,7 +105,7 @@ definition pr_invariance_negative :: i where
 lemma pr_invariance_negative_in_prim_rec [TC]:
   "pr_invariance_negative \<in> prim_rec"
   unfolding pr_invariance_negative_def
-  by (typecheck add: formula_code_type)
+  by typecheck
 
 theorem pr_invariance_negative_apply:
   assumes e: "e \<in> nat" and tail: "l \<in> list(nat)"
@@ -117,9 +129,12 @@ proof -
         pr_formula_neg_apply pr_formula_or_apply formula_code_type)
 qed
 
+subsection \<open>Explicit reducing functions\<close>
+
 theorem positive_primitive_recursive_reduction_of_CH_not_invariant:
   assumes CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)"
-  shows "pr_reduces(pr_invariance_positive,self_halting,invariant_formula_codes)"
+  shows
+    "pr_reduces(pr_invariance_positive,self_halting,invariant_formula_codes)"
 proof -
   have "pr_invariance_positive \<in> prim_rec"
     by (rule pr_invariance_positive_in_prim_rec)
@@ -142,7 +157,8 @@ qed
 
 theorem negative_primitive_recursive_reduction_of_CH_not_invariant:
   assumes CH_noninv: "\<not> zfc_invariant(\<cdot>CH\<cdot>)"
-  shows "pr_reduces(pr_invariance_negative,nat - self_halting,invariant_formula_codes)"
+  shows "pr_reduces(pr_invariance_negative,nat -
+    self_halting,invariant_formula_codes)"
 proof -
   have "pr_invariance_negative \<in> prim_rec"
     by (rule pr_invariance_negative_in_prim_rec)
@@ -164,27 +180,33 @@ qed
 
 theorem positive_primitive_recursive_reduction:
   assumes "M \<approx> \<omega>" "Transset(M)" "M \<Turnstile> ZFC"
-  shows "pr_reduces(pr_invariance_positive,self_halting,invariant_formula_codes)"
+  shows
+    "pr_reduces(pr_invariance_positive,self_halting,invariant_formula_codes)"
   by (rule positive_primitive_recursive_reduction_of_CH_not_invariant
       [OF CH_not_invariant[OF assms]])
 
 theorem negative_primitive_recursive_reduction:
   assumes "M \<approx> \<omega>" "Transset(M)" "M \<Turnstile> ZFC"
-  shows "pr_reduces(pr_invariance_negative,nat - self_halting,invariant_formula_codes)"
+  shows "pr_reduces(pr_invariance_negative,nat -
+    self_halting,invariant_formula_codes)"
   by (rule negative_primitive_recursive_reduction_of_CH_not_invariant
       [OF CH_not_invariant[OF assms]])
+
+subsection \<open>Many-one reducibility\<close>
 
 theorem self_halting_pr_many_one_invariance_of_CH_not_invariant:
   assumes "\<not> zfc_invariant(\<cdot>CH\<cdot>)"
   shows "pr_many_one_reducible(self_halting,invariant_formula_codes)"
   unfolding pr_many_one_reducible_def
-  using positive_primitive_recursive_reduction_of_CH_not_invariant[OF assms] by blast
+  using positive_primitive_recursive_reduction_of_CH_not_invariant[OF assms] by
+    blast
 
 theorem nonhalting_pr_many_one_invariance_of_CH_not_invariant:
   assumes "\<not> zfc_invariant(\<cdot>CH\<cdot>)"
   shows "pr_many_one_reducible(nat - self_halting,invariant_formula_codes)"
   unfolding pr_many_one_reducible_def
-  using negative_primitive_recursive_reduction_of_CH_not_invariant[OF assms] by blast
+  using negative_primitive_recursive_reduction_of_CH_not_invariant[OF assms] by
+    blast
 
 theorem self_halting_pr_many_one_invariance:
   assumes "M \<approx> \<omega>" "Transset(M)" "M \<Turnstile> ZFC"

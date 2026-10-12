@@ -19,7 +19,10 @@ errors = []
 files = sorted({ROOT / name for name in names if name and (ROOT / name).is_file()})
 theories = {path for path in files if path.suffix == ".thy"}
 members = {}
-for directory in (ROOT / "ROOTS").read_text().splitlines():
+directories = (ROOT / "ROOTS").read_text().splitlines()
+if len(directories) != len(set(directories)):
+    errors.append("ROOTS: repeated session directory")
+for directory in directories:
     if not directory.strip():
         continue
     session_root = ROOT / directory / "ROOT"
@@ -38,13 +41,19 @@ for path in sorted(theories):
     if len(members.get(path, [])) != 1:
         errors.append(f"{path.relative_to(ROOT)}: expected exactly one session registration")
 
-core = ROOT / "Turing_Machines_ZF/Core"
+core = ROOT / "thys/Computation"
 core_theories = {path.stem for path in theories if path.parent == core}
 if not re.search(r"session Set_Coded_Computation_ZF = ZF \+", (core / "ROOT").read_text()):
-    errors.append("Core/ROOT: independent session must extend ZF")
+    errors.append("thys/Computation/ROOT: independent session must extend ZF")
 for path in sorted(theories):
     source = path.read_text()
     header = re.search(r"\btheory\s+(\w+)\s+imports\s+(.*?)\s+begin\b", source, re.S)
+    if not re.search(rf"Title:\s+{re.escape(path.name)}\b", source[:400]):
+        errors.append(f"{path.relative_to(ROOT)}: missing matching Title in file header")
+    if not re.search(r"Author:\s+\S", source[:400]):
+        errors.append(f"{path.relative_to(ROOT)}: missing Author in file header")
+    if len(re.findall(r"^section\s", source, re.M)) != 1:
+        errors.append(f"{path.relative_to(ROOT)}: expected one theory-level section")
     if not header or header.group(1) != path.stem:
         errors.append(f"{path.relative_to(ROOT)}: theory header does not match filename")
     elif path.parent == core:
@@ -57,12 +66,14 @@ for path in files:
         continue
     source = path.read_text()
     relative = path.relative_to(ROOT)
-    # Current plain text documents use repository relative paths. Historical
-    # Markdown retains document relative links, checked separately below.
-    # A source manifest records paths at an older revision, not live links.
-    if (path.suffix == ".txt" and not path.name.endswith(".sources.txt")) or path.name == "README":
+    # Historical records describe their original source revision. Current
+    # plain text documents use live repository-relative paths. Markdown link
+    # destinations are live navigation, including those in historical prose.
+    historical = relative.parts[:2] in {
+        ("documentation", "records"), ("documentation", "history")}
+    if not historical and (path.suffix == ".txt" or path.name == "README"):
         for match in re.finditer(
-            r"\b(?:Turing_Machines_ZF|Turing_CH|Turing_Models|documentation|papers|scripts)"
+            r"\b(?:thys|submission|documentation|papers|scripts)"
             r"/[A-Za-z0-9_./-]+\.(?:thy|txt|md|pdf|py|sh)\b", source
         ):
             if not (ROOT / match.group()).is_file():
@@ -85,4 +96,4 @@ for path in files:
 if errors:
     raise SystemExit("\n".join(errors))
 print(f"Checked {len(theories)} theories in {len(set(d for ds in members.values() for d in ds))} sessions.")
-print("Document paths, session membership, core imports, and proof token scan passed.")
+print("Document paths, session membership, file headers, core imports, and proof token scan passed.")

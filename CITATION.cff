@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this development, please cite the repository and the commit used."
-title: "Set-Coded Computation in Isabelle/ZF"
+title: "Halting Absoluteness and Effective Sentence Invariance in Isabelle/ZF"
 authors:
   - family-names: Tang
     given-names: Ziyi

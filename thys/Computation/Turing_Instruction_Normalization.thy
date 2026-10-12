@@ -2,7 +2,7 @@
     Author:     Tang Ziyi
 *)
 
-section \<open>Instruction Code Normalization\<close>
+section \<open>Primitive-Recursive Instruction Normalization\<close>
 
 theory Turing_Instruction_Normalization
   imports Turing_Primrec

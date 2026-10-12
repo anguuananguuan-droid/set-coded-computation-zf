@@ -1,0 +1,35 @@
+CONTRIBUTING
+
+1 SCOPE
+
+The submission scope is defined in documentation/AFP.txt. Contributions
+shall preserve that scope unless the project owner approves a change.
+Research extensions belong in thys/Research and shall not become submission
+dependencies without an explicit scope decision.
+
+2 SOURCES
+
+Edit the maintained sources in thys. submission/ROOT is the export manifest.
+Do not edit generated archives or extracted copies. Keep theory names,
+session membership, document references, and public theorem interfaces
+consistent with a move or rename.
+
+3 VERIFICATION
+
+Run the repository source check and the affected Isabelle sessions. Changes
+to the submission require export and verification of that archive. Proof,
+style, and document checks are specified in documentation/BUILD.txt.
+A verification claim shall identify the revision and command used.
+
+4 PRESENTATION
+
+Follow AGENTS.md for source structure, naming, and records. Describe the
+mathematical object, assumptions, result, and limitations. Public text shall
+not contain private correspondence, conversational context, or unsupported
+priority and completion claims.
+
+5 PUBLICATION
+
+Retain applicable attribution and license notices. Record substantial AI
+assistance accurately. Only the project owner may authorize AFP submission
+or contact with reviewers. A verified candidate is not an accepted entry.

@@ -8,6 +8,10 @@ theory Turing_Nat_Membership
   imports Turing_Model_Witnesses
 begin
 
+text \<open>The formula tests membership in the natural numbers defined by
+\<open>omega_fm\<close>. Transitivity identifies these numbers with the external
+set \<open>nat\<close>.\<close>
+
 definition nat_member_fm :: "i \<Rightarrow> i" where
   "nat_member_fm(i) \<equiv> Exists(And(omega_fm(0),Member(succ(i),0)))"
 
@@ -18,7 +22,8 @@ lemma nat_member_fm_type [TC]:
 theorem sats_nat_member_fm:
   assumes model: "transitive_zfc_model(A)" and env: "env \<in> list(A)"
     and i: "i \<in> nat"
-  shows "sats(A,nat_member_fm(i),env) \<longleftrightarrow> nth(i,env) \<in> nat"
+  shows "sats(A,nat_member_fm(i),env) \<longleftrightarrow> nth(i,env) \<in>
+    nat"
 proof -
   interpret A: M_trancl "##A" by (rule transitive_zfc_M_trancl[OF model])
   have natA: "nat \<in> A" using A.M_nat by simp

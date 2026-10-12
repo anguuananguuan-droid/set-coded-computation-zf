@@ -1,5 +1,5 @@
-Turing_Machines_ZF/Core
-Turing_Machines_ZF
-Set_Coded_Invariance_ZF
-Turing_Models
-Turing_Absoluteness
+thys/Computation
+thys/Invariance
+thys/Research/Programs
+thys/Research/Models
+thys/Research/Absoluteness

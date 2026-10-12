@@ -5,8 +5,19 @@
 section \<open>Primitive-Recursive Names for Numerals\<close>
 
 theory Turing_Name_Primrec
-  imports Turing_Syntax_Primrec Turing_Halting_Sentences
+  imports
+    Turing_Syntax_Primrec
+    Turing_Halting_Sentences
+    "Set_Coded_Computation_ZF.Turing_Decidability"
 begin
+
+text \<open>Iteration constructs the code of a formula naming a natural
+number. A second iteration names the unary input with that many one
+symbols. The application equations use the finite-object names whose
+satisfaction properties were established in
+\<open>Turing_Halting_Sentences\<close>.\<close>
+
+subsection \<open>Natural number names\<close>
 
 definition pr_nat_name_step :: i where
   "pr_nat_name_step \<equiv>
@@ -17,7 +28,7 @@ definition pr_nat_name_step :: i where
 lemma pr_nat_name_step_in_prim_rec [TC]:
   "pr_nat_name_step \<in> prim_rec"
   unfolding pr_nat_name_step_def
-  by (typecheck add: formula_code_type)
+  by typecheck
 
 lemma pr_nat_name_step_apply:
   assumes k: "k \<in> nat" and tail: "l \<in> list(nat)"
@@ -41,7 +52,7 @@ definition pr_nat_name_code :: i where
 lemma pr_nat_name_code_in_prim_rec [TC]:
   "pr_nat_name_code \<in> prim_rec"
   unfolding pr_nat_name_code_def
-  by (typecheck add: formula_code_type)
+  by typecheck
 
 theorem pr_nat_name_code_apply:
   assumes n: "n \<in> nat" and tail: "l \<in> list(nat)"
@@ -63,6 +74,8 @@ next
     by (simp add: PREC_succ pr_nat_name_step_apply)
 qed
 
+subsection \<open>Finite list names\<close>
+
 definition pr_list_name_cons :: i where
   "pr_list_name_cons \<equiv>
     COMP(pr_formula_exists,
@@ -75,7 +88,7 @@ definition pr_list_name_cons :: i where
 lemma pr_list_name_cons_in_prim_rec [TC]:
   "pr_list_name_cons \<in> prim_rec"
   unfolding pr_list_name_cons_def
-  by (typecheck add: formula_code_type)
+  by typecheck
 
 lemma pr_list_name_cons_apply:
   assumes p: "p \<in> formula" and q: "q \<in> formula"
@@ -85,14 +98,17 @@ lemma pr_list_name_cons_apply:
 proof -
   have cons: "Cons_fm(1,0,2) \<in> formula" by typecheck
   from q cons have inner: "And(q,Cons_fm(1,0,2)) \<in> formula" by typecheck
-  from inner have exists: "Exists(And(q,Cons_fm(1,0,2))) \<in> formula" by typecheck
+  from inner have exists: "Exists(And(q,Cons_fm(1,0,2))) \<in> formula" by
+    typecheck
   from p exists have outer: "And(p,Exists(And(q,Cons_fm(1,0,2)))) \<in> formula"
     by typecheck
   from p q tail cons inner exists outer show ?thesis
     unfolding pr_list_name_cons_def
-    by (simp add: COMP_1 COMP_2 PROJ_0 PROJ_1 CONSTANT
+    by (simp add: COMP_1 COMP_2 PROJ_0 CONSTANT
         pr_formula_and_apply pr_formula_exists_apply formula_code_type)
 qed
+
+subsection \<open>Unary input names\<close>
 
 definition pr_input_name_step :: i where
   "pr_input_name_step \<equiv>
@@ -102,7 +118,7 @@ definition pr_input_name_step :: i where
 lemma pr_input_name_step_in_prim_rec [TC]:
   "pr_input_name_step \<in> prim_rec"
   unfolding pr_input_name_step_def
-  by (typecheck add: formula_code_type)
+  by typecheck
 
 lemma pr_input_name_step_apply:
   assumes n: "n \<in> nat" and tail: "l \<in> list(nat)"
@@ -131,7 +147,7 @@ definition pr_input_name_code :: i where
 lemma pr_input_name_code_in_prim_rec [TC]:
   "pr_input_name_code \<in> prim_rec"
   unfolding pr_input_name_code_def
-  by (typecheck add: formula_code_type)
+  by typecheck
 
 theorem pr_input_name_code_apply:
   assumes n: "n \<in> nat" and tail: "l \<in> list(nat)"

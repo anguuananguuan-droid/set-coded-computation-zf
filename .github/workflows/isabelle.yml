@@ -27,35 +27,44 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .ci-deps
-          key: linux-isabelle2025-2-afp2026-02-06-${{ hashFiles('scripts/install-ci.sh') }}
+          key: linux-isabelle2025-2-afp2026-02-06-${{ hashFiles('scripts/install-ci.sh', 'scripts/patch_isabelle_linter.py', 'scripts/isabelle-linter-2025-2.patch') }}
           restore-keys: linux-isabelle2025-2-afp2026-02-06-
       - name: Install Isabelle, AFP, and linter
         run: bash scripts/install-ci.sh "$GITHUB_WORKSPACE/.ci-deps"
       - name: Check independent computation session
         run: |
           set -o pipefail
-          .ci-deps/Isabelle2025-2/bin/isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF 2>&1 | tee "$RUNNER_TEMP/isabelle-core.log"
+          .ci-deps/Isabelle2025-2/bin/isabelle build -v -c -j 1 -o threads=2 -D thys/Computation Set_Coded_Computation_ZF 2>&1 | tee "$RUNNER_TEMP/isabelle-core.log"
       - name: Register AFP and linter
         run: |
           .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/afp-2026-02-06/thys"
           .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/isabelle-linter-c9983adc5c51a6455f702bb58c9f960d425a2af3/linter_base"
+      - name: Verify AFP linter controls
+        run: python3 scripts/check_linter_controls.py --isabelle .ci-deps/Isabelle2025-2/bin/isabelle --output "$RUNNER_TEMP/linter-controls"
       - name: Check all proofs
         run: |
           set -o pipefail
-          .ci-deps/Isabelle2025-2/bin/isabelle build -v -j 1 -o threads=2 -o timeout=1800 -D . 2>&1 | tee "$RUNNER_TEMP/isabelle-build.log"
+          .ci-deps/Isabelle2025-2/bin/isabelle build -v -j 1 -o threads=2 -D . 2>&1 | tee "$RUNNER_TEMP/isabelle-build.log"
       - name: Install document tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-luatex texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+          sudo apt-get install -y texlive-luatex texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended poppler-utils
       - name: Build submission archive and proof document
+        env:
+          AFP_DOCUMENT_QA_OUTPUT: ${{ runner.temp }}/afp-document-qa
         run: |
           set -o pipefail
           bash scripts/package-afp-entry.sh "$RUNNER_TEMP/Set_Coded_Halting_Invariance_ZF.tar.gz"
           mkdir -p "$RUNNER_TEMP/afp-entry"
           tar -xzf "$RUNNER_TEMP/Set_Coded_Halting_Invariance_ZF.tar.gz" -C "$RUNNER_TEMP/afp-entry"
-          .ci-deps/Isabelle2025-2/bin/isabelle build -v -b -c -j 1 -o threads=2 -o timeout=1800 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$RUNNER_TEMP/afp-document" -D "$RUNNER_TEMP/afp-entry/Set_Coded_Halting_Invariance_ZF" 2>&1 | tee "$RUNNER_TEMP/isabelle-submission.log"
+          .ci-deps/Isabelle2025-2/bin/isabelle build -v -b -c -j 1 -o threads=2 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$RUNNER_TEMP/afp-document" -D "$RUNNER_TEMP/afp-entry/Set_Coded_Halting_Invariance_ZF" 2>&1 | tee "$RUNNER_TEMP/isabelle-submission.log"
           test -s "$RUNNER_TEMP/afp-document/document.pdf"
           test -s "$RUNNER_TEMP/afp-document/outline.pdf"
+      - name: Check proof document layout
+        run: |
+          set -o pipefail
+          python3 scripts/check_proof_document.py --pdf "$RUNNER_TEMP/afp-document/document.pdf" --log "$RUNNER_TEMP/afp-document-qa/document/root.log" 2>&1 | tee "$RUNNER_TEMP/isabelle-document-layout.log"
+          python3 scripts/check_proof_document.py --pdf "$RUNNER_TEMP/afp-document/outline.pdf" --log "$RUNNER_TEMP/afp-document-qa/outline/root.log" 2>&1 | tee -a "$RUNNER_TEMP/isabelle-document-layout.log"
       - name: Check submission proof dependencies
         run: |
           set -o pipefail
@@ -63,7 +72,7 @@ jobs:
       - name: Check AFP submission style
         run: |
           set -o pipefail
-          .ci-deps/Isabelle2025-2/bin/isabelle lint -v -j 1 -o threads=2 -o timeout=1800 -o lint_bundles=afp_mandatory -f error -O "$RUNNER_TEMP/isabelle-afp-lint.txt" -D "$RUNNER_TEMP/afp-entry/Set_Coded_Halting_Invariance_ZF" 2>&1 | tee "$RUNNER_TEMP/isabelle-afp-lint.log"
+          .ci-deps/Isabelle2025-2/bin/isabelle lint -v -j 1 -o threads=2 -o lint_bundles=afp_mandatory -f error -O "$RUNNER_TEMP/isabelle-afp-lint.txt" -D "$RUNNER_TEMP/afp-entry/Set_Coded_Halting_Invariance_ZF" 2>&1 | tee "$RUNNER_TEMP/isabelle-afp-lint.log"
       - name: Save build log
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -76,6 +85,9 @@ jobs:
             ${{ runner.temp }}/isabelle-afp-lint.log
             ${{ runner.temp }}/isabelle-afp-lint.txt
             ${{ runner.temp }}/isabelle-proof-dependencies.log
+            ${{ runner.temp }}/isabelle-document-layout.log
+            ${{ runner.temp }}/linter-controls
+            ${{ runner.temp }}/afp-document-qa
           if-no-files-found: ignore
       - name: Save submission
         if: success()
@@ -84,7 +96,6 @@ jobs:
           name: set-coded-halting-invariance-zf
           path: |
             ${{ runner.temp }}/Set_Coded_Halting_Invariance_ZF.tar.gz
-            ${{ runner.temp }}/afp-document/document.pdf
-            ${{ runner.temp }}/afp-document/outline.pdf
+            ${{ runner.temp }}/afp-document
             ${{ runner.temp }}/isabelle-afp-lint.txt
           if-no-files-found: error

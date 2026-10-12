@@ -7,6 +7,10 @@
 \urlstyle{rm}
 \isabellestyle{it}
 \newcommand{\theoremname}[1]{{\urlstyle{tt}\nolinkurl{#1}}}
+\AtBeginDocument{%
+  \typeout{AFP-QA-TEXT-LEFT-SP=\number\dimexpr1in+\hoffset+\oddsidemargin\relax}%
+  \typeout{AFP-QA-TEXT-RIGHT-SP=\number\dimexpr1in+\hoffset+\oddsidemargin+\textwidth\relax}%
+}
 
 \begin{document}
 \pagenumbering{roman}
@@ -67,6 +71,10 @@ The formal reduction statements are
 self\_halting\_pr\_many\_one\_invariance\\
 nonhalting\_pr\_many\_one\_invariance
 \end{quote}
+The unary notation means
+$f_+(e)=\texttt{pr\_invariance\_positive}\mathbin{\texttt{`}}[e]$ and
+$f_-(e)=\texttt{pr\_invariance\_negative}\mathbin{\texttt{`}}[e]$.
+The formal primitive-recursive functions act on lists of natural numbers.
 CH supplies a fixed sentence on which two transitive models
 disagree, using the AFP formalisation of its independence~\cite{afp-ch}.
 The reductions also hold under the direct premise that CH is not invariant.
@@ -90,6 +98,11 @@ are certified in Isabelle/ZF's class \texttt{prim\_rec}. No theorem identifying
 every member of that class with a machine of this model is assumed or proved.
 Consequently, this entry does not claim a machine-decidability theorem for
 the full target set $I$.
+
+The set-theoretic formula datatype and its satisfaction relation are part
+of Isabelle/ZF's constructibility development~\cite{paulson-zf}. The
+primitive-recursive function class is supplied by the bundled
+\texttt{ZF-Induct.Primrec} theory~\cite{szasz}.
 
 \input{session}
 
@@ -126,6 +139,19 @@ Thomas Jech.
 \emph{Set Theory: The Third Millennium Edition, Revised and Expanded}.
 Springer, 2003.
 \url{https://doi.org/10.1007/3-540-44761-X}.
+
+\bibitem{paulson-zf}
+Lawrence C. Paulson.
+\emph{The Relative Consistency of the Axiom of Choice, Mechanized Using
+Isabelle/ZF}.
+LMS Journal of Computation and Mathematics, 6, 198--248, 2003.
+
+\bibitem{szasz}
+Nora Szasz.
+\emph{A Machine Checked Proof that Ackermann's Function is not Primitive
+Recursive}.
+In G\'erard Huet and Gordon Plotkin, editors, \emph{Logical Environments},
+317--338. Cambridge University Press, 1993.
 
 \end{thebibliography}
 

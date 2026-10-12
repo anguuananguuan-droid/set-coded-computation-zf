@@ -8,6 +8,11 @@ theory Turing_Primrec_Reductions
   imports Turing_Primrec
 begin
 
+text \<open>Members of \<open>prim_rec\<close> act on finite lists of natural numbers.
+A unary reduction evaluates its function on the singleton list \<open>[n]\<close>.
+The source and target sets are subsets of \<open>nat\<close>. Composition preserves
+this convention by supplying the first output as the second singleton input.\<close>
+
 definition pr_reduces :: "[i,i,i] \<Rightarrow> o" where
   "pr_reduces(f,A,B) \<equiv>
     f \<in> prim_rec \<and>

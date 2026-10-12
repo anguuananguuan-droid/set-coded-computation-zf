@@ -1,0 +1,25 @@
+--- a/linter_base/src/token_markup.scala
++++ b/linter_base/src/token_markup.scala
+@@ -134,4 +134,5 @@
+-    def unwrap(t: XML.Tree): XML.Tree = t match {
+-      case XML.Wrapped_Elem(markup, _, body) => XML.Elem(markup, body.map(unwrap))
+-      case XML.Elem(markup, body) => XML.Elem(markup, body.map(unwrap))
+-      case t: XML.Text => t
++    def unwrap(t: XML.Tree): XML.Body = t match {
++      case XML.Wrapped_Elem(markup, _, body) => unwrap(XML.Elem(markup, body))
++      case XML.Elem(Markup(Markup.COMMAND_RANGE, _), body) => body.flatMap(unwrap)
++      case XML.Elem(markup, body) => List(XML.Elem(markup, body.flatMap(unwrap)))
++      case t: XML.Text => List(t)
+@@ -140 +141 @@
+-    reduce(start = 0, thy_xml.map(unwrap), res = Nil)
++    reduce(start = 0, thy_xml.flatMap(unwrap), res = Nil)
+--- a/linter_base/src/linter.scala
++++ b/linter_base/src/linter.scala
+@@ -102,0 +103,2 @@
++      if (!command_spans.exists(_.kind.isInstanceOf[Command_Span.Command_Span]))
++        error("No parsed command spans in exported markup for " + quote(theory_context.theory))
+@@ -164,0 +167,4 @@
++            val parsed_commands = snapshot.node.command_iterator().count {
++              case (command, _) => command.is_proper
++            }
++            progress.echo_if(verbose, "Parsed " + parsed_commands + " commands in " + thy)

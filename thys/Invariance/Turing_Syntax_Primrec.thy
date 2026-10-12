@@ -8,6 +8,12 @@ theory Turing_Syntax_Primrec
   imports Turing_Formula_Coding "Set_Coded_Computation_ZF.Turing_Primrec"
 begin
 
+text \<open>Primitive-recursive numerical functions implement the tagged
+formula constructors. Their application equations identify the output on
+formula codes with the code of the corresponding formula.\<close>
+
+subsection \<open>Tagged constructors\<close>
+
 definition pr_formula_binary :: "i \<Rightarrow> i" where
   "pr_formula_binary(k) \<equiv>
     COMP(pr_pair_code,
@@ -26,7 +32,7 @@ proof -
   from x y have inner: "pair_code(x,y) \<in> nat" by (rule pair_code_type)
   from k x y tail inner show ?thesis
     unfolding pr_formula_binary_def
-    by (simp add: COMP_2 CONSTANT PROJ_0 PROJ_1 pr_pair_code_apply)
+    by (simp add: COMP_2 CONSTANT PROJ_0 pr_pair_code_apply)
 qed
 
 definition pr_formula_unary :: "i \<Rightarrow> i" where
@@ -43,6 +49,8 @@ lemma pr_formula_unary_apply:
   shows "pr_formula_unary(k)`Cons(x,l) = pair_code(k,x)"
   using k x tail unfolding pr_formula_unary_def
   by (simp add: COMP_2 CONSTANT PROJ_0 pr_pair_code_apply)
+
+subsection \<open>Logical connectives\<close>
 
 definition pr_formula_neg :: i where
   "pr_formula_neg \<equiv>
@@ -81,8 +89,8 @@ lemma pr_formula_and_apply:
 proof -
   from p q have pq: "Nand(p,q) \<in> formula" by typecheck
   from p q tail pq show ?thesis unfolding pr_formula_and_def And_def Neg_def
-    by (simp add: COMP_2 COMP_1 PROJ_0 PROJ_1
-        pr_formula_binary_apply pr_formula_neg_raw_apply formula_code_type)
+    by (simp add: COMP_2 COMP_1 PROJ_0 pr_formula_binary_apply
+      pr_formula_neg_raw_apply formula_code_type)
 qed
 
 definition pr_formula_or :: i where
@@ -101,8 +109,8 @@ lemma pr_formula_or_apply:
   shows "pr_formula_or`Cons(formula_code(p),Cons(formula_code(q),l)) =
     formula_code(Or(p,q))"
   using p q tail unfolding pr_formula_or_def Or_def Neg_def
-  by (simp add: COMP_2 COMP_1 PROJ_0 PROJ_1
-      pr_formula_neg_apply pr_formula_binary_apply formula_code_type Neg_def)
+  by (simp add: COMP_2 COMP_1 PROJ_0 pr_formula_neg_apply
+    pr_formula_binary_apply formula_code_type Neg_def)
 
 definition pr_formula_exists :: i where
   "pr_formula_exists \<equiv>

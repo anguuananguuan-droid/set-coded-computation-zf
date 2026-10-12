@@ -1,13 +1,19 @@
+(*  Title:      Turing_Decidable_Sets.thy
+    Author:     Tang Ziyi
+*)
+
+section \<open>Decidable Sets in Transitive Models\<close>
+
 theory Turing_Decidable_Sets
   imports "Set_Coded_Invariance_ZF.Turing_Halting_Sentences"
+    "Set_Coded_Computation_ZF.Turing_Decidability"
 begin
 
-text \<open>Main result: every Turing-decidable set of natural numbers belongs to
-every transitive set model of ZFC (\<open>tm_decidable_in_transitive_model\<close>).
-The proof internalises acceptance on unary inputs and applies Separation
-inside the model.\<close>
+text \<open>Every Turing-decidable set of natural numbers belongs to every
+transitive ZFC set model. Acceptance on unary inputs is expressed internally,
+and Separation collects the accepted natural numbers in the model.\<close>
 
-section \<open>Runs with an arbitrary outer environment\<close>
+subsection \<open>Runs with an arbitrary outer environment\<close>
 
 context tm_model
 begin
@@ -70,7 +76,7 @@ qed
 
 end
 
-section \<open>Unary inputs\<close>
+subsection \<open>Unary inputs\<close>
 
 definition rep_fm :: "[i,i] \<Rightarrow> i" where
   "rep_fm(n,x) \<equiv>
@@ -170,7 +176,7 @@ lemma sats_rep_fm [simp]:
 
 end
 
-section \<open>Output of a halting computation\<close>
+subsection \<open>Output of a halting computation\<close>
 
 definition yield_final_fm :: "[i,i,i] \<Rightarrow> i" where
   "yield_final_fm(r,n,b) \<equiv>
@@ -283,7 +289,7 @@ qed
 end
 
 
-section \<open>Decidable sets belong to every transitive model\<close>
+subsection \<open>Decidable sets belong to every transitive model\<close>
 
 context
   notes Un_assoc[symmetric,simp] Un_trasposition_aux1[simp]

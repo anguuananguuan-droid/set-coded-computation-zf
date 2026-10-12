@@ -2,6 +2,7 @@
 # Pinned Linux dependencies for the public proof build.
 set -euo pipefail
 
+script_dir=$(cd "$(dirname "$0")" && pwd)
 deps_dir="${1:?usage: install-ci.sh DEPENDENCY_DIRECTORY}"
 mkdir -p "$deps_dir"
 cd "$deps_dir"
@@ -33,3 +34,5 @@ if [[ ! -f "isabelle-linter-$linter_revision/linter_base/src/linter.scala" ]]; t
   tar -xzf linter.tar.gz
   rm linter.tar.gz
 fi
+
+python3 "$script_dir/patch_isabelle_linter.py" "isabelle-linter-$linter_revision"
