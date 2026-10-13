@@ -49,6 +49,13 @@ proof and verification infrastructure. The record covers the unified
 source namespace, formula environments, warning cleanup, and document
 verification outside the published entry.
 
+[IN.004](../records/IN.004.txt) and [RV.007](../records/RV.007.txt) record
+the weaker model interface, generic invariance reduction, and revised
+contribution disclosure. Its
+[source manifest](../records/RV.007.sources.txt) identifies the verified
+sources. The record includes the final document checks and the two earlier
+document failures.
+
 ## 3 Earlier reviews
 
 [August development review](RV-IN-ISABELLE-ZF-WEEKLY-2026-08-03.md) records
