@@ -5,7 +5,8 @@
 section \<open>First Arithmetic Formulas in Transitive Models\<close>
 
 theory Turing_Arithmetic_Truth
-  imports "Set_Coded_Halting_Invariance_ZF.Nat_Membership"
+  imports "Set_Coded_Turing_Machines.Nat_Membership"
+    "Turing_Invariance.Sentence_Invariance"
 begin
 
 text \<open>The formulas express basic arithmetic relations in transitive

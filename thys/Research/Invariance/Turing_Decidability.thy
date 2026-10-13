@@ -5,34 +5,8 @@
 section \<open>Decision Problems\<close>
 
 theory Turing_Decidability
-  imports "Turing_Coding"
+  imports "Set_Coded_Turing_Machines.Turing_Coding"
 begin
-
-subsection \<open>Numeral Inputs\<close>
-
-definition numeral_input :: "i \<Rightarrow> i" where
-  "numeral_input(n) \<equiv> repeat(one_symbol,n)"
-
-lemma numeral_input_type [TC]:
-  assumes natural: "n \<in> nat"
-  shows "numeral_input(n) \<in> list(symbol)"
-  using natural unfolding numeral_input_def by typecheck
-
-lemma length_numeral_input [simp]:
-  assumes natural: "n \<in> nat"
-  shows "length(numeral_input(n)) = n"
-  using natural unfolding numeral_input_def by (rule length_repeat)
-
-lemma numeral_input_injective:
-  assumes first: "m \<in> nat"
-    and second: "n \<in> nat"
-    and equal: "numeral_input(m) = numeral_input(n)"
-  shows "m = n"
-proof -
-  from equal have "length(numeral_input(m)) = length(numeral_input(n))"
-    by simp
-  with first second show ?thesis by simp
-qed
 
 subsection \<open>Halting and Output\<close>
 

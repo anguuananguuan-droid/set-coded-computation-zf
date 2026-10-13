@@ -534,14 +534,6 @@ definition instruction_code :: i where
   "instruction_code \<equiv>
     {n\<in>nat. fst(pair_decode(n)) \<in> action}"
 
-lemma action_in_nat [TC]:
-  "action \<in> nat"
-  unfolding action_def by typecheck
-
-lemma action_subset_nat:
-  "action \<subseteq> nat"
-  using action_in_nat Ord_nat by (blast dest: OrdmemD)
-
 lemma instruction_code_subset_nat:
   "instruction_code \<subseteq> nat"
   unfolding instruction_code_def by blast

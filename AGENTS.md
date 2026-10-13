@@ -19,7 +19,7 @@ without authorization.
 2 SOURCE STRUCTURE
 
 2.1 Maintained theories shall have one source under thys. The candidate
-archive shall copy thys/Set_Coded_Halting_Invariance_ZF/ROOT and its declared
+archive shall copy thys/Set_Coded_Turing_Machines/ROOT and its declared
 sources unchanged. Generated copies shall not be edited as maintained sources.
 
 2.2 Each theory shall have a Title and Author header, one theory-level

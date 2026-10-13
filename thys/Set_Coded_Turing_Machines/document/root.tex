@@ -1,0 +1,181 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{isabelle,isabellesym}
+\usepackage{pdfsetup}
+\hypersetup{hidelinks}
+\urlstyle{rm}
+\isabellestyle{it}
+\newcommand{\theoremname}[1]{{\urlstyle{tt}\nolinkurl{#1}}}
+\begin{document}
+\pagenumbering{roman}
+\title{Set-Coded Turing Machines in Isabelle/ZF}
+\author{Tang Ziyi}
+\maketitle
+
+\begin{abstract}
+This library defines deterministic Turing machines as finite lists of
+set-coded instructions in Isabelle/ZF. It provides execution semantics,
+finite-run witnesses, and an observational equivalence for finite tape
+representations that differ only in stored blank cells. An explicit
+first-order set-theoretic formula expresses halting. Its satisfaction in
+every transitive ZF set model is equivalent to external halting of the
+given machine on the given input. Finite-object names close the formula.
+An injective formula code and primitive-recursive constructors certify
+the numerical codes of the resulting self-input halting sentences.
+Worked examples connect program execution, tape observations, and
+internal satisfaction.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\section{Machine interface}
+A machine is a finite list of instructions over the symbols 0 and 1.
+Each instruction contains an action and a next state. The actions write
+0, write 1, move left, move right, or leave the tape unchanged. State 1
+is initial and state 0 is final. The two entries for a positive state $q$
+occur at indices $2(q-1)$ and $2(q-1)+1$. Missing entries enter the final
+state without changing the tape. The final state is absorbing.
+This design follows the Isabelle/HOL AFP development
+\emph{Universal Turing Machine}~\cite{afp-utm}; the objects and proofs here
+are developed in Isabelle/ZF.
+
+A configuration contains a state and two finite symbol lists. The left
+list starts immediately left of the head, while the right list starts
+at the scanned cell. Unrepresented cells are blank. The functions
+\theoremname{tm_step} and \theoremname{steps} specify one step and a
+finite iteration. The predicate \theoremname{halts_on} includes the
+well-formedness of the machine and input and the existence of a finite
+iteration reaching state 0. Theorem \theoremname{halts_on_iff_finite_run}
+gives the equivalent finite-sequence witness form.
+
+\theoremname{Turing_Examples} defines a two-instruction machine that
+scans a unary input and writes one at the first blank. The theorem
+\theoremname{scan_append_result} specifies its final configuration after
+$n+1$ steps. The head remains on the newly written cell. The example
+proves a loop invariant, derives halting through \theoremname{halts_onI},
+and uses \theoremname{steps_config_eq} to transfer the result to an input
+with an extra stored blank. It provides a client of the execution and
+tape interfaces without importing model theory or numerical coding.
+
+The relations \theoremname{half_tape_eq}, \theoremname{tape_eq}, and
+\theoremname{config_eq} compare observations at fixed positions relative
+to the head. They ignore trailing stored blanks but do not identify
+arbitrary shifts of the head. Raw list equality and observational
+equality have separate uses. In particular, literal storage length is
+not an output specification invariant under tape equivalence.
+
+\section{Halting formula interface}
+For a machine $P$, finite input $x$, and transitive ZF set model $M$,
+the explicit formula satisfies
+\[
+  (M,[P,x])\models\mathit{halt\_fm}
+  \quad\Longleftrightarrow\quad
+  \mathrm{halts\_on}(P,x).
+\]
+Theorem \theoremname{transitive_model_halt_fm_iff} proves this statement.
+The closed sentence $\mathit{halt\_sentence}(P,x)$ names both finite
+parameters. The theorem \theoremname{sats_halt_sentence_iff} establishes
+its corresponding satisfaction equation. Both results require
+$P\in\mathit{tm\_machine}$ and $x\in\mathit{list}(\mathit{symbol})$.
+They do not assert that the formula recognises arbitrary sets as valid
+machines or inputs.
+
+The proofs hold in the weaker locale \texttt{M\_ZF1\_trans}, which
+assumes transitivity, Zermelo set theory, and four specified replacement
+instances. The qualified satisfaction theorems can be used directly in
+extensions of that locale. The unqualified theorems are the full ZF
+corollaries. No existence of a transitive model is asserted.
+\theoremname{Turing_Halting_Examples} derives internal truth of the
+example's halting sentence using this interface and its operational
+proof, without unfolding the internal formula.
+
+Closure and satisfaction use the AFP model infrastructure
+\cite{afp-models}. The locale and full-ZF interpretation are supplied by
+\texttt{Independence\_CH.ZF\_Trans\_Interpretations}, so the packaged
+session retains \texttt{Independence\_CH} as a dependency~\cite{afp-ch}.
+No CH independence theorem or choice assumption is used by the halting
+interface. The underlying absoluteness method is classical
+\cite[Chapter~12]{jech}; this library supplies the explicit formula and
+its verified connection to the machine semantics.
+
+\section{Effective codes}
+\theoremname{Turing_Coding} assigns natural-number codes to machines and
+configurations. Decoding an encoded machine recovers it. Decoding an
+arbitrary natural number normalises invalid instruction fields, so the
+decoder is total but not injective on all natural numbers.
+\theoremname{Formula_Coding} supplies an injective code for the
+set-theoretic formulas of Isabelle/ZF~\cite{paulson-zf}.
+
+The numerical function \theoremname{pr_halt_sentence_code} satisfies
+\[
+  f(e)=\ulcorner\mathit{halt\_sentence}
+    (\mathit{decode\_machine}(e),\mathit{numeral\_input}(e))\urcorner,
+\]
+where $f(e)$ denotes its application to the singleton list $[e]$.
+Its membership in \texttt{prim\_rec} and its application equation are
+proved in \theoremname{Turing_Halting_Codes}. This certificate uses the
+bundled Isabelle/ZF primitive-recursive function class~\cite{szasz}.
+It is a certificate for self-input sentence construction. A general
+compiler implementing primitive-recursive functions in this machine
+model is outside the library's interface.
+
+\input{session}
+
+\clearpage
+\section*{Development provenance}
+Tang Ziyi wrote the original EPQ paper, conceived the initial formalisation,
+and constructed initial formal objects. The author has led and
+participated in the work throughout, directing its scope, mathematical
+statements, and revisions. OpenAI Codex and ChatGPT have assisted development
+since August 2026, including definitions, theorem statements, proof scripts,
+documentation, and build infrastructure. Aristotle and Anthropic Claude
+participated in internal review and cross-checking. Aristotle also supplied
+draft proofs and proposed revisions. Retained proofs are checked by Isabelle.
+The author remains responsible for the mathematical content and published
+claims. These internal checks do not constitute external peer review.
+
+\begin{thebibliography}{9}
+
+\bibitem{afp-ch}
+Emmanuel Gunther, Miguel Pagano, Pedro S\'anchez Terraf, and Mat\'ias Steinberg.
+\emph{The Independence of the Continuum Hypothesis in Isabelle/ZF}.
+Archive of Formal Proofs, 2022.
+\url{https://isa-afp.org/entries/Independence_CH.html}.
+
+\bibitem{afp-utm}
+Jian Xu, Xingyuan Zhang, Christian Urban, Sebastiaan J. C. Joosten, and
+Franz Regensburger.
+\emph{Universal Turing Machine}.
+Archive of Formal Proofs, 2019, revised 2022.
+\url{https://isa-afp.org/entries/Universal_Turing_Machine.html}.
+
+\bibitem{afp-models}
+Emmanuel Gunther, Miguel Pagano, Pedro S\'anchez Terraf, and Mat\'ias Steinberg.
+\emph{Transitive Models of Fragments of ZFC}.
+Archive of Formal Proofs, 2022.
+\url{https://isa-afp.org/entries/Transitive_Models.html}.
+
+\bibitem{jech}
+Thomas Jech.
+\emph{Set Theory: The Third Millennium Edition, Revised and Expanded}.
+Springer, 2003.
+\url{https://doi.org/10.1007/3-540-44761-X}.
+
+\bibitem{paulson-zf}
+Lawrence C. Paulson.
+\emph{The Relative Consistency of the Axiom of Choice, Mechanized Using
+Isabelle/ZF}.
+LMS Journal of Computation and Mathematics, 6, 198--248, 2003.
+
+\bibitem{szasz}
+Nora Szasz.
+\emph{A Machine Checked Proof that Ackermann's Function is not Primitive
+Recursive}.
+In G\'erard Huet and Gordon Plotkin, editors, \emph{Logical Environments},
+317--338. Cambridge University Press, 1993.
+
+\end{thebibliography}
+
+\end{document}

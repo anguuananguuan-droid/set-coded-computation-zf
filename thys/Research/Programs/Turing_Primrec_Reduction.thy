@@ -8,7 +8,7 @@ theory Turing_Primrec_Reduction
   imports
     "Turing_Reduction"
     "Turing_Transformations_Primrec"
-    "Set_Coded_Halting_Invariance_ZF.Turing_Primrec_Reductions"
+    "Turing_Invariance.Turing_Primrec_Reductions"
 begin
 
 subsection \<open>Primitive-Recursive Many-One Reduction\<close>

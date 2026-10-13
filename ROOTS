@@ -1,5 +1,6 @@
-thys/Set_Coded_Halting_Invariance_ZF
+thys/Set_Coded_Turing_Machines
 thys/Research/Computation
 thys/Research/Programs
 thys/Research/Models
 thys/Research/Absoluteness
+thys/Research/Invariance

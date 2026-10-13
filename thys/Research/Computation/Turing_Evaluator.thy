@@ -5,7 +5,7 @@
 section \<open>Numeric Evaluation\<close>
 
 theory Turing_Evaluator
-  imports "Set_Coded_Halting_Invariance_ZF.Turing_Code_Operations"
+  imports "Set_Coded_Turing_Machines.Turing_Code_Operations"
 begin
 
 subsection \<open>Configuration Codes\<close>

@@ -18,9 +18,9 @@ path. Register the AFP theory directory using its actual absolute path.
 
 2 MAINTAINED SESSIONS
 
-ROOTS locates the candidate and four research sessions under thys. The
-candidate is Set_Coded_Halting_Invariance_ZF. The research sessions are
-Turing_Computation_Extensions, Turing_Machines_ZF, Turing_Models, and
+ROOTS locates the candidate and five research sessions under thys. The
+candidate is Set_Coded_Turing_Machines. The research sessions are
+Turing_Invariance, Turing_Computation_Extensions, Turing_Machines_ZF, Turing_Models, and
 Turing_Absoluteness.
 
     isabelle build -v -c -j 1 -o threads=2 -D .
@@ -31,7 +31,7 @@ the acceptance build. A successful build returns exit status 0. A build
 without -c may reuse unchanged session products.
 
 The independent computation fragment can be checked before registering AFP.
-The script generates a temporary session from its twelve maintained sources
+The script generates a temporary session from its seven maintained sources
 and checks them over Isabelle/ZF and ZF-Induct. The temporary session is a
 verification target, not another maintained public theory namespace.
 
@@ -47,16 +47,16 @@ boundaries, and selected prohibited proof commands. It is not a proof check.
 
 4 CANDIDATE ARCHIVE
 
-thys/Set_Coded_Halting_Invariance_ZF/ROOT is the single maintained and
+thys/Set_Coded_Turing_Machines/ROOT is the single maintained and
 exported manifest. Its parent is Independence_CH. The declared timeout is
 300 seconds. The acceptance command does not override that value.
 
     bash scripts/package-afp-entry.sh
     mkdir -p output/afp-entry
-    tar -xzf output/Set_Coded_Halting_Invariance_ZF.tar.gz -C output/afp-entry
-    isabelle build -v -b -c -j 1 -o threads=2 -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
+    tar -xzf output/Set_Coded_Turing_Machines.tar.gz -C output/afp-entry
+    isabelle build -v -b -c -j 1 -o threads=2 -D output/afp-entry/Set_Coded_Turing_Machines
 
-The exporter copies the candidate ROOT, nineteen theories, and document
+The exporter copies the candidate ROOT, seventeen theories, and document
 sources unchanged. It normalizes archive member order, permissions,
 ownership, and timestamps. In the same Python environment, unchanged
 candidate contents produce the same archive bytes.
@@ -65,16 +65,16 @@ candidate contents produce the same archive bytes.
 
 The saved candidate heap supports the maintained dependency check.
 
-    isabelle ML_process -d output/afp-entry/Set_Coded_Halting_Invariance_ZF -l Set_Coded_Halting_Invariance_ZF -f scripts/check_submission_proofs.ML
+    isabelle ML_process -d output/afp-entry/Set_Coded_Turing_Machines -l Set_Coded_Turing_Machines -f scripts/check_submission_proofs.ML
 
-This check inspects the nine principal results for undischarged hypotheses.
-It collects named facts from all nineteen canonical theories and checks
+This check inspects the public endpoints for undischarged hypotheses.
+It collects named facts from all seventeen canonical theories and checks
 their proof closure for oracle dependencies. Explicit premises in theorem
 statements remain premises.
 
 Build both document variants with LuaLaTeX installed.
 
-    isabelle build -v -b -c -j 1 -o threads=2 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$PWD/output/afp-document" -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
+    isabelle build -v -b -c -j 1 -o threads=2 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$PWD/output/afp-document" -D output/afp-entry/Set_Coded_Turing_Machines
 
 The document build repeats LuaLaTeX until the auxiliary, contents, and
 bookmark files stop changing. It fails if they do not stabilize within
@@ -110,7 +110,7 @@ of the pinned revision before registering the component.
     python3 scripts/patch_isabelle_linter.py /absolute/path/to/isabelle-linter-c9983adc5c51a6455f702bb58c9f960d425a2af3
     isabelle components -u /absolute/path/to/isabelle-linter-c9983adc5c51a6455f702bb58c9f960d425a2af3/linter_base
     python3 scripts/check_linter_controls.py --isabelle /absolute/path/to/isabelle --output output/linter-controls
-    isabelle lint -v -j 1 -o threads=2 -o lint_bundles=afp_mandatory -f error -O output/afp-lint.txt -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
+    isabelle lint -v -j 1 -o threads=2 -o lint_bundles=afp_mandatory -f error -O output/afp-lint.txt -D output/afp-entry/Set_Coded_Turing_Machines
 
 The controls require a clean named lemma to pass, an unfinished proof to be
 rejected, and an attribute on an unnamed lemma to be rejected. They also

@@ -5,7 +5,7 @@
 section \<open>Primitive-Recursive Evaluation\<close>
 
 theory Turing_Evaluator_Primrec
-  imports "Turing_Evaluator" "Set_Coded_Halting_Invariance_ZF.Turing_Instruction_Normalization"
+  imports "Turing_Evaluator" "Set_Coded_Turing_Machines.Turing_Instruction_Normalization"
 begin
 
 text \<open>The one-step evaluator and its finite iteration have

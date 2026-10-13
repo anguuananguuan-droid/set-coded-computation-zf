@@ -26,6 +26,14 @@ lemma symbol_nat: "a \<in> symbol \<Longrightarrow> a \<in> nat"
 definition action :: i where
   "action \<equiv> succ(succ(succ(2)))"
 
+lemma action_in_nat [TC]:
+  "action \<in> nat"
+  unfolding action_def by typecheck
+
+lemma action_subset_nat:
+  "action \<subseteq> nat"
+  using action_in_nat Ord_nat by (blast dest: OrdmemD)
+
 abbreviation (input) blank_symbol :: i where
   "blank_symbol \<equiv> 0"
 
@@ -449,6 +457,32 @@ next
     by (auto intro: relation_lam function_lam)
 qed
 
+subsection \<open>Numeral Inputs\<close>
+
+definition numeral_input :: "i \<Rightarrow> i" where
+  "numeral_input(n) \<equiv> repeat(one_symbol,n)"
+
+lemma numeral_input_type [TC]:
+  assumes natural: "n \<in> nat"
+  shows "numeral_input(n) \<in> list(symbol)"
+  using natural unfolding numeral_input_def by typecheck
+
+lemma length_numeral_input [simp]:
+  assumes natural: "n \<in> nat"
+  shows "length(numeral_input(n)) = n"
+  using natural unfolding numeral_input_def by (rule length_repeat)
+
+lemma numeral_input_injective:
+  assumes first: "m \<in> nat"
+    and second: "n \<in> nat"
+    and equal: "numeral_input(m) = numeral_input(n)"
+  shows "m = n"
+proof -
+  from equal have "length(numeral_input(m)) = length(numeral_input(n))"
+    by simp
+  with first second show ?thesis by simp
+qed
+
 subsection \<open>Halting\<close>
 
 abbreviation initial_config :: "i \<Rightarrow> i" where
@@ -465,6 +499,13 @@ definition halts_on :: "[i,i] \<Rightarrow> o" where
     x \<in> list(symbol) \<and>
     (\<exists>n\<in>nat.
       fst(steps(M,initial_config(x),n)) = final_state)"
+
+lemma halts_onI:
+  assumes machine: "P \<in> tm_machine" and input: "x \<in> list(symbol)"
+    and time: "n \<in> nat"
+    and final: "fst(steps(P,initial_config(x),n)) = final_state"
+  shows "halts_on(P,x)"
+  using assms unfolding halts_on_def by auto
 
 theorem halts_on_iff_finite_run:
   "halts_on(M,x) \<longleftrightarrow>

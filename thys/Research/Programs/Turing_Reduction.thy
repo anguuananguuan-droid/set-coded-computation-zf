@@ -5,7 +5,7 @@
 section \<open>Machine Reductions\<close>
 
 theory Turing_Reduction
-  imports "Turing_Composition" "Turing_Computation_Extensions.Turing_Tape"
+  imports "Turing_Composition" "Set_Coded_Turing_Machines.Turing_Tape"
 begin
 
 subsection \<open>Numerical Computation\<close>

@@ -1,0 +1,10 @@
+session Turing_Invariance = Set_Coded_Turing_Machines +
+  description "Decision semantics and effective reductions to sentence invariance."
+  options [timeout=300]
+  theories
+    Turing_Decidability
+    Turing_Rejection
+    Turing_Primrec_Reductions
+    Sentence_Invariance
+    Turing_Invariance_Codes
+    Turing_Effective_Invariance

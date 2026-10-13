@@ -11,12 +11,11 @@ import re
 import subprocess
 
 REPOSITORY = Path(__file__).resolve().parent.parent
-LEAVES = ("Turing_Workspace", "Turing_Evaluator_Primrec", "Turing_Rejection",
-          "Turing_Primrec_Reductions")
+LEAVES = ("Turing_Examples", "Turing_Instruction_Normalization")
 HEADER = re.compile(r"\btheory\s+(\w+)\s+imports\s+(.*?)\s+begin\b", re.S)
 TOKENS = re.compile(r'"[^"\n]+"|[\w.]+')
 BUNDLED = {"ZF", "ZF-Induct.Primrec"}
-ENTRY = "Set_Coded_Halting_Invariance_ZF"
+ENTRY = "Set_Coded_Turing_Machines"
 
 
 def theory_catalogue(repository=REPOSITORY):

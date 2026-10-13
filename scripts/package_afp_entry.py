@@ -10,7 +10,7 @@ import tarfile
 import tempfile
 
 REPOSITORY = Path(__file__).resolve().parent.parent
-ENTRY = "Set_Coded_Halting_Invariance_ZF"
+ENTRY = "Set_Coded_Turing_Machines"
 SOURCE = REPOSITORY / "thys" / ENTRY
 
 

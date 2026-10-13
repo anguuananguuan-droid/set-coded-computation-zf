@@ -5,7 +5,7 @@
 section \<open>Machine Transformations and Input Loading\<close>
 
 theory Turing_Transformations
-  imports "Set_Coded_Halting_Invariance_ZF.Turing_Rejection"
+  imports "Turing_Invariance.Turing_Rejection"
 begin
 
 subsection \<open>Input Loading\<close>

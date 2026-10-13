@@ -6,19 +6,12 @@ section \<open>Finite Witnesses in Transitive Models\<close>
 
 theory Turing_Model_Witnesses
   imports
-    "Turing_Coding"
+    "Turing_Machine"
     "Independence_CH.ZF_Trans_Interpretations"
 begin
 
-definition transitive_zfc_model :: "i \<Rightarrow> o" where
-  "transitive_zfc_model(M) \<equiv> Transset(M) \<and> M \<Turnstile> ZFC"
-
 definition transitive_zf_model :: "i \<Rightarrow> o" where
   "transitive_zf_model(M) \<equiv> Transset(M) \<and> M \<Turnstile> ZF"
-
-lemma transitive_zfc_model_imp_zf:
-  "transitive_zfc_model(A) \<Longrightarrow> transitive_zf_model(A)"
-  unfolding transitive_zfc_model_def transitive_zf_model_def ZFC_def by auto
 
 text \<open>Finite machines, inputs, configurations, and canonical finite
 traces belong to each transitive ZF set model. Choice is not required for
@@ -116,10 +109,6 @@ theorem transitive_zf_contains_machine:
 theorem transitive_zf_contains_configuration:
   "\<lbrakk>transitive_zf_model(A); c \<in> configuration\<rbrakk> \<Longrightarrow> c \<in> A"
   using M_trivial.tm_configuration_closed[OF transitive_zf_M_trivial] by simp
-
-corollary transitive_zf_contains_decoded_machine:
-  "\<lbrakk>transitive_zf_model(A); e \<in> nat\<rbrakk> \<Longrightarrow> decode_machine(e) \<in> A"
-  by (rule transitive_zf_contains_machine) (auto intro: decode_machine_type)
 
 theorem transitive_zf_contains_trace:
   "\<lbrakk>transitive_zf_model(A); P \<in> tm_machine; c \<in> configuration; n \<in> nat\<rbrakk> \<Longrightarrow>

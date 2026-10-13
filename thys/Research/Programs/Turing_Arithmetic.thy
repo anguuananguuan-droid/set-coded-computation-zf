@@ -5,7 +5,7 @@
 section \<open>Concrete Addition and Numerical Composition\<close>
 
 theory Turing_Arithmetic
-  imports "Turing_Copy" "Set_Coded_Halting_Invariance_ZF.Turing_Primrec"
+  imports "Turing_Copy" "Set_Coded_Turing_Machines.Turing_Primrec"
 begin
 
 abbreviation (input) add_rewind where "add_rewind \<equiv> succ(2)"

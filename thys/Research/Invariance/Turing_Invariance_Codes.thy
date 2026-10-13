@@ -6,8 +6,8 @@ section \<open>Invariance of Numbered Sentences\<close>
 
 theory Turing_Invariance_Codes
   imports
-    "Turing_Halting_Sentences"
-    "Formula_Coding"
+    "Set_Coded_Turing_Machines.Turing_Halting_Sentences"
+    "Set_Coded_Turing_Machines.Formula_Coding"
     "Sentence_Invariance"
     "Turing_Decidability"
 begin
