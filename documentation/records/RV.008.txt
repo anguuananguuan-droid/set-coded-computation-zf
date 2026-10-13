@@ -1,0 +1,84 @@
+RV.008
+TURING MACHINE LIBRARY
+13 October 2026
+
+1 SOURCES
+
+This record verifies IN.005 against source revision
+52f9096af86a9bec5df28e0ee163336174bee414.
+The source manifest RV.008.sources.txt identifies 72 maintained source,
+document, and verification files by SHA256. Subsequent record-only commits
+do not change these checked files.
+
+The successful CI run is
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/38340428870
+
+2 LIBRARY BOUNDARY
+
+Set_Coded_Turing_Machines contains seventeen theories. The previous
+candidate contained nineteen. Its machine, tape, model, and numerical
+interfaces have separate dependency paths. Halting satisfaction has five
+local theory dependencies and does not import machine coding or the
+invariance application. The complete session retains Independence_CH for
+its model locales and full-ZF interpretation.
+
+Decision semantics, the self-halting undecidability proof, and the CH
+application are maintained in Research/Invariance. The full repository
+contains 43 theories in six sessions. No research theory is a candidate
+dependency. Definitions of the operational semantics are preserved.
+
+3 CLIENTS
+
+Turing_Examples defines a two-instruction scanning program. It proves a
+loop invariant for arbitrary unary inputs, its final configuration after
+n + 1 steps, halting, and the result under observationally equivalent
+blank padding. Turing_Halting_Examples derives truth of the closed halting
+sentence from the operational theorem.
+
+The minimal external client printed in documentation/COMPUTATION.md also
+builds. That check validates its public import and ROOT declaration. The
+mathematical program proofs are in the maintained example theories.
+
+4 PROOF AND STYLE CHECKS
+
+The exact committed revision passes the complete CI workflow with
+Isabelle2025-2 and AFP 2026-02-06. All six maintained sessions build. The
+seven-theory operational and numerical closure builds independently of
+AFP. The exported candidate builds using its declared 300-second timeout.
+
+Thirteen public endpoints have no undischarged theorem hypotheses beyond
+their explicit statements. The checked closure contains 10284 named facts,
+including imported dependencies, without oracle dependencies. The model
+and object-domain premises remain necessary theorem assumptions.
+
+The mandatory linter parses 3694 commands in seventeen candidate theories.
+Its report is empty. The clean control passes, and both the unnamed
+attribute and unfinished-proof controls are rejected as required.
+
+5 DOCUMENTS AND ARCHIVE
+
+The full document has 103 pages. The outline has 64 pages. Both converge
+and pass the final LaTeX log, text-bound, and verification-copy equivalence
+checks. The copies have the same extracted text and geometry as the
+unmodified PDFs. All 177 full-document and 138 outline named destinations
+resolve to existing pages. These counts do not by themselves assert a
+manual comparison of every printed contents entry.
+
+Rendered inspection covers the introduction, source example, outline front
+matter, halting client, provenance, and references. The three overflows
+found in the earlier CI run 38339630693 were corrected in the maintained
+sources and checked again. Verification thresholds were not relaxed.
+
+The archive has 21 regular files. Each file matches its maintained source
+byte for byte. A local export matches the successful CI archive byte for
+byte. The archive SHA256 is
+304f6f81ac5d308c94dc2edf5a7804e2c13ee8b75e6a62a00d0915a433bca9bd.
+
+6 LIMITS AND STATUS
+
+The certificate concerns numerical construction of self-input halting
+sentences. A general machine compiler, universal machine, and the complete
+EPQ reduction remain outside this candidate. The work makes no classical
+novelty or priority claim. These checks establish reproducibility and
+formal proof validation for the recorded sources, not external peer review
+or AFP acceptance. No AFP submission has been made.
