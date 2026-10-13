@@ -6,9 +6,17 @@ section \<open>Sentence Invariance and CH\<close>
 
 theory Sentence_Invariance
   imports
-    "Turing_Model_Witnesses"
+    "Set_Coded_Turing_Machines.Turing_Model_Witnesses"
     "Independence_CH.Definitions_Main"
 begin
+
+definition transitive_zfc_model :: "i \<Rightarrow> o" where
+  "transitive_zfc_model(M) \<equiv> Transset(M) \<and> M \<Turnstile> ZFC"
+
+lemma transitive_zfc_model_imp_zf:
+  "transitive_zfc_model(A) \<Longrightarrow> transitive_zf_model(A)"
+  unfolding transitive_zfc_model_def transitive_zf_model_def ZFC_def by auto
+
 
 text \<open>Invariance concerns closed sentences and all transitive ZFC set
 models. The existence of a countable transitive model supplies two such

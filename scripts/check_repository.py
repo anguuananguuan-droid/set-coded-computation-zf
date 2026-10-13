@@ -47,7 +47,7 @@ try:
     computation_sources(ROOT)
 except ValueError as error:
     errors.append(str(error))
-canonical = ROOT / "thys/Set_Coded_Halting_Invariance_ZF"
+canonical = ROOT / "thys/Set_Coded_Turing_Machines"
 canonical_names = {p.stem for p in theories if p.parent == canonical}
 for path in sorted(theories):
     source = path.read_text()

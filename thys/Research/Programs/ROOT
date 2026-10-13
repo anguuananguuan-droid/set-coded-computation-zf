@@ -2,6 +2,7 @@ session Turing_Machines_ZF = Turing_Computation_Extensions +
   description "Extended machine constructions and primitive-recursive certificates."
   options [timeout=300]
   sessions
+    Turing_Invariance
     "ZF-Induct"
   theories
     Turing_Transformations

@@ -5,7 +5,7 @@
 section \<open>Primitive-Recursive Reductions\<close>
 
 theory Turing_Primrec_Reductions
-  imports "Turing_Primrec"
+  imports "Set_Coded_Turing_Machines.Turing_Primrec"
 begin
 
 text \<open>Members of \<open>prim_rec\<close> act on finite lists of natural numbers.

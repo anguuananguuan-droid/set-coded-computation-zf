@@ -5,7 +5,7 @@
 section \<open>Halting Index Sets in Transitive Models\<close>
 
 theory Turing_Halting_Index
-  imports "Turing_Arithmetic_Truth" "Set_Coded_Halting_Invariance_ZF.Turing_Rejection"
+  imports "Turing_Arithmetic_Truth" "Turing_Invariance.Turing_Rejection"
 begin
 
 text \<open>The external finite-run relation can be restricted to witnesses

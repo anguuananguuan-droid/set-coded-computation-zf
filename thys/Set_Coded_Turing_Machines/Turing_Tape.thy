@@ -5,7 +5,7 @@
 section \<open>Observable Tape Contents\<close>
 
 theory Turing_Tape
-  imports "Set_Coded_Halting_Invariance_ZF.Turing_Machine"
+  imports "Turing_Machine"
 begin
 
 text \<open>A finite list represents an infinite blank-ended half-tape. The

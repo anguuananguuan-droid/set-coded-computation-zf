@@ -10,7 +10,7 @@ dependencies without an explicit scope decision.
 2 SOURCES
 
 Edit the maintained sources in thys. The candidate source and export manifest
-is thys/Set_Coded_Halting_Invariance_ZF/ROOT. The exporter copies this ROOT and
+is thys/Set_Coded_Turing_Machines/ROOT. The exporter copies this ROOT and
 its declared sources unchanged. Do not edit generated archives or extracted
 copies. Keep theory names, session membership, document references, and public
 theorem interfaces consistent with a move or rename.

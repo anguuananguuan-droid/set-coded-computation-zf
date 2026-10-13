@@ -56,6 +56,13 @@ contribution disclosure. Its
 sources. The record includes the final document checks and the two earlier
 document failures.
 
+[IN.005](../records/IN.005.txt) and [RV.008](../records/RV.008.txt) record
+the reusable machine interface, isolated halting semantics, worked clients,
+and application separation. The
+[source manifest](../records/RV.008.sources.txt) identifies the checked
+library revision. The record includes the first document failure and the
+successful corrected archive.
+
 ## 3 Earlier reviews
 
 [August development review](RV-IN-ISABELLE-ZF-WEEKLY-2026-08-03.md) records

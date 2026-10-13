@@ -1,0 +1,51 @@
+IN.005
+TURING MACHINE LIBRARY
+13 October 2026
+
+1 MISSION
+
+Provide a reusable Isabelle/ZF machine library with explicit execution
+semantics, tape observations, and a verified internal halting interface.
+
+2 DESIGN ESSENCE
+
+The public object is the machine library. Its definitions, proof interfaces,
+examples, and documentation shall describe the same mathematical contract.
+
+3 TARGET WORLD
+
+A client can define a machine, prove its finite behaviour, transfer a result
+between equivalent tape representations, and use the halting satisfaction
+theorem without unfolding its internal formula.
+
+4 FROZEN INVARIANTS
+
+Machine semantics and established theorem premises shall be preserved.
+Every maintained theory shall have one source. Qualified imports shall
+identify the same public namespace in the repository and archive. Research
+applications shall remain available outside the candidate closure.
+
+5 BOUNDARIES
+
+The candidate includes numerical machine and formula codes and the existing
+primitive-recursive self-input sentence constructor. It does not require a
+general machine compiler, CH reduction, or full EPQ formalisation. Existing
+model-library dependencies shall be stated explicitly.
+
+6 DELIVERABLES
+
+The candidate source, worked clients, library guide, proof document, export
+manifest, and maintenance checks shall agree on scope and public names.
+
+7 ACCEPTANCE
+
+All maintained sessions shall build. The operational source closure shall
+build without AFP. Public endpoints and the candidate proof closure shall
+pass dependency checks. The exported archive shall pass proof, style, and
+both document-variant checks. Evidence shall identify the checked sources.
+
+8 ESCALATION
+
+A change to machine semantics, theorem premises, contribution attribution,
+or the authorised mathematical scope requires a new scope decision.
+AFP submission requires separate explicit authorisation.

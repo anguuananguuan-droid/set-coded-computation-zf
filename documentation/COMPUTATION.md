@@ -1,240 +1,149 @@
-# Computation in Isabelle/ZF
+# Library guide
 
-## 1 Machine and execution
+## 1 Imports
 
-A machine is a finite list of instructions. Each instruction gives an action
-and the next state. The tape has symbols 0 and 1, with 0 as blank. State 1
-is initial and state 0 is final. There are five actions, write 0, write 1,
-move left, move right, and leave the tape unchanged. Writing and moving are
-separate steps.
+The public session is `Set_Coded_Turing_Machines`. A client theory chooses
+the smallest interface it needs.
 
-Two entries are assigned to each nonfinal state, one for each scanned symbol.
-For state q greater than 0 and symbol b, the list index is
-`2 * (q - 1) + b`. A missing entry leaves the tape unchanged and enters state
-0. Execution in state 0 leaves the entire configuration unchanged.
+```isabelle
+theory My_Machine
+  imports "Set_Coded_Turing_Machines.Turing_Machine"
+begin
 
-The tape is represented by two finite lists. The left list starts with the
-cell immediately left of the head and proceeds outwards. The right list
-starts with the scanned cell and proceeds to the right. Unrepresented cells
-are blank. A configuration consists of a state and this pair of lists.
+end
+```
 
-For example, take the two instruction entries below. Both belong to state 1.
-The first handles a scanned 0 and the second a scanned 1.
+Use `Turing_Tape` for observational equality, `Turing_Coding` for numerical
+machine codes, `Turing_Halting_Sentences` for internal satisfaction, and
+`Turing_Halting_Codes` for primitive-recursive sentence construction.
+Each extends the machine interface. The example theories are clients, not
+imports required by the definitions.
+
+A client directory with this theory uses the following ROOT.
 
 ```text
-M = [<write_one, 0>, <write_one, 0>]
-
-                         state     left     right
-initial configuration        1       []        []
-after one step               0       []       [1]
+session My_Machines = Set_Coded_Turing_Machines +
+  options [timeout=300]
+  theories
+    My_Machine
 ```
 
-On a blank tape this machine writes 1 and halts without moving the head.
-The displayed notation abbreviates the nested pairs used by the source.
-This example is a direct evaluation of the definitions.
+With the AFP dependency registered as described in [Build](BUILD.txt), run
+`isabelle build -d /absolute/path/to/this/repository -D /absolute/path/to/client`.
+The packaged session has an AFP dependency for its model interface.
+The separate computation check verifies the operational theories without AFP.
 
-[Turing_Machine.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Machine.thy) defines
-`tm_step`, its finite iteration `steps`, and `halts_on`. The theorem
-`halts_on_iff_finite_run` identifies halting with the existence of a finite
-sequence of configurations that starts at the input configuration, obeys
-every transition, and ends in state 0. The sequence is represented as a
-function on a finite initial segment of the natural numbers.
+## 2 Machine conventions
 
-All these objects are sets in Isabelle/ZF. Membership in `tm_machine`, `tm_tape`,
-and `configuration` expresses their well formedness. The computation fragment does not use
-an Isabelle/HOL machine datatype or assume the existence of a transitive
-model of ZFC.
+A machine is a finite list of instructions. Each instruction is a pair of
+an action and a natural-number next state. The symbols are 0 and 1, with 0
+blank. The initial state is 1 and the final state is 0. Actions write 0,
+write 1, move left, move right, or leave the tape unchanged. Writing and
+moving are separate transitions.
 
-## 2 Tape contents
+For positive state q and symbol b, `fetch` reads instruction index
+`2 * (q - 1) + b`. A missing entry leaves the tape unchanged and enters
+state 0. In state 0, the entire configuration is unchanged by further steps.
+A machine may contain an odd number of entries. No completeness premise on
+its instruction table is required.
 
-The lists `[1]` and `[1,0,0]` represent the same right half of a tape. Both
-place 1 under the head and blanks everywhere to its right. They are distinct
-lists, but a machine cannot distinguish their contents. By contrast,
-`[1,0]` and `[0,1]` place the 1 at different positions relative to the head
-and are distinguishable.
+A configuration pairs a state with a tape. The tape pairs two finite symbol
+lists. The left list starts immediately left of the head and extends
+outwards. The right list starts at the scanned cell. Cells beyond either
+list are blank. `initial_config(x)` has state 1, an empty left list, and
+input x on the right. `numeral_input(n)` is a list of n ones.
 
-[Turing_Tape.thy](../thys/Research/Computation/Turing_Tape.thy) defines
-`half_tape_eq` by equality at every natural position, taking an out of range
-entry as blank. `tape_eq` compares both halves, and `config_eq` also requires
-equal states. The theorem `steps_config_eq` proves that equivalent
-configurations remain equivalent after any common finite number of steps
-of the same machine.
+The public operations are `tm_step(P,c)`, `steps(P,c,n)`, and `halts_on(P,x)`.
+Their domains are `tm_machine`, `configuration`, `nat`, and `list(symbol)`.
+The halting predicate includes machine and input validity. Other equations
+should be used with the domain premises in their statements. Set-theoretic
+definitions do not reject ill-formed arguments through a programming type
+system.
 
-This distinction matters for numerical output. In this machine model, the
-total length of the two stored lists never decreases. Erasing two 1s can
-leave `[0,0]`, but cannot leave a literally empty representation of the whole
-tape. A specification demanding that literal result would exclude ordinary
-erasure. `steps_span_mono` proves the length property. Observational equality
-allows the intended blank output to be represented without requiring the
-lists themselves to shrink.
+## 3 Proving a program
 
-## 3 Codes and evaluation
+[Turing_Examples](../thys/Set_Coded_Turing_Machines/Turing_Examples.thy)
+is a complete checked example. The machine has two instructions.
 
-[Turing_Coding.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Coding.thy) builds codes
-for pairs of natural numbers, finite lists, instructions, and machines.
-Every machine has a canonical natural number code. Decoding that code
-recovers the machine, as stated by `decode_encode_machine`. The theorem
-`machine_numbering_bij` gives a bijection between machines and the set of
-canonical machine codes.
+```isabelle
+[\<langle>write_one,final_state\<rangle>, \<langle>move_right,initial_state\<rangle>]
+```
 
-The decoder also accepts every natural number. An instruction with an
-invalid action field is replaced by the default instruction. Thus the
-decoder is total and reaches every machine, although different arbitrary
-numbers can decode to the same machine. This permits a halting question to
-be asked of every natural number without a separate validity test.
-
-[Turing_Code_Operations.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Code_Operations.thy)
-provides projections and operations on coded lists.
-[Turing_Evaluator.thy](../thys/Research/Computation/Turing_Evaluator.thy) uses
-them to compute the next configuration code directly. For a natural machine
-code e and a well formed configuration c, `code_step_correct` proves the
-following equality.
+The machine scans right through a unary input, writes one at the first
+blank, and halts on the newly written cell. Its proof gives the following
+configuration after n + 1 steps.
 
 ```text
-code_step(e, encode_configuration(c))
-  = encode_configuration(step(decode_machine(e), c))
+state       0
+left        numeral_input(n)
+right       [one_symbol]
 ```
 
-The theorem `code_steps_correct` extends this equality to any supplied
-natural number of steps. `code_halts_at_correct` then relates the numeric
-final state test to the machine's final state. These are exact equalities
-for the stored configurations, including their finite lists.
+The head is at the new rightmost one. This is a specified tape result, not
+an implicit convention that the output must start under the original head.
 
-[Turing_Primrec.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Primrec.thy) gives
-primitive-recursive certificates for the numerical pairing and list-code
-operations. [Turing_Evaluator_Primrec.thy](../thys/Research/Computation/Turing_Evaluator_Primrec.thy)
-certifies one-step and bounded finite-step evaluation. For example,
-`pr_code_steps_in_prim_rec` proves membership in the formal class of
-primitive-recursive functions, and `pr_code_steps_apply` identifies the
-certificate's output with `code_steps`.
+`scan_append_loop` proves the scan invariant with an arbitrary left list.
+`scan_append_result` gives the final configuration. `scan_append_halts`
+applies `halts_onI` to the result. The proof uses `steps_add` to join a
+first step to the remaining run.
 
-[Turing_Instruction_Normalization.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Instruction_Normalization.thy)
-certifies the normalization of instruction codes. Its functions are shared
-with the effective machine names used by the invariance development.
-[Turing_Primrec_Reductions.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Primrec_Reductions.thy)
-defines primitive-recursive many-one reduction using singleton input lists
-and proves identity and composition rules.
+Useful general facts are `step_type`, `steps_type`, `steps_add`,
+`steps_final_absorb`, and `halts_onI`. The theorem
+`halts_on_iff_finite_run` supplies a finite function of configurations
+when a subsequent argument needs an explicit execution witness.
 
-The evaluator is a mathematical function on numbers. The development has
-not constructed a finite Turing machine that implements it. Such a
-construction would be an additional universality result.
+## 4 Tape observations
 
-## 4 Self input halting
+`[1]` and `[1,0,0]` are different finite lists with identical observed
+contents. `half_tape_eq` compares all natural positions using blank beyond
+the represented end. `tape_eq` compares both halves. `config_eq` also
+requires well-formed configurations and equal states.
 
-[Turing_Decidability.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Decidability.thy)
-represents a natural number n by n consecutive 1s on an otherwise blank
-tape. A machine accepts when it halts scanning 1, and rejects when it halts
-scanning 0. A decider must halt on every such input and give the correct
-answer.
+`steps_config_eq` preserves configuration equivalence after any common
+finite number of steps of a well-formed machine. `config_eq_observe`
+recovers the state and scanned symbol. These relations do not identify
+head shifts. Raw list equality remains available for exact storage results.
 
-The set `self_halting` contains exactly those numbers e for which
-`decode_machine(e)` halts on the numeral input for e. To prove that no
-machine decides this set, the development constructs a rejecting machine
-from any proposed decider D.
+`scan_append_padded_result` transfers the example to an input with an extra
+stored blank. It reuses the operational result through `steps_config_eq`.
+The tape span lemmas describe the nondecreasing storage length, explaining
+why tape contents and literal storage size are different specifications.
 
-[Turing_Rejection.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Rejection.thy)
-chooses a fresh control state and redirects halting transitions to it.
-In that state, a scanned 0 leads to halting and a scanned 1 leads to a loop.
-The construction also handles missing instructions, whose original
-behaviour was to halt. It produces a finite instruction list and proves
-that the new machine halts exactly when D rejects.
+## 5 Internal halting sentences
 
-Suppose D decided `self_halting`. Let Q be its rejecting machine and let q
-be the canonical code of Q. Then Q halts on q exactly when D rejects q.
-Since D is a decider, it rejects q exactly when Q does not halt on q.
-The contradiction rules out D.
-
-The abstract argument in `Turing_Decidability` assumes the rejecting
-transformation through a locale, an interface of stated hypotheses.
-`Turing_Rejection` constructs the transformation and proves those hypotheses.
-Its theorem `self_halting_not_tm_decidable` therefore establishes
-`~ tm_decidable(self_halting)` without an unproved transformation assumption.
-It concerns the decision semantics and machine model defined here.
-
-## 5 Bounded workspace
-
-Correct execution on an otherwise blank tape does not by itself protect data
-stored nearby. A machine can move beyond its input and overwrite a saved
-cell. A preservation theorem needs an explicit condition that keeps those
-cells outside the active computation.
-
-[Turing_Workspace.thy](../thys/Research/Computation/Turing_Workspace.thy)
-appends a saved list to the outer end of each workspace half. This is the
-operation `frame_config`. It adds ordinary tape data, without changing the
-instruction set or giving the machine a new boundary test.
-
-If both represented halves have at least n cells, `steps_preserve_frame`
-proves that n steps with the saved lists attached have exactly the same
-result as n steps in the workspace followed by reattaching the original
-saved lists. Their contents remain unchanged. The proof uses the fact that
-one step can consume at most one cell from either half.
-
-For an arbitrary configuration, `pad_config` appends n blank cells to each
-half before adding the saved data. Padding preserves the represented tape
-contents. `bounded_workspace_history` combines this observation with frame
-preservation. For every k at most n, the saved lists are intact and the
-workspace computation agrees observationally with the original unpadded
-computation.
-
-For example, adding ten blanks to each half protects the saved lists through
-the first ten steps of any machine. The caller supplies ten as a bound on
-the interval being considered. The theorem does not determine when the
-machine halts or guarantee protection for an eleventh step. It also does not
-assert that the whole framed tape has the same contents as the unframed
-tape, since the frame can contain nonblank data.
-
-## 6 Dependencies and scope
-
-The computation fragment comprises eight theories maintained in the
-[candidate session](../thys/Set_Coded_Halting_Invariance_ZF/ROOT) and four
-maintained in the
-[computation extensions](../thys/Research/Computation/ROOT).
-The extensions are tape observation, numeric evaluation, its
-primitive-recursive certificates, and bounded workspace preservation.
-Each theory has one maintained source and one public session identity.
-
-The independent check collects these twelve unchanged theory bodies in a
-temporary session over Isabelle/ZF and bundled ZF-Induct. It verifies that
-their proofs do not require the AFP model or forcing development. This
-check does not define a second maintained library or public theory namespace.
-
-```sh
-python3 scripts/check_computation.py --isabelle /absolute/path/to/isabelle --directory output/computation-check
-```
-
-The direct mathematical dependencies within this fragment are as follows.
-Session qualifiers are omitted from this list.
+For a well-formed P and x, `halt_fm` is a formula with environment `[P,x]`.
+`halt_sentence(P,x)` is closed and names the two finite objects internally.
+For a transitive ZF set model A, `sats_halt_sentence_iff` states
 
 ```text
-Turing_Machine                   ZF
-Turing_Tape                      Turing_Machine
-Turing_Coding                    Turing_Machine
-Turing_Code_Operations           Turing_Coding
-Turing_Primrec                   Turing_Code_Operations, ZF-Induct.Primrec
-Turing_Primrec_Reductions        Turing_Primrec
-Turing_Evaluator                 Turing_Code_Operations
-Turing_Instruction_Normalization Turing_Primrec
-Turing_Evaluator_Primrec         Turing_Evaluator, Turing_Instruction_Normalization
-Turing_Decidability              Turing_Coding
-Turing_Rejection                 Turing_Decidability
-Turing_Workspace                 Turing_Tape
+(A, [] satisfies halt_sentence(P,x)) iff halts_on(P,x).
 ```
 
-The undecidability proof uses machine semantics, coding, decision semantics,
-and the concrete rejection transformation. Numeric evaluation is a separate
-branch of the coding development. Workspace preservation is a consequence
-of machine and tape semantics. Neither is a premise of the diagonal proof.
+The prerequisites are `transitive_zf_model(A)`, `P in tm_machine`, and
+`x in list(symbol)`. The formula is not a recogniser for arbitrary sets as
+machines or inputs. The theorem does not assert model existence.
+The qualified `M_ZF1_trans.sats_halt_sentence_iff` is available when working
+in that weaker locale. Choice is not needed.
 
-The five action instruction format follows the operational model of the
-AFP entry
-[Universal Turing Machine](https://www.isa-afp.org/entries/Universal_Turing_Machine.html).
-The computation fragment uses Isabelle/ZF, its bundled ZF-Induct session,
-and its own theories. It does not inherit the HOL entry's universality
-theorem. No simulation theorem between this instruction format and a
-different machine format is claimed.
+[Turing_Halting_Examples](../thys/Set_Coded_Turing_Machines/Turing_Halting_Examples.thy)
+uses the example's halting proof to establish its internal sentence. It
+calls the public satisfaction theorem without unfolding the internal formula.
 
-[Build instructions](BUILD.txt) reproduce the proofs.
-[Theory guide](RESEARCH.md) describes the candidate and its research
-extensions. The general compiler and arithmetic translation obligations
-remain open. The final theorem of the EPQ has not
-been fully formalised.
+## 6 Numerical codes
+
+`decode_encode_machine` recovers a valid machine from its code.
+`decode_machine` is total on natural numbers and normalises invalid action
+fields. It is not injective on all natural numbers. `machine_numbering_bij`
+is a bijection only on the canonical machine codes.
+
+`formula_code_injective` states injectivity on well-formed formulas.
+`pr_halt_sentence_code_in_prim_rec` certifies the numerical construction of
+a self-input halting sentence. `pr_halt_sentence_code_apply` identifies its
+value with the code of
+`halt_sentence(decode_machine(e),numeral_input(e))` for natural e.
+The primitive-recursive function is applied to `[e]`; its equation also
+allows unused natural-number arguments after the first.
+
+This interface certifies the self-input construction. It does not provide
+a general primitive-recursive-to-machine compiler or an effective
+translation of arbitrary arithmetic sentences.

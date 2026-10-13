@@ -8,7 +8,6 @@ theory Turing_Name_Primrec
   imports
     "Formula_Primrec"
     "Turing_Halting_Sentences"
-    "Turing_Decidability"
 begin
 
 text \<open>Iteration constructs the code of a formula naming a natural

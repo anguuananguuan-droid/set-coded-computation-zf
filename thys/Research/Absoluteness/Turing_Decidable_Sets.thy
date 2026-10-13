@@ -5,8 +5,9 @@
 section \<open>Decidable Sets in Transitive Models\<close>
 
 theory Turing_Decidable_Sets
-  imports "Set_Coded_Halting_Invariance_ZF.Turing_Halting_Sentences"
-    "Set_Coded_Halting_Invariance_ZF.Turing_Decidability"
+  imports "Set_Coded_Turing_Machines.Turing_Halting_Sentences"
+    "Turing_Invariance.Turing_Decidability"
+    "Turing_Invariance.Sentence_Invariance"
 begin
 
 text \<open>Every Turing-decidable set of natural numbers belongs to every

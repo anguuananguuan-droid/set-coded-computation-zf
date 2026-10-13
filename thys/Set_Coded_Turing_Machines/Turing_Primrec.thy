@@ -11,8 +11,9 @@ theory Turing_Primrec
 begin
 
 text \<open>This theory constructs primitive-recursive numerical operations
-for pairing and finite-list codes. Each certificate consists of a member of the formal class of primitive-recursive functions
-and an application theorem identifying its value with the
+for pairing and finite-list codes. Each certificate consists of membership
+in the formal class of primitive-recursive functions and an application
+theorem identifying its value with the
 corresponding code operation. These results do not construct a Turing
 machine that implements the operations.\<close>
 
