@@ -45,6 +45,9 @@ def main():
         for name in ("root.tex", "build"):
             shutil.copy2(SOURCE / "document" / name, entry / "document" / name)
         shutil.copy2(REPOSITORY / "LICENSE", entry / "LICENSE")
+        (entry / "documentation").mkdir()
+        shutil.copy2(REPOSITORY / "documentation" / "AI_USAGE.txt",
+                     entry / "documentation" / "AI_USAGE.txt")
         args.archive.parent.mkdir(parents=True, exist_ok=True)
         with args.archive.open("wb") as output:
             with gzip.GzipFile(filename="", mode="wb", fileobj=output, mtime=0) as compressed:

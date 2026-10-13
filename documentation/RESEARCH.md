@@ -25,8 +25,8 @@ sentence codes, through the generic theorem `pr_reduces_invariance`.
 
 These reductions do not establish machine undecidability of the target
 set in this particular machine model. That conclusion needs a machine
-realisation or closure theorem for the reducing functions. It does not
-require a reverse reduction. The full arithmetic-truth reduction from the
+realisation or closure theorem for the reducing functions. The full
+arithmetic-truth reduction from the
 [EPQ paper](../papers/EPQ.pdf) remains outside the proved results.
 
 ## 3 Computation and programs

@@ -3,7 +3,7 @@
 ## 1 Status
 
 These documents record earlier development states. Current results and source
-links are in [Computation in Isabelle/ZF](../COMPUTATION.md) and
+links are in the [Library guide](../COMPUTATION.md) and
 [Research extensions](../RESEARCH.md). Historical plans and completion claims
 must be read against the source revision they describe.
 
@@ -71,7 +71,7 @@ the initial machine and reduction work.
 and [Sequential reductions](RV-IN-TM-ZF-001-2026-08-03-SEQUENTIAL-REDUCTIONS.md)
 record the subsequent constructions and their remaining assumptions.
 [AI assistance in August](AI_ASSISTANCE_2026-08.md) retains the earlier
-contribution disclosure. The current disclosure is [AI assistance](../../AI_USAGE.txt).
+contribution disclosure. The current disclosure is [AI usage](../AI_USAGE.txt).
 
 [Semantic review and roadmap](REVIEW_AND_ROADMAP.md) records the September
 review and updates through 4 October.

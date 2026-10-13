@@ -1,6 +1,6 @@
-AI ASSISTANCE
+AI USAGE
 
-1 Authorship and direction
+1 AUTHORSHIP AND DIRECTION
 
 Tang Ziyi wrote the original EPQ paper, conceived the initial formalisation,
 and constructed initial formal objects. The research question, choice
@@ -9,7 +9,7 @@ Tang Ziyi has led and participated in the work throughout, setting its scope,
 examining the mathematical statements, and directing revisions. The author
 retains responsibility for the definitions, claims, and published material.
 
-2 Tool participation
+2 TOOL PARTICIPATION
 
 OpenAI Codex and ChatGPT have assisted development since August 2026. Their
 participation includes proposed and retained definitions, theorem statements,
@@ -23,7 +23,7 @@ proofs and proposed revisions, which were assessed against the maintained
 Isabelle sources. These activities are project checks and do not constitute
 external peer review or endorsement by AFP or ITP.
 
-3 Review and verification
+3 REVIEW AND VERIFICATION
 
 The collaboration follows the repository rules in AGENTS.md and
 CONTRIBUTING.txt. The author directs the research and reviews its statements
@@ -46,7 +46,11 @@ not assert approval by a conference or publisher.
 
 https://drops.dagstuhl.de/docs/gen-ai
 
-4 Historical record
+4 HISTORICAL RECORD
+
+Paths in this statement refer to the source repository.
+
+https://github.com/anguuananguuan-droid/set-coded-computation-zf
 
 The original EPQ manuscript precedes the assisted repository development.
 The historical disclosure in documentation/history/AI_ASSISTANCE_2026-08.md

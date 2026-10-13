@@ -20,8 +20,14 @@ path. Register the AFP theory directory using its actual absolute path.
 
 ROOTS locates the candidate and five research sessions under thys. The
 candidate is Set_Coded_Turing_Machines. The research sessions are
-Turing_Invariance, Turing_Computation_Extensions, Turing_Machines_ZF, Turing_Models, and
-Turing_Absoluteness.
+Turing_Invariance, Turing_Computation_Extensions, Turing_Machines_ZF,
+Turing_Models, and Turing_Absoluteness.
+
+Build the library alone.
+
+    isabelle build -d . Set_Coded_Turing_Machines
+
+Build all six sessions from their sources.
 
     isabelle build -v -c -j 1 -o threads=2 -D .
 
@@ -59,7 +65,8 @@ exported manifest. Its parent is Independence_CH. The declared timeout is
 The exporter copies the candidate ROOT, seventeen theories, and document
 sources unchanged. It normalizes archive member order, permissions,
 ownership, and timestamps. In the same Python environment, unchanged
-candidate contents produce the same archive bytes.
+candidate contents produce the same archive bytes. The archive also
+contains LICENSE and documentation/AI_USAGE.txt from the repository.
 
 5 PROOFS AND DOCUMENTS
 
@@ -126,7 +133,7 @@ https://github.com/isabelle-prover/isabelle-linter
 7 CONTINUOUS INTEGRATION
 
 .github/workflows/isabelle.yml checks repository sources, the independent
-computation fragment before AFP registration, all five maintained sessions,
+computation fragment before AFP registration, all six maintained sessions,
 the unmodified exported candidate, document variants and layout, proof
 dependencies, linter controls, and AFP mandatory findings. Acceptance builds
 use the ROOT timeouts. Artifacts retain the source revision, archive,
