@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+test "$1" = pdf
+document_root=root
+if test -f "root_$2.tex"; then
+  document_root="root_$2"
+fi
+
+previous=""
+for pass in 1 2 3 4 5 6; do
+  # Isabelle supplies the compiler command together with its options.
+  ${ISABELLE_LUALATEX:?} -halt-on-error "$document_root"
+  current=$(cksum "$document_root.aux" "$document_root.toc" "$document_root.out")
+  if test "$current" = "$previous"; then
+    exit 0
+  fi
+  previous="$current"
+done
+
+echo "Document references did not stabilize after six LaTeX passes" >&2
+exit 1

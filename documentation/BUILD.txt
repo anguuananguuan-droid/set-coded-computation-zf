@@ -1,70 +1,140 @@
 REPRODUCTION
 
-1 Environment
+1 ENVIRONMENT
 
-The supported release is Isabelle2025-2. Set_Coded_Computation_ZF uses
-Isabelle/ZF and the bundled ZF-Induct session. Turing_CH and Turing_Models
-require the AFP snapshot dated 6 February
-2026.
+The supported release is Isabelle2025-2. The candidate and research sessions
+use the AFP snapshot dated 6 February 2026. The independent computation
+check uses only Isabelle/ZF and bundled ZF-Induct. LuaLaTeX is required for
+the PDF. Python 3 is required for repository checks and export. Poppler's
+pdftotext is required for the PDF layout check.
 
 https://isabelle.in.tum.de/website-Isabelle2025-2/
 https://isa-afp.org/release/afp-2026-02-06.tar.gz
 
-2 Independent computation session
-
-Run from the repository root with Isabelle on the executable search path.
-
-    isabelle build -v -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
-
-For a fresh build of that session, clearing its existing build product first.
-
-    isabelle build -v -c -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
-
-3 Complete repository
-
-Extract the AFP snapshot and register its theory directory. Replace the
-example absolute path with the actual path.
+Run commands from the repository root with Isabelle on the executable search
+path. Register the AFP theory directory using its actual absolute path.
 
     isabelle components -u /absolute/path/to/afp-2026-02-06/thys
-    isabelle build -v -D .
 
-The four local sessions are Set_Coded_Computation_ZF, Turing_Machines_ZF,
-Turing_CH, and Turing_Models. Turing_Machines_ZF and Turing_CH each extend
-Set_Coded_Computation_ZF. Turing_Models extends Turing_CH. The CH research
-does not depend on the extended machine programs.
+2 MAINTAINED SESSIONS
 
-The computation sessions have a 300-second timeout. Turing_CH has a
-900-second timeout because its Isabelle/ZF and AFP imports are rechecked
-inside that session. A slower machine may require fewer parallel workers
-and a longer timeout. The following command clears and
-rebuilds the selected local sessions while reusing unchanged external
-dependencies.
+ROOTS locates the candidate and four research sessions under thys. The
+candidate is Set_Coded_Halting_Invariance_ZF. The research sessions are
+Turing_Computation_Extensions, Turing_Machines_ZF, Turing_Models, and
+Turing_Absoluteness.
 
-    isabelle build -v -c -j 1 -o threads=2 -o timeout=1800 -D .
+    isabelle build -v -c -j 1 -o threads=2 -D .
 
-A successful build returns exit status 0. Without the clearing option,
-Isabelle may reuse unchanged local session products. Neither mode establishes
-that the definitions express an intended informal theorem.
+This command exercises the timeouts declared in each ROOT. A diagnostic
+timeout override shall be recorded as an override and shall not replace
+the acceptance build. A successful build returns exit status 0. A build
+without -c may reuse unchanged session products.
 
-4 Repository checks
+The independent computation fragment can be checked before registering AFP.
+The script generates a temporary session from its twelve maintained sources
+and checks them over Isabelle/ZF and ZF-Induct. The temporary session is a
+verification target, not another maintained public theory namespace.
 
-The repository check validates local document references, session theory
-membership, the independent core import boundary, and the absence of selected
-proof escape tokens. It is a source check, not an Isabelle parser or a proof
-checker.
+    python3 scripts/check_computation.py --isabelle /absolute/path/to/isabelle --directory output/computation-check
+
+3 REPOSITORY SOURCE CHECKS
+
+The source check validates document references, theory membership, session
+boundaries, and selected prohibited proof commands. It is not a proof check.
 
     python3 scripts/check_repository.py
     git diff --check
 
-5 Continuous integration
+4 CANDIDATE ARCHIVE
 
-The workflow in .github/workflows/isabelle.yml first checks the repository,
-then builds the independent core before registering AFP, and finally builds
-all four sessions. The Linux distributions are installed by
-scripts/install-ci.sh. Actions are pinned to commit identifiers and build logs
-are attached to each run.
+thys/Set_Coded_Halting_Invariance_ZF/ROOT is the single maintained and
+exported manifest. Its parent is Independence_CH. The declared timeout is
+300 seconds. The acceptance command does not override that value.
 
-The following SHA256 values are used by the installer.
+    bash scripts/package-afp-entry.sh
+    mkdir -p output/afp-entry
+    tar -xzf output/Set_Coded_Halting_Invariance_ZF.tar.gz -C output/afp-entry
+    isabelle build -v -b -c -j 1 -o threads=2 -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
+
+The exporter copies the candidate ROOT, nineteen theories, and document
+sources unchanged. It normalizes archive member order, permissions,
+ownership, and timestamps. In the same Python environment, unchanged
+candidate contents produce the same archive bytes.
+
+5 PROOFS AND DOCUMENTS
+
+The saved candidate heap supports the maintained dependency check.
+
+    isabelle ML_process -d output/afp-entry/Set_Coded_Halting_Invariance_ZF -l Set_Coded_Halting_Invariance_ZF -f scripts/check_submission_proofs.ML
+
+This check inspects the nine principal results for undischarged hypotheses.
+It collects named facts from all nineteen canonical theories and checks
+their proof closure for oracle dependencies. Explicit premises in theorem
+statements remain premises.
+
+Build both document variants with LuaLaTeX installed.
+
+    isabelle build -v -b -c -j 1 -o threads=2 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$PWD/output/afp-document" -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
+
+The document build repeats LuaLaTeX until the auxiliary, contents, and
+bookmark files stop changing. It fails if they do not stabilize within
+six passes. Isabelle2025-2's default engine uses fixed compilation passes
+and does not check convergence. document_output retains the unmodified
+PDFs and generated LaTeX sources separately for each variant.
+
+The layout checker uses fresh verification directories.
+
+    python3 scripts/check_proof_document.py --pdf output/afp-document/document.pdf --sources output/afp-document/document --qa-dir output/afp-document-qa/document --isabelle /absolute/path/to/isabelle
+    python3 scripts/check_proof_document.py --pdf output/afp-document/outline.pdf --sources output/afp-document/outline --qa-dir output/afp-document-qa/outline --isabelle /absolute/path/to/isabelle
+
+The checker instruments and compiles only copies of the generated LaTeX
+sources. The original candidate, source output, and PDFs remain unchanged.
+The copy's extracted text, page dimensions, and word coordinates shall
+match the original PDF. The checker then requires nonempty text within the
+horizontal text bounds and rejects overfull boxes, unresolved references,
+and rerun warnings in the final log. Both variants shall also have correct
+contents references. A proof build without document=pdf does not check
+these conditions.
+
+6 AFP STYLE CHECKS
+
+The pinned upstream linter revision is
+c9983adc5c51a6455f702bb58c9f960d425a2af3. Its unmodified parser does not
+reliably process Isabelle2025-2 exported command-range wrappers. An empty
+report from that unpatched version does not establish effective checking.
+
+The maintained compatibility patch handles these wrappers, rejects absent
+parsed commands, and reports command coverage. Apply it to a fresh extraction
+of the pinned revision before registering the component.
+
+    python3 scripts/patch_isabelle_linter.py /absolute/path/to/isabelle-linter-c9983adc5c51a6455f702bb58c9f960d425a2af3
+    isabelle components -u /absolute/path/to/isabelle-linter-c9983adc5c51a6455f702bb58c9f960d425a2af3/linter_base
+    python3 scripts/check_linter_controls.py --isabelle /absolute/path/to/isabelle --output output/linter-controls
+    isabelle lint -v -j 1 -o threads=2 -o lint_bundles=afp_mandatory -f error -O output/afp-lint.txt -D output/afp-entry/Set_Coded_Halting_Invariance_ZF
+
+The controls require a clean named lemma to pass, an unfinished proof to be
+rejected, and an attribute on an unnamed lemma to be rejected. They also
+require nonzero parsed-command coverage. Deliberate violations are created
+only in temporary control sessions. Their logs and results.json provide the
+control evidence. They are not candidate theories.
+
+Style acceptance requires successful controls, nonzero command coverage in
+the entry, and no mandatory findings. It does not replace mathematical review.
+
+https://github.com/isabelle-prover/isabelle-linter
+
+7 CONTINUOUS INTEGRATION
+
+.github/workflows/isabelle.yml checks repository sources, the independent
+computation fragment before AFP registration, all five maintained sessions,
+the unmodified exported candidate, document variants and layout, proof
+dependencies, linter controls, and AFP mandatory findings. Acceptance builds
+use the ROOT timeouts. Artifacts retain the source revision, archive,
+documents, style reports, and verification logs.
+
+scripts/install-ci.sh downloads checksum-pinned Linux dependencies and
+applies the maintained linter compatibility patch. It does not redistribute
+the external distributions in the source repository.
 
 Isabelle2025-2_linux.tar.gz
     a20a507bc7c1270d8be96a9f3fbec06345387789d2dc2c4d3df6260d47bfb33c
@@ -72,9 +142,11 @@ Isabelle2025-2_linux.tar.gz
 afp-2026-02-06.tar.gz
     b059edd46073479ee8dde45004c2346a7365e5d94cded49d27257cfea66c8879
 
-The Isabelle checksum is published in its distribution index. The AFP checksum
-identifies the snapshot used by this project. Dependencies are downloaded
-separately and are not redistributed in the repository.
+isabelle-linter-c9983adc5c51a6455f702bb58c9f960d425a2af3.tar.gz
+    83dc386d6e9dcbfa9f820abddac31c1bedffa46f1f74265a8ccf9007ff9ca2f1
+
+The Isabelle checksum is published in its distribution index. The other
+checksums identify the external snapshots used by this repository.
 
 https://isabelle.in.tum.de/website-Isabelle2025-2/dist/index.html
 https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/workflows/isabelle.yml

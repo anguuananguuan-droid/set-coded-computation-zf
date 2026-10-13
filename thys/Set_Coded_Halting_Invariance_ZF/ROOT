@@ -1,0 +1,30 @@
+chapter AFP
+
+session Set_Coded_Halting_Invariance_ZF = Independence_CH +
+  description "Halting absoluteness and primitive-recursive reductions to sentence invariance."
+  options [timeout=300, document_build=build]
+  sessions
+    "ZF-Induct"
+  theories
+    Turing_Machine
+    Turing_Coding
+    Turing_Code_Operations
+    Turing_Primrec
+    Turing_Primrec_Reductions
+    Turing_Instruction_Normalization
+    Turing_Decidability
+    Turing_Rejection
+    Turing_Model_Witnesses
+    Nat_Membership
+    Turing_Halting_Formula
+    Turing_Halting_Sentences
+    Sentence_Invariance
+    Formula_Coding
+    Turing_Invariance_Codes
+    Formula_Primrec
+    Turing_Name_Primrec
+    Turing_Machine_Name_Primrec
+    Turing_Effective_Invariance
+  document_files
+    "root.tex"
+    "build"

@@ -1,72 +1,105 @@
-# Set coded computation in Isabelle/ZF
+# Halting absoluteness and effective sentence invariance in Isabelle/ZF
 
 Tang Ziyi
 
-## 1 Computation
+## 1 Result
 
-This development represents a Turing machine, its tape, and each finite run
-as sets in Isabelle/ZF. It defines execution from a finite instruction table
-and proves that no machine in this model can decide, for every input code,
-whether the encoded machine halts on that same code.
+This development constructs a set-theoretic formula for machine halting and
+proves that its satisfaction in every transitive ZF set model agrees with
+external finite execution. The machine and its input are then named inside
+closed sentences. The proofs use the weaker `M_ZF1_trans` locale, with ZF
+versions retained as corollaries. These results do not require choice.
 
-The independent library also gives a natural number encoding of machines and
-configurations, with a numeric evaluator proved to reproduce execution.
-Operations on codes and finite-step evaluation have primitive-recursive
-certificates in Isabelle/ZF.
-Two further results concern the finite representation of the tape. Adding
-trailing blanks preserves its observed contents, and a supplied blank buffer
-protects saved data during a bounded number of steps.
+Assuming a countable transitive ZFC set model exists, two explicit
+primitive-recursive maps reduce self-input halting and its complement to the
+natural-number codes of sentences invariant across all transitive ZFC set
+models. CH supplies a sentence on which two such models disagree. The
+reductions also hold under the direct premise that CH is not invariant.
+Both instantiate a general theorem for uniformly expressed sentence families
+with primitive-recursive codes.
 
-[Computation in Isabelle/ZF](documentation/COMPUTATION.md) explains the model
-through a small machine, then develops the coding, diagonal argument, and
-tape results. Each result is linked to its source. The ten theory files
-form the session
-[Set_Coded_Computation_ZF](Turing_Machines_ZF/Core/ROOT), which depends only
-on Isabelle/ZF and its bundled ZF-Induct session.
+The two maps are proved members of Isabelle/ZF's `prim_rec` class, with
+application equations identifying their outputs with the intended sentence
+codes. The source halting set is proved undecidable in the machine model.
+The development does not establish machine undecidability of the full target
+set or a general compiler implementing arbitrary primitive-recursive maps.
 
-## 2 Verification
+The sole AFP candidate is
+[Set_Coded_Halting_Invariance_ZF](thys/Set_Coded_Halting_Invariance_ZF/ROOT).
+Its nineteen maintained theories and its ROOT are exported unchanged into
+one session with
+[Independence_CH](https://isa-afp.org/entries/Independence_CH.html) as its parent.
+[Candidate scope](documentation/AFP.txt) states its theorem, boundaries, and
+verification procedure. The entry has not been submitted or accepted.
 
-With Isabelle2025-2 on the executable search path, run from the repository
-root.
+## 2 Sources
 
-```sh
-isabelle build -v -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+The repository maintains forty theories in five sessions. The candidate
+has one source directory and one public theory namespace. Research sessions
+extend it through that namespace.
+
+```text
+thys/Set_Coded_Halting_Invariance_ZF   19 theories, candidate
+thys/Research/Computation              4 theories, tape and evaluation
+thys/Research/Programs                14 theories, machine programs
+thys/Research/Models                   2 theories, arithmetic and model index sets
+thys/Research/Absoluteness             1 theory, decidable sets in models
 ```
 
-[Build instructions](documentation/BUILD.txt) specify the environment and
-commands for both the independent library and the complete repository.
-[AFP candidate](documentation/AFP.txt) records the submission scope, proof
-document command, and archive contents.
+[Computation](documentation/COMPUTATION.md) describes machine semantics,
+coding, numeric evaluation, self-halting undecidability, observational tape
+semantics, and bounded workspace preservation.
+[Theory guide](documentation/RESEARCH.md) locates the forty theories and their
+proved and open boundaries.
+
+The general machine compiler, a universal machine implementing the numeric
+evaluator, and an effective translation of arbitrary arithmetic sentences
+remain open. The arithmetic-truth reduction and nonarithmeticality conclusion
+of the motivating [EPQ paper](papers/EPQ.pdf) are not established by the
+self-halting reductions.
+
+## 3 Reproduction
+
+With Isabelle2025-2 installed, check the computation fragment independently
+of AFP. This command generates a temporary verification session from the
+maintained sources.
+
+```sh
+python3 scripts/check_computation.py --isabelle /absolute/path/to/isabelle --directory output/computation-check
+```
+
+[Build instructions](documentation/BUILD.txt) cover the five sessions,
+exported archive, proof dependencies, PDF layout, and style checks. Style
+acceptance requires the pinned linter with its maintained compatibility patch
+and negative controls demonstrating detection of deliberate violations.
+An empty linter report alone is insufficient evidence.
+
 [GitHub Actions](https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/workflows/isabelle.yml)
-checks the independent library and all four project sessions. Each run
-identifies the source revision and retains its build logs.
+retains the checked source revision, exported archive, document variants, and
+verification logs. A successful run verifies that revision. Mathematical
+adequacy and AFP acceptance require separate review.
 
-## 3 Further research
+## 4 Attribution and maintenance
 
-The remaining theories contain concrete programs, primitive recursive
-certificates, and applications to transitive models of set theory. The
-general machine compiler, a universal machine implementing the numeric
-evaluator, and the final reduction in the motivating [EPQ paper](papers/EPQ.pdf)
-remain unfinished. The internal halting formula is still an assumed
-interface. These developments are outside the independent library.
+Tang Ziyi wrote the original EPQ paper, conceived the initial formalisation,
+and constructed initial formal objects. The author has led and
+participated throughout. OpenAI Codex and ChatGPT have assisted development
+since August 2026. Aristotle and Anthropic Claude participated in internal
+review and cross-checking. The tools' roles and verification requirements are
+recorded in [AI assistance](AI_USAGE.txt).
 
-[Research extensions](documentation/RESEARCH.md) records their results and
-open obligations. [Development records](documentation/history/README.md)
-preserve earlier reviews and verification evidence.
+The operational machine design follows
+[Universal Turing Machine](https://isa-afp.org/entries/Universal_Turing_Machine.html),
+formalised in Isabelle/HOL. The model and proofs here use Isabelle/ZF.
+Model closure and satisfaction use
+[Transitive Models of Fragments of ZFC](https://isa-afp.org/entries/Transitive_Models.html).
 
-## 4 Attribution
-
-Tang Ziyi formulated the research question and wrote the original EPQ argument
-and initial formalisation. Subsequent definitions, proofs, and repository
-engineering include substantial AI assistance, described in
-[AI assistance](AI_USAGE.txt).
-
-The five action machine model follows the operational design of the AFP entry
-[Universal Turing Machine](https://www.isa-afp.org/entries/Universal_Turing_Machine.html),
-formalised in Isabelle/HOL. The present development proves its results in
-Isabelle/ZF. Its scope and dependencies are described in the computation note.
-
-Sources and documentation use the [BSD 3 Clause License](LICENSE).
+The Isabelle theories and project documentation use the
+[BSD 3 Clause License](LICENSE).
+The linter patch retains the upstream
+[copyright and license notice](THIRD_PARTY_NOTICES.txt).
 The EPQ paper is copyright 2026 Tang Ziyi, all rights reserved.
-[Citation metadata](CITATION.cff) identifies the repository. Cite the source
-revision used.
+[Citation metadata](CITATION.cff) identifies the project. Cite the revision
+used. [Contribution rules](CONTRIBUTING.txt) and [engineering rules](AGENTS.md)
+govern changes. [Development records](documentation/history/README.md)
+preserve earlier claims and verification evidence at their recorded revisions.

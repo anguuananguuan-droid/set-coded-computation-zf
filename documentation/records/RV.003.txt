@@ -1,0 +1,125 @@
+HALTING INVARIANCE REVIEW
+
+RV.003
+11 October 2026
+Prepared by OpenAI Codex
+
+1 Examined state
+
+1.1 The baseline is 5b0eb7ff0741a073fdc3bef7fc3a8115a01ded16. The
+submission manifest contains nineteen theories in one session. The review
+examined machine semantics, coding, the internal satisfaction theorem,
+finite names, effective syntax, reduction premises, package construction,
+attribution, and verification. Separate Codex review passes examined the
+semantic, effective, and submission contracts. This is an internal review.
+
+1.2 The reviewed revision retains the same submission scope. The exact
+proof sources and verification tools are identified by SHA256 in
+documentation/records/RV.003.sources.txt. Earlier records retain their
+original contents and apply to their recorded source revisions.
+
+2 Mathematical findings
+
+2.1 No defect invalidating the stated main results was identified. The
+machine decoder is total on natural numbers and recovers every canonically
+encoded machine. The concrete rejection transformation discharges the
+self-input halting diagonal argument without a general compiler.
+
+2.2 The internal halting theorem is proved from transitivity and ZFC
+satisfaction. Its correctness is not a locale assumption. Model closure
+places the canonical finite execution witnesses inside the model. Naming
+formulas then bind both machine and input, producing a closed sentence with
+the proved external halting truth value.
+
+2.3 Formula coding is injective on formulas. The target contains exactly
+codes of invariant closed formulas. Invalid codes and codes of open formulas
+do not acquire membership through a second formula witness. The effective
+maps have exact application equations for the intended formula codes and
+are members of the total function class prim_rec. Instruction normalization
+handles noncanonical source codes. The bounded traversal covers every
+decoded machine instruction.
+
+2.4 Invariance quantifies over all transitive ZFC set models. The countable
+transitive model premise supplies two witnesses that disagree on CH. These
+witnesses suffice to refute invariance in the larger model class. Without
+any transitive ZFC models, every closed sentence is invariant vacuously.
+The disagreement premise cannot be discarded.
+
+3 Revisions
+
+3.1 The naming headings incorrectly described formulas of arity one as
+closed names. They now identify names for natural numbers and finite lists.
+The halting introduction also now distinguishes arbitrary witness sets
+with prescribed finite applications from the canonical finite functions
+constructed by the proof. Formula definitions and satisfaction statements
+are unchanged.
+
+3.2 The two effective reductions now have interfaces requiring directly
+that CH is not invariant. Existing countable transitive model statements
+retain their names and propositions as consequences of CH_not_invariant.
+The numerical maps and their application equations are unchanged. This
+separates the effective construction from the model existence argument.
+
+3.3 The primitive recursive reduction relation now has total output,
+reflexivity, composition, and transitivity lemmas. Composition uses the
+existing COMP constructor. These lemmas expose the reusable reduction
+interface without adding a machine realization assumption.
+
+3.4 The proof document now credits Transitive Models of Fragments of ZFC
+for the model closure, relativization, and satisfaction infrastructure.
+The previous citations to the CH and Turing machine entries remain.
+
+3.5 Export changes are restricted to the theory import declarations.
+Qualified imports of excluded local theories are rejected. Archive ordering,
+permissions, ownership, and timestamps are normalized. The export no longer
+embeds the exporting user's name or identifier.
+
+3.6 Continuous integration now preserves the submission heap, checks the
+actual theorem proof dependencies, and runs the AFP mandatory linter at
+revision c9983adc5c51a6455f702bb58c9f960d425a2af3. The checks and their reports
+remain outside the submission theories. A failure rejects the run.
+
+4 Verification
+
+4.1 The revised exported session passed a local clean Isabelle2025-2 build
+with two proof threads. The build completed in 131 seconds. An earlier
+revision attempt failed because a new proof label used the reserved word
+output. The label was corrected before the successful build.
+
+4.2 All six principal results have empty theorem hypothesis lists. Their
+explicit premises remain in their propositions. The 12949 named facts
+available in the final submission theory, including imported dependencies,
+have no oracle dependencies. A separate process introduced a skipped proof
+and the same guard rejected it with exit status 1. The injected theorem was
+not added to any maintained theory or archive.
+
+4.3 The revised exported entry passed afp_mandatory with exit status 0 and
+an empty report. The repository checker passed for forty theories in five
+development sessions. Shell syntax and whitespace checks also passed.
+
+4.4 Two exports of the final submission contents were byte identical.
+All twenty three archive files were checked. The nineteen theory bodies
+match their maintained sources, and all archive members have normalized
+ownership and timestamps. A qualified excluded dependency was deliberately
+supplied to the exporter and rejected.
+
+4.5 Local verification did not generate PDFs. The workflow associated with
+the revision commit records the complete repository build, extracted entry
+build, both document variants, proof dependency check, and mandatory style
+check. Its result must be inspected separately. Earlier CI success is not
+evidence for an unverified later revision.
+
+5 Remaining boundary
+
+5.1 The completed endpoint is the pair of primitive recursive reductions
+into the codes of invariant closed sentences. No general primitive recursive
+function compiler for this machine model, machine undecidability theorem
+for the full target set, arbitrary arithmetic truth reduction, or precise
+complexity classification of that set is claimed.
+
+5.2 This review does not establish mathematical novelty, independent
+specialist approval, AFP submission, or AFP acceptance. The classical inputs
+are known results. The candidate contribution is their explicit formal
+connection through set coded execution, internal satisfaction, and effective
+sentence construction. External review and the author's submission and
+maintenance decisions remain separate obligations.

@@ -1,0 +1,115 @@
+MODEL INTERFACES AND DEVELOPMENT PROVENANCE
+
+RV.007
+13 October 2026
+Instruction IN.004
+Prepared by OpenAI Codex
+
+1 Subject
+
+1.1 The supplied material was Aristotle's fourth review transcript, including
+a generic reduction proof and experimental claims about weaker model
+assumptions. The retained changes were checked against the maintained
+Isabelle development. The baseline is f7001c2.
+
+2 Mathematics
+
+2.1 The halting satisfaction proofs now extend M_ZF1_trans directly.
+M_ZF1_trans.sats_halt_fm and M_ZF1_trans.sats_halt_sentence_iff require
+transitivity, Zermelo set theory, and the four replacement instances in the
+imported locale. The earlier ZF statements remain corollaries.
+transitive_zf_model and transitive_zfc_model retain their original meanings.
+No minimality or independence claim about the model assumptions is made.
+
+2.2 pr_reduces_invariance handles any uniformly expressed family of closed
+sentences whose codes have a primitive recursive certificate. Disjunction
+with a fixed non-invariant sentence yields a primitive recursive reduction
+to invariant_formula_codes. Both explicit halting reductions are now
+instances of this theorem. The source set need not be a halting set and the
+fixed sentence need not be CH.
+
+2.3 The final model class still consists of all transitive ZFC set models.
+The CH application retains its disagreement premise or its countable
+transitive ZFC model premise. No compiler from prim_rec to the machine model
+is assumed. The target's machine undecidability is not a proved consequence.
+
+3 Interfaces and documents
+
+3.1 The public constants machine, tape, and step are renamed tm_machine,
+tm_tape, and tm_step throughout all maintained theories. Their generated
+definition facts follow the new names. Model satisfaction facts formerly
+in tm_model are exported from M_ZF1_trans. Research clients are updated.
+
+3.2 The symbol domain fact is shared from Turing_Machine. steps_final_mono
+and steps_final_absorb are distinct conclusions, not duplicate statements.
+The first now follows from the second instead of repeating its proof.
+
+3.3 The documentation states the typed machine and input domain of halt_fm,
+the semantic meaning of invariance, and its vacuity when no model exists.
+It distinguishes internal list traversal components from the satisfaction
+interface. M_datatypes.nth_abs carries additional locale assumptions,
+including nth_replacement. The present proof uses finite witnesses without
+requiring an interpretation of M_datatypes.
+
+3.4 The inaccurate description of using the relativization machinery is
+removed. Existing references describe the actual imported work and the
+classical mathematical inputs. Unverified bibliographic suggestions from
+the review were not adopted. Rejection retains its independent source
+undecidability theorem and its explicit proof check. No redundant conjunction
+of that theorem and the two reductions is introduced.
+
+4 Provenance
+
+4.1 AI_USAGE.txt, README, and the document provenance now identify the
+author's original paper, formalisation conception, and initial object
+construction, together with continuous direction and participation.
+Codex and ChatGPT assisted development from August 2026. Aristotle and Claude
+participated in internal review and cross-checking. Generated definitions,
+theorem statements, proof scripts, and Aristotle draft proofs remain
+disclosed by activity without a degree adjective.
+
+4.2 The disclosure cites the transparency and human responsibility
+principles of the Dagstuhl GenAI statement applicable to LIPIcs. Internal
+AI checks are distinguished from formal external peer review. No blanket
+certification of compliance or institutional approval is asserted.
+Historical disclosures and review records remain unchanged.
+
+5 Verification
+
+5.1 The checked revision is 2ccb314376725a75974e6c72e8d65f59b7bfd744.
+All five maintained sessions pass locally. The exported archive contains
+twenty three regular files, each identical to its canonical source.
+Its SHA256 is
+12ef34b7ae6cf7da9bc6f4a0d52722a42ca958a255b654e46479d0608eded3b7.
+
+5.2 The nine principal results have no undischarged theorem hypotheses.
+The proof closure check covers 12904 named facts, including imported
+dependencies, without oracle dependencies. The nineteen actual entry
+message exports contain no warnings. Three warnings in the bundled
+ZF-Induct.Primrec theory remain outside this revision.
+
+5.3 CI run 38327022000 passes on the checked revision, including all proofs,
+archive verification, mandatory style checks, and both proof documents.
+The style checker parses 5108 commands across nineteen theories and reports
+no findings. Its three positive and negative controls pass. The full document
+has 137 pages and the outline has 77 pages. Both have no horizontal overflow
+or unresolved LaTeX references. Verification copies match their text and
+geometry. Independent checks confirm all 162 table of contents links and
+find no text outside the page boundaries. The remote archive has the same
+SHA256 as the locally verified archive.
+
+The public build record is
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/38327022000.
+
+5.4 CI runs 38245732625 and 38246543188 failed during document checks.
+The first exposed identifier
+underscores in prose after a naming change. The second identified five
+horizontal overflows. Prose terminology, long names, and proof line breaks
+were corrected without altering the theorem statements.
+
+6 Boundary
+
+The candidate remains nineteen theories. Research extensions remain outside
+its dependency closure. This revision establishes reusable formal interfaces
+for classical mathematics. It does not establish novelty or AFP acceptance.
+No AFP submission or contact with editors or reviewers was made.

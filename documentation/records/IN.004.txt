@@ -1,0 +1,40 @@
+HALTING INTERFACES AND DEVELOPMENT PROVENANCE
+
+IN.004
+12 October 2026
+Authority Tang Ziyi
+Prepared by OpenAI Codex
+
+1 Mission
+
+Examine the supplied fourth review against the maintained development.
+Implement justified revisions within the existing candidate scope and
+state human and tool contributions accurately.
+
+2 Boundary
+
+The baseline is f7001c2. Expose the existing halting proof under weaker
+model assumptions without changing the meaning of transitive_zf_model or
+the ZFC model class of invariance. Factor the effective reductions through
+a reusable theorem. Preserve the explicit primitive recursive endpoint.
+
+Apply checked public naming changes throughout the research extensions.
+Remove repeated proofs without discarding distinct useful conclusions.
+Document the actual requirements and relation to imported interfaces.
+
+3 Provenance
+
+The author states that the original EPQ paper, initial formalisation idea,
+and initial object constructions preceded assisted development. The author
+has led and participated throughout. Codex and ChatGPT assisted development
+from August 2026. Aristotle and Claude participated in internal review and
+cross-checking. Retained generated definitions and proofs remain disclosed.
+Historical records shall retain their original wording and dates.
+
+4 Verification and publication
+
+Verify all maintained sessions and the exported candidate, including the
+new theorem interfaces, proof dependencies, linter controls, and both PDF
+variants. Identify the checked revision in the completion record.
+Repository publication is authorised. AFP submission and contact with
+editors or reviewers remain unauthorised.

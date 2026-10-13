@@ -1,44 +1,56 @@
 AI ASSISTANCE
 
-1 Contributions
+1 Authorship and direction
 
-Tang Ziyi formulated the research question, developed the EPQ argument, and
-wrote and tested the initial Isabelle formalisation. The use of Isabelle/ZF
-and the separation between machine computation and model theoretic application
-follow the author's direction.
+Tang Ziyi wrote the original EPQ paper, conceived the initial formalisation,
+and constructed initial formal objects. The research question, choice
+of Isabelle/ZF, and direction of the project originated with the author.
+Tang Ziyi has led and participated in the work throughout, setting its scope,
+examining the mathematical statements, and directing revisions. The author
+retains responsibility for the definitions, claims, and published material.
 
-OpenAI Codex made substantial contributions to retained definitions, theorem
-statements, proof scripts, documentation, and build infrastructure. These
-include machine coding, numeric evaluation, diagonalisation, reductions, the
-numerical output repair, concrete programs, workspace preservation, and model
-witnesses. This work must not be represented as proof scripts written solely
-by the human author.
+2 Tool participation
 
-The author has authorised autonomous implementation and verification since
-August 2026. Git records implementation increments. A passing build is not
-evidence of line by line human review.
+OpenAI Codex and ChatGPT have assisted development since August 2026. Their
+participation includes proposed and retained definitions, theorem statements,
+proof scripts, documentation, and build infrastructure. These contributions
+are part of the maintained development and are subject to its verification
+requirements.
 
-2 Verification
+Aristotle and Anthropic Claude participated in internal review and
+cross-checking under the author's direction. Aristotle also supplied draft
+proofs and proposed revisions, which were assessed against the maintained
+Isabelle sources. These activities are project checks and do not constitute
+external peer review or endorsement by AFP or ITP.
 
-Isabelle checks derivability from the definitions and assumptions in the
-source. Testing, semantic review, and independent expert review are distinct
-activities. The repaired output contract and the workspace counterexample
-illustrate why a checked proof can still depend on an unsuitable
-specification.
+3 Review and verification
 
-Neither automated builds nor AI review establish novelty, independent expert
-endorsement, or completion of the EPQ theorem. A specific claim of human
-review requires its own record.
+The collaboration follows the repository rules in AGENTS.md and
+CONTRIBUTING.txt. The author directs the research and reviews its statements
+and revisions throughout development. This participation is distinct from
+personally writing or inspecting every line of every generated proof script.
+Git history records retained changes. Verification records identify the
+source revision, proof checks, and remaining limitations.
 
-3 Historical disclosure
+Isabelle checks derivability from the recorded definitions and assumptions.
+This does not by itself establish that a definition expresses the intended
+mathematics, that a result is novel, or that the full EPQ argument has been
+formalised. AI review and machine proof checking do not replace the author's
+mathematical judgment or independent expert review.
 
-Earlier work included comments from Anthropic Claude supplied by the author.
-The detailed disclosure is retained in
-documentation/history/AI_ASSISTANCE_2026-08.md. Its completion claims refer to
-an earlier development stage and must be read with the subsequent correction
-of the numerical output contract.
+This disclosure follows the transparency and human responsibility principles
+in Dagstuhl Publishing's Statement on the Use of Generative Artificial
+Intelligence, applicable to the LIPIcs series in which ITP proceedings are
+published. It identifies the tools' purposes and the author's role. It does
+not assert approval by a conference or publisher.
 
-The EPQ paper was not changed by the September and October proof developments.
-Its historical disclosure records AI assisted criticism, editing, and
-preparation of the repository copy following the author's original question
-and manuscript.
+https://drops.dagstuhl.de/docs/gen-ai
+
+4 Historical record
+
+The original EPQ manuscript precedes the assisted repository development.
+The historical disclosure in documentation/history/AI_ASSISTANCE_2026-08.md
+records subsequent AI assisted criticism, editing, and preparation of the
+repository copy. Its completion claims describe that earlier stage and must
+be read with the later correction of the numerical output contract.
+The September and October proof developments did not revise the EPQ paper.

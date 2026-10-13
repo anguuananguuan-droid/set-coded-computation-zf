@@ -33,15 +33,15 @@ On a blank tape this machine writes 1 and halts without moving the head.
 The displayed notation abbreviates the nested pairs used by the source.
 This example is a direct evaluation of the definitions.
 
-[Turing_Machine.thy](../Turing_Machines_ZF/Core/Turing_Machine.thy) defines
-`step`, its finite iteration `steps`, and `halts_on`. The theorem
+[Turing_Machine.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Machine.thy) defines
+`tm_step`, its finite iteration `steps`, and `halts_on`. The theorem
 `halts_on_iff_finite_run` identifies halting with the existence of a finite
 sequence of configurations that starts at the input configuration, obeys
 every transition, and ends in state 0. The sequence is represented as a
 function on a finite initial segment of the natural numbers.
 
-All these objects are sets in Isabelle/ZF. Membership in `machine`, `tape`,
-and `configuration` expresses their well formedness. The core does not use
+All these objects are sets in Isabelle/ZF. Membership in `tm_machine`, `tm_tape`,
+and `configuration` expresses their well formedness. The computation fragment does not use
 an Isabelle/HOL machine datatype or assume the existence of a transitive
 model of ZFC.
 
@@ -53,7 +53,7 @@ lists, but a machine cannot distinguish their contents. By contrast,
 `[1,0]` and `[0,1]` place the 1 at different positions relative to the head
 and are distinguishable.
 
-[Turing_Tape.thy](../Turing_Machines_ZF/Core/Turing_Tape.thy) defines
+[Turing_Tape.thy](../thys/Research/Computation/Turing_Tape.thy) defines
 `half_tape_eq` by equality at every natural position, taking an out of range
 entry as blank. `tape_eq` compares both halves, and `config_eq` also requires
 equal states. The theorem `steps_config_eq` proves that equivalent
@@ -70,7 +70,7 @@ lists themselves to shrink.
 
 ## 3 Codes and evaluation
 
-[Turing_Coding.thy](../Turing_Machines_ZF/Core/Turing_Coding.thy) builds codes
+[Turing_Coding.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Coding.thy) builds codes
 for pairs of natural numbers, finite lists, instructions, and machines.
 Every machine has a canonical natural number code. Decoding that code
 recovers the machine, as stated by `decode_encode_machine`. The theorem
@@ -83,9 +83,9 @@ decoder is total and reaches every machine, although different arbitrary
 numbers can decode to the same machine. This permits a halting question to
 be asked of every natural number without a separate validity test.
 
-[Turing_Code_Operations.thy](../Turing_Machines_ZF/Core/Turing_Code_Operations.thy)
+[Turing_Code_Operations.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Code_Operations.thy)
 provides projections and operations on coded lists.
-[Turing_Evaluator.thy](../Turing_Machines_ZF/Core/Turing_Evaluator.thy) uses
+[Turing_Evaluator.thy](../thys/Research/Computation/Turing_Evaluator.thy) uses
 them to compute the next configuration code directly. For a natural machine
 code e and a well formed configuration c, `code_step_correct` proves the
 following equality.
@@ -100,13 +100,20 @@ natural number of steps. `code_halts_at_correct` then relates the numeric
 final state test to the machine's final state. These are exact equalities
 for the stored configurations, including their finite lists.
 
-[Turing_Primrec.thy](../Turing_Machines_ZF/Core/Turing_Primrec.thy) gives
+[Turing_Primrec.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Primrec.thy) gives
 primitive-recursive certificates for the numerical pairing and list-code
-operations. [Turing_Evaluator_Primrec.thy](../Turing_Machines_ZF/Core/Turing_Evaluator_Primrec.thy)
+operations. [Turing_Evaluator_Primrec.thy](../thys/Research/Computation/Turing_Evaluator_Primrec.thy)
 certifies one-step and bounded finite-step evaluation. For example,
 `pr_code_steps_in_prim_rec` proves membership in the formal class of
 primitive-recursive functions, and `pr_code_steps_apply` identifies the
 certificate's output with `code_steps`.
+
+[Turing_Instruction_Normalization.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Instruction_Normalization.thy)
+certifies the normalization of instruction codes. Its functions are shared
+with the effective machine names used by the invariance development.
+[Turing_Primrec_Reductions.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Primrec_Reductions.thy)
+defines primitive-recursive many-one reduction using singleton input lists
+and proves identity and composition rules.
 
 The evaluator is a mathematical function on numbers. The development has
 not constructed a finite Turing machine that implements it. Such a
@@ -114,7 +121,7 @@ construction would be an additional universality result.
 
 ## 4 Self input halting
 
-[Turing_Decidability.thy](../Turing_Machines_ZF/Core/Turing_Decidability.thy)
+[Turing_Decidability.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Decidability.thy)
 represents a natural number n by n consecutive 1s on an otherwise blank
 tape. A machine accepts when it halts scanning 1, and rejects when it halts
 scanning 0. A decider must halt on every such input and give the correct
@@ -125,7 +132,7 @@ The set `self_halting` contains exactly those numbers e for which
 machine decides this set, the development constructs a rejecting machine
 from any proposed decider D.
 
-[Turing_Rejection.thy](../Turing_Machines_ZF/Core/Turing_Rejection.thy)
+[Turing_Rejection.thy](../thys/Set_Coded_Halting_Invariance_ZF/Turing_Rejection.thy)
 chooses a fresh control state and redirects halting transitions to it.
 In that state, a scanned 0 leads to halting and a scanned 1 leads to a loop.
 The construction also handles missing instructions, whose original
@@ -151,7 +158,7 @@ stored nearby. A machine can move beyond its input and overwrite a saved
 cell. A preservation theorem needs an explicit condition that keeps those
 cells outside the active computation.
 
-[Turing_Workspace.thy](../Turing_Machines_ZF/Core/Turing_Workspace.thy)
+[Turing_Workspace.thy](../thys/Research/Computation/Turing_Workspace.thy)
 appends a saved list to the outer end of each workspace half. This is the
 operation `frame_config`. It adds ordinary tape data, without changing the
 instruction set or giving the machine a new boundary test.
@@ -178,21 +185,39 @@ tape, since the frame can contain nonblank data.
 
 ## 6 Dependencies and scope
 
-The ten theories form one independent
-[session](../Turing_Machines_ZF/Core/ROOT). Within that session, the direct
-imports are as follows. Each line names a theory followed by its import.
+The computation fragment comprises eight theories maintained in the
+[candidate session](../thys/Set_Coded_Halting_Invariance_ZF/ROOT) and four
+maintained in the
+[computation extensions](../thys/Research/Computation/ROOT).
+The extensions are tape observation, numeric evaluation, its
+primitive-recursive certificates, and bounded workspace preservation.
+Each theory has one maintained source and one public session identity.
+
+The independent check collects these twelve unchanged theory bodies in a
+temporary session over Isabelle/ZF and bundled ZF-Induct. It verifies that
+their proofs do not require the AFP model or forcing development. This
+check does not define a second maintained library or public theory namespace.
+
+```sh
+python3 scripts/check_computation.py --isabelle /absolute/path/to/isabelle --directory output/computation-check
+```
+
+The direct mathematical dependencies within this fragment are as follows.
+Session qualifiers are omitted from this list.
 
 ```text
-Turing_Machine            ZF
-Turing_Tape               Turing_Machine
-Turing_Coding             Turing_Machine
-Turing_Code_Operations    Turing_Coding
-Turing_Primrec            Turing_Code_Operations, ZF-Induct.Primrec
-Turing_Evaluator          Turing_Code_Operations
-Turing_Evaluator_Primrec  Turing_Evaluator, Turing_Primrec
-Turing_Decidability       Turing_Coding
-Turing_Rejection          Turing_Decidability
-Turing_Workspace          Turing_Tape
+Turing_Machine                   ZF
+Turing_Tape                      Turing_Machine
+Turing_Coding                    Turing_Machine
+Turing_Code_Operations           Turing_Coding
+Turing_Primrec                   Turing_Code_Operations, ZF-Induct.Primrec
+Turing_Primrec_Reductions        Turing_Primrec
+Turing_Evaluator                 Turing_Code_Operations
+Turing_Instruction_Normalization Turing_Primrec
+Turing_Evaluator_Primrec         Turing_Evaluator, Turing_Instruction_Normalization
+Turing_Decidability              Turing_Coding
+Turing_Rejection                 Turing_Decidability
+Turing_Workspace                 Turing_Tape
 ```
 
 The undecidability proof uses machine semantics, coding, decision semantics,
@@ -203,12 +228,13 @@ of machine and tape semantics. Neither is a premise of the diagonal proof.
 The five action instruction format follows the operational model of the
 AFP entry
 [Universal Turing Machine](https://www.isa-afp.org/entries/Universal_Turing_Machine.html).
-The core imports Isabelle/ZF, its bundled ZF-Induct session, and its own
-theories. It does not inherit
-the HOL entry's universality theorem. No simulation theorem between this
-instruction format and a different machine format is claimed.
+The computation fragment uses Isabelle/ZF, its bundled ZF-Induct session,
+and its own theories. It does not inherit the HOL entry's universality
+theorem. No simulation theorem between this instruction format and a
+different machine format is claimed.
 
 [Build instructions](BUILD.txt) reproduce the proofs.
-[Research extensions](RESEARCH.md) describes the remaining program and model
-theories. Their open compiler and formula obligations are outside this
-session. The final theorem of the EPQ has not been fully formalised.
+[Theory guide](RESEARCH.md) describes the candidate and its research
+extensions. The general compiler and arithmetic translation obligations
+remain open. The final theorem of the EPQ has not
+been fully formalised.

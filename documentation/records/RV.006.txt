@@ -1,0 +1,134 @@
+ZF HALTING AND CANONICAL ENTRY
+
+RV.006
+12 October 2026
+Instruction IN.003
+Prepared by OpenAI Codex
+
+1 Subject
+
+1.1 The supplied review material was Aristotle's third review summary.
+Its separate report and patch were not available in the repository.
+The revisions below were independently checked against maintained sources.
+The baseline is 72fd979. The verified source revision is
+30bdf7702f6876aae1d1cb7af4eaa4cc04140164.
+
+1.2 The canonical entry contains nineteen theories and twenty three archive
+files. All candidate files are copied unchanged from their maintained source.
+The archive SHA256 is
+0916f101fa0649719a272a4399c33f448a2385525bd4424863ec10ec87e3cb76.
+The source manifest identifies the proof and verification infrastructure.
+
+2 Mathematics
+
+2.1 transitive_zf_model is introduced separately from transitive_zfc_model.
+A ZFC model is proved to be a ZF model. The two halting satisfaction endpoints
+now require only a transitive ZF set model. The ZFC predicate, the model
+class quantified by zfc_invariant, and the final reduction premises retain
+their original meaning.
+
+2.2 The direct primitive recursive reductions assume that CH is not
+invariant. A countable transitive ZFC set model supplies this premise.
+The reducers remain explicit functions with class membership and application
+equations. The final claim remains primitive recursive many one reducibility.
+
+2.3 The research witness predicate and its certificate results are in
+Turing_Halting_Index. The research interpretation of M_ZF2_trans is in
+Turing_Arithmetic_Truth. Neither branch is a submission dependency.
+Five unreferenced alternate presentations of the indexed and numerical
+invariance consequences are removed. Explicit reducers and both final
+many one reduction statements are retained.
+
+3 Interface
+
+3.1 Set_Coded_Halting_Invariance_ZF is the sole maintained candidate session
+and the exported session. The two formerly distinct development namespaces
+are retired. Four additional computation theories and the existing research
+sessions extend this same public interface. Forty theories remain in five
+sessions, nineteen in the candidate and twenty one in research.
+
+3.2 The generic theories are named Formula_Coding, Formula_Primrec,
+Nat_Membership, and Sentence_Invariance. Facts about tm_update use the
+same stem. tm_drop_tail is a pure global definition. Its list relation
+carries no model assumption. Historical files remain available at their
+recorded revisions and current navigation follows the source moves.
+
+3.3 The computation fragment is checked in a generated temporary session
+using only ZF and ZF-Induct. This is a verification fixture, not another
+maintained public namespace. Source dependencies are discovered and their
+actual owning sessions are checked. The fixture preserves theory bodies.
+
+4 Documents and warnings
+
+4.1 Source layout uses displayed Isabelle symbols rather than the length
+of their ASCII escapes. Short premises remain complete logical units.
+The formula explanations give the bound variable order of step_fm and
+halt_fm, the trace relation, finite names, formula constructors, and bounded
+machine code traversal. These environments were checked against definitions.
+
+4.2 Twenty entry warnings were identified by decoding actual PIDE message
+exports. They were duplicate simp, intro, or elimination parameters.
+After their removal the affected entry builds with zero entry warnings.
+Three warnings in the bundled Primrec theory remain outside this revision.
+An empty build_log report was not used as evidence of zero warnings.
+
+4.3 The published document contains no CI bounds output or log copying.
+Its convergence script remains because the default Isabelle2025-2 engine
+uses fixed compilation passes. Verification instruments only a generated
+LaTeX copy. Its PDF text, dimensions, and word geometry must exactly match
+the unmodified PDF before log and body bound checks are accepted.
+
+4.4 CI installs document tools without recommended packages. LuaLaTeX,
+the document styles and fonts, and Poppler remain explicit requirements.
+A prior attempt was cancelled during slow Ubuntu mirror downloads after
+its independent computation and full proof stages had passed.
+The required generic TeX styles are explicitly installed after a minimal
+installation exposed the missing ulem package used by Isabelle.
+
+5 Verification
+
+5.1 CI run 38223542722 completed successfully for the stated revision.
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/38223542722
+The independent computation fixture, all five sessions, and the separately
+extracted nineteen theory entry passed. The entry used its declared 300
+second timeout without an override.
+
+5.2 The six principal results have no undischarged theorem hypotheses.
+The complete canonical entry proof closure has no oracle dependencies.
+Its explicit mathematical premises remain in the statements.
+The check covers all nineteen canonical theories and their imported
+proof dependencies.
+The pinned and patched AFP mandatory linter accepted the entry. Its
+clean, unnamed attributed lemma, and unfinished proof controls returned
+the expected acceptance and rejection results.
+
+5.3 Eight source and dependency controls passed, including wrong session
+qualification, research dependency contamination, cycles, and missing
+sources. Repeated exports are byte identical and every archived file is
+byte identical to the corresponding canonical source or license.
+Four document controls check normal operation, overflow rejection,
+content changes, and failed convergence while preserving original outputs.
+
+5.4 The complete document has 136 pages and the outline has 76. Both
+passed final log, text boundary, and verification copy equivalence checks.
+Each PDF has eighty contents references independently matched to its
+actual named destination page labels. No contents reference was incorrect
+and no word crossed the physical page boundary.
+Rendered pages for the formula environments and repaired equations were
+inspected. No material was submitted to AFP and no editor or referee was
+contacted. This is internal verification, not an AFP acceptance decision.
+
+6 Assessment
+
+6.1 The candidate is a closed formal chain from set-coded execution to
+satisfaction in transitive ZF set models and then to effective sentence
+invariance reductions over transitive ZFC set models. Its assumptions
+and effective maps are explicit. The separate research extensions are
+not required for these endpoints.
+
+6.2 The next review should assess the mathematical adequacy of this
+interface, its relation to existing formalisations, and its reusability.
+Further program constructions or an arithmetic truth reduction would
+change the contribution and are not needed to complete the stated chain.
+Machine verification does not establish mathematical priority or
+AFP acceptance.

@@ -1,0 +1,49 @@
+REPOSITORY STANDARDISATION
+
+IN.002
+12 October 2026
+Authority Tang Ziyi
+Prepared by OpenAI Codex
+
+1 Mission
+
+Organise the maintained repository around the explicit connection from
+set coded execution through internal halting satisfaction and effective
+sentence coding to model invariance. The exported AFP candidate shall
+retain this single mathematical scope.
+
+2 Source boundary
+
+The baseline is 3701a43. Computation, invariance, and research theories shall
+have distinct source directories under thys. The forty maintained theories
+shall remain registered in five development sessions. The nineteen theory
+submission shall be generated from the maintained sources and its manifest.
+
+The EPQ manuscript, license notices, attribution, and historical records
+shall be preserved. Private and ignored drafts are outside the public
+revision. This instruction does not adopt the private collaboration draft
+as a repository standard.
+
+3 Revision scope
+
+Current public documents shall match the maintained sources. Theory headers
+and section hierarchy shall be consistent. Redundant local proofs and
+historical dependencies may be removed when the public mathematical
+statements remain accounted for. A changed theory namespace or removed
+interface shall be identified in the completion record.
+
+The linter compatibility failure shall be corrected with verifiable source
+provenance and deliberate control cases. Proof documents shall have stable
+references and remain within their declared text bounds. Prior records
+shall retain their original observations. A later record shall correct
+interpretations that the new evidence supersedes.
+
+4 Acceptance and publication
+
+The independent computation library, all development sessions, and the
+extracted submission shall build. The submission shall use its declared
+timeout. Proof dependencies, effective style checking, source navigation,
+archive reproducibility, and both document variants shall be checked.
+
+Repository publication is within the authorised mission. No AFP submission
+or communication with editors or reviewers is authorised.

@@ -24,6 +24,38 @@ and retain the build output.
 explanation and navigation. It supersedes the document layout described in
 RV.001. The earlier record remains unchanged.
 
+[RV.003](../records/RV.003.txt) records the 11 October review of the
+nineteen theory halting invariance submission, the revised reduction
+interfaces, and the proof and style checks. Its
+[source manifest](../records/RV.003.sources.txt) identifies the reviewed
+proof sources and verification tools.
+
+[RV.004](../records/RV.004.txt) records the 12 October AFP pre submission
+simulation for the fixed manuscript c10092f. It separates the technical
+screen, mathematical assessment, required clarification, and optional
+dependency changes. No submission was made.
+
+[IN.002](../records/IN.002.txt) and [RV.005](../records/RV.005.txt) record the
+12 October source reorganisation and verification repair. The
+[source manifest](../records/RV.005.sources.txt) identifies the checked
+proof and tooling revision. RV.005 corrects the interpretation of the old
+linter reports and the earlier PDF boundary check. The original records
+remain unchanged.
+
+[IN.003](../records/IN.003.txt) and [RV.006](../records/RV.006.txt) record
+the ZF halting generalisation and canonical entry revision. Its
+[source manifest](../records/RV.006.sources.txt) identifies the checked
+proof and verification infrastructure. The record covers the unified
+source namespace, formula environments, warning cleanup, and document
+verification outside the published entry.
+
+[IN.004](../records/IN.004.txt) and [RV.007](../records/RV.007.txt) record
+the weaker model interface, generic invariance reduction, and revised
+contribution disclosure. Its
+[source manifest](../records/RV.007.sources.txt) identifies the verified
+sources. The record includes the final document checks and the two earlier
+document failures.
+
 ## 3 Earlier reviews
 
 [August development review](RV-IN-ISABELLE-ZF-WEEKLY-2026-08-03.md) records

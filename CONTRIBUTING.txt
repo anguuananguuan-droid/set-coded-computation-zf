@@ -1,0 +1,36 @@
+CONTRIBUTING
+
+1 SCOPE
+
+The candidate scope is defined in documentation/AFP.txt. Contributions
+shall preserve that scope unless the project owner approves a change.
+Research extensions belong in thys/Research and shall not become candidate
+dependencies without an explicit scope decision.
+
+2 SOURCES
+
+Edit the maintained sources in thys. The candidate source and export manifest
+is thys/Set_Coded_Halting_Invariance_ZF/ROOT. The exporter copies this ROOT and
+its declared sources unchanged. Do not edit generated archives or extracted
+copies. Keep theory names, session membership, document references, and public
+theorem interfaces consistent with a move or rename.
+
+3 VERIFICATION
+
+Run the repository source check and the affected Isabelle sessions. Changes
+to the candidate require export and verification of that archive. Proof,
+style, and document checks are specified in documentation/BUILD.txt.
+A verification claim shall identify the revision and command used.
+
+4 PRESENTATION
+
+Follow AGENTS.md for source structure, naming, and records. Describe the
+mathematical object, assumptions, result, and limitations. Public text shall
+not contain private correspondence, conversational context, or unsupported
+priority and completion claims.
+
+5 PUBLICATION
+
+Retain applicable attribution and license notices. Record AI
+contributions and human review accurately. Only the project owner may authorize AFP submission
+or contact with reviewers. A verified candidate is not an accepted entry.

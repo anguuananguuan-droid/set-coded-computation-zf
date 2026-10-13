@@ -1,0 +1,8 @@
+session Turing_Computation_Extensions = Set_Coded_Halting_Invariance_ZF +
+  description "Tape observation, numeric evaluation, and bounded workspaces."
+  options [timeout=300]
+  theories
+    Turing_Tape
+    Turing_Evaluator
+    Turing_Evaluator_Primrec
+    Turing_Workspace

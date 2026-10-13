@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check document paths, session membership, and the independent core boundary.
+"""Check document paths, session membership, and the computation dependency boundary.
 
 The proof token scan is deliberately conservative. Isabelle remains the proof
 checker. Session parsing covers this repository's plain ROOT theory lists.
@@ -19,7 +19,10 @@ errors = []
 files = sorted({ROOT / name for name in names if name and (ROOT / name).is_file()})
 theories = {path for path in files if path.suffix == ".thy"}
 members = {}
-for directory in (ROOT / "ROOTS").read_text().splitlines():
+directories = (ROOT / "ROOTS").read_text().splitlines()
+if len(directories) != len(set(directories)):
+    errors.append("ROOTS: repeated session directory")
+for directory in directories:
     if not directory.strip():
         continue
     session_root = ROOT / directory / "ROOT"
@@ -38,31 +41,47 @@ for path in sorted(theories):
     if len(members.get(path, [])) != 1:
         errors.append(f"{path.relative_to(ROOT)}: expected exactly one session registration")
 
-core = ROOT / "Turing_Machines_ZF/Core"
-core_theories = {path.stem for path in theories if path.parent == core}
-if not re.search(r"session Set_Coded_Computation_ZF = ZF \+", (core / "ROOT").read_text()):
-    errors.append("Core/ROOT: independent session must extend ZF")
+from check_computation import computation_sources, theory_catalogue, project_dependency
+try:
+    catalogue, owners = theory_catalogue(ROOT)
+    computation_sources(ROOT)
+except ValueError as error:
+    errors.append(str(error))
+canonical = ROOT / "thys/Set_Coded_Halting_Invariance_ZF"
+canonical_names = {p.stem for p in theories if p.parent == canonical}
 for path in sorted(theories):
     source = path.read_text()
     header = re.search(r"\btheory\s+(\w+)\s+imports\s+(.*?)\s+begin\b", source, re.S)
+    file_header = re.match(r"\(\*.*?\*\)", source, re.S)
+    fields = file_header.group() if file_header else ""
+    if not re.search(rf"\bTitle:\s+{re.escape(path.name)}\b", fields):
+        errors.append(f"{path.relative_to(ROOT)}: missing matching Title in file header")
+    if not re.search(r"\bAuthor:\s+\S", fields):
+        errors.append(f"{path.relative_to(ROOT)}: missing Author in file header")
+    if len(re.findall(r"^section\s", source, re.M)) != 1:
+        errors.append(f"{path.relative_to(ROOT)}: expected one theory-level section")
     if not header or header.group(1) != path.stem:
         errors.append(f"{path.relative_to(ROOT)}: theory header does not match filename")
-    elif path.parent == core:
-        for imported in header.group(2).split():
-            if imported.strip('"') not in core_theories | {"ZF", "ZF-Induct.Primrec"}:
-                errors.append(f"{path.relative_to(ROOT)}: noncore import {imported}")
+    else:
+        for imported in re.findall(r'"[^"\n]+"|[\w.]+', header.group(2)):
+            try:
+                project_dependency(path.stem, imported.strip('"'), catalogue, owners)
+            except ValueError as error:
+                errors.append(f"{path.relative_to(ROOT)}: {error}")
 
 for path in files:
     if path.suffix not in {".md", ".txt", ".thy"} and path.name != "README":
         continue
     source = path.read_text()
     relative = path.relative_to(ROOT)
-    # Current plain text documents use repository relative paths. Historical
-    # Markdown retains document relative links, checked separately below.
-    # A source manifest records paths at an older revision, not live links.
-    if (path.suffix == ".txt" and not path.name.endswith(".sources.txt")) or path.name == "README":
+    # Historical records describe their original source revision. Current
+    # plain text documents use live repository-relative paths. Markdown link
+    # destinations are live navigation, including those in historical prose.
+    historical = relative.parts[:2] in {
+        ("documentation", "records"), ("documentation", "history")}
+    if not historical and (path.suffix == ".txt" or path.name == "README"):
         for match in re.finditer(
-            r"\b(?:Turing_Machines_ZF|Turing_CH|Turing_Models|documentation|papers|scripts)"
+            r"\b(?:thys|submission|documentation|papers|scripts)"
             r"/[A-Za-z0-9_./-]+\.(?:thy|txt|md|pdf|py|sh)\b", source
         ):
             if not (ROOT / match.group()).is_file():
@@ -85,4 +104,4 @@ for path in files:
 if errors:
     raise SystemExit("\n".join(errors))
 print(f"Checked {len(theories)} theories in {len(set(d for ds in members.values() for d in ds))} sessions.")
-print("Document paths, session membership, core imports, and proof token scan passed.")
+print("Document paths, session membership, file headers, computation imports, and proof token scan passed.")

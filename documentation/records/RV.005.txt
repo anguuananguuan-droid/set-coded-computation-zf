@@ -1,0 +1,130 @@
+REPOSITORY STRUCTURE AND VERIFICATION
+
+RV.005
+12 October 2026
+Instruction IN.002
+Prepared by OpenAI Codex
+
+1 Subject
+
+1.1 The baseline is 3701a4383a665973be0aee091c93d5245cf71481. The verified
+proof and tooling revision is 47dfeaddc0694792090a60a5fc050ec0e557d27f.
+The sixty three files in RV.005.sources.txt identify the maintained proof
+sources, session declarations, export, and verification infrastructure.
+
+1.2 The exported entry is Set_Coded_Halting_Invariance_ZF. It contains
+nineteen theories and twenty three files. Its archive has SHA256
+616359ff1e2a6ff574868e56c7602a6a76c0623d1f0cbd2f82cb1839185fb4ca.
+The locally generated archive and downloaded CI archive are byte identical.
+
+2 Source structure
+
+2.1 The forty maintained theories have one source each under thys. The
+twelve computation theories are in Computation, the eleven invariance
+theories are in Invariance, and the seventeen research theories are under
+Research. All five development sessions remain registered in ROOTS. The
+submission contains eight computation theories and eleven invariance
+theories. It excludes the research extensions.
+
+2.2 Current navigation covers all forty theories. README identifies the
+single candidate and its mathematical boundary. AGENTS.md and CONTRIBUTING.txt
+state source, naming, verification, attribution, and publication requirements.
+Historical prose, source manifests, license wording, and the EPQ manuscript
+are retained. Historical Markdown link destinations follow the source moves.
+The private collaboration draft remains outside the published files.
+
+3 Dependency and interface revision
+
+3.1 The development invariance session and exported submission extend
+Independence_CH. This reuses its parent heap. The computation session still
+extends ZF and has no AFP dependency. The exported entry declares a 900
+second timeout. The acceptance build does not override that declaration.
+
+3.2 Closed halting names import the halting formula without importing CH or
+the rejection transformation. The CH sentence family and its index results
+are in Turing_Invariance_Codes. Name_Primrec and the research Decidable_Sets
+theory import Decidability explicitly where they use numeral inputs or
+decision semantics.
+
+3.3 The theory qualification of self_halting_or_CH, its definition fact,
+invariant_index_set_eq_self_halting, and invariant_index_set_not_tm_decidable
+changes from Turing_Halting_Sentences to Turing_Invariance_Codes. Their short
+names and mathematical statements are retained. The old halting_sentence
+locale, blank_halting_sentence interpretation, and their
+blank_halting_or_CH_invariant_iff interface are removed. Actual closed
+sentence satisfaction is supplied by sats_halt_sentence_iff.
+
+3.4 Formula code injectivity uses direct structural induction. Four private
+constructor case helpers are removed. Model list closure reuses
+tm_list_closed. Four repeated arity generators and redundant local type or
+simplification registrations are removed where inherited facts suffice.
+The six principal result names and their mathematical statements are retained.
+
+4 Correction of earlier verification claims
+
+4.1 RV.003 and RV.004 reported an empty afp_mandatory report from the pinned
+unmodified linter. That observation is retained, but its interpretation as
+effective style checking is superseded. The parser failed to process the
+command_range wrapper in Isabelle2025-2 markup and inspected no proper
+commands. The earlier proof builds and oracle checks are separate evidence
+and are not invalidated by this parser failure.
+
+4.2 The compatibility patch flattens the wrapper, rejects theories with no
+parsed commands, and reports actual command coverage. The patcher verifies
+the pinned original sources, patch checksum, and resulting source checksums.
+The retained third party notice identifies the upstream copyright and MIT
+license. A clean named proof passes, an unnamed lemma with a global simp
+attribute fails with the expected lint, and an admitted proof fails with the
+unfinished proof lint. Admission is enabled only in that temporary control.
+
+4.3 RV.004 checked extracted text against the paper boundary. This did not
+establish that text remained within the body area. The old nop_instr_fm line
+extended to about 549 pt against a body right edge near 476 pt. The new check
+uses bounds emitted by the actual LaTeX document and reads the final log.
+The first revised CI run rejected three remaining overflows. Those locations
+were corrected before the successful acceptance run.
+
+5 Verification
+
+5.1 GitHub Actions run 38207626218 passed on revision 47dfead. It checked
+the computation library before registering AFP, all five development
+sessions, and the separately extracted nineteen theory submission. The
+submission proof build and both document variants passed.
+
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/38207626218
+
+5.2 The six principal results have no undischarged theorem hypotheses. Their
+explicit mathematical premises remain in their statements. The 12916 named
+facts visible in the final theory, including imported dependencies, have no
+oracle dependencies. The effective style check parsed 5145 commands across
+all nineteen submission theories and returned no mandatory findings. Its
+three runtime controls passed in both local and CI environments.
+
+5.3 Twenty eight additional local controls passed. They cover fourteen
+source checks, five export checks, five document checks, and four patch
+checks. They include rejection of excluded imports, preservation of theory
+body strings during import localization, repeated archive byte equality,
+and geometric rejection of the old overflow despite a clean artificial log.
+The fixtures were created in temporary directories.
+
+5.4 The complete proof document has 139 pages and the outline has 77.
+Both final logs have stable references, no overfull boxes, and no undefined
+references or citations. The geometric checks cover 28100 and 13941 words
+respectively within the declared horizontal text bounds. The document
+convergence script is retained. Each PDF has eighty two contents references
+independently matched to its actual named destination page labels. Passing
+a proof build alone does not
+establish these document properties.
+
+6 Boundary
+
+6.1 The revision organises the existing formal contribution and its
+interfaces. It retains the explicit halting satisfaction theorem and the
+two primitive recursive reductions to invariant closed sentence codes.
+Their countable transitive model premise remains explicit. The primitive
+recursive reducers act on singleton argument lists.
+
+6.2 This record does not establish new mathematical priority, external
+expert approval, the general machine compiler, or the complete EPQ
+arithmetic truth reduction. No material was submitted to AFP and no editor
+or referee was contacted.

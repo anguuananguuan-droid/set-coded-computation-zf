@@ -1,0 +1,42 @@
+HALTING SATISFACTION AND CANONICAL ENTRY
+
+IN.003
+12 October 2026
+Authority Tang Ziyi
+Prepared by OpenAI Codex
+
+1 Mission
+
+Review the third external AI review summary against the maintained source.
+Complete justified mathematical, interface, document, and verification
+revisions within the existing halting invariance contribution.
+
+2 Boundary
+
+The baseline is 72fd979. Halting satisfaction may be strengthened when its
+existing proof supports weaker model assumptions. The ZFC model class of
+sentence invariance and the final reduction premises shall retain their
+meaning. Research results shall remain available outside the candidate.
+
+The repository and archive shall use one canonical source session. Public
+namespace changes and removed alternate result presentations shall be
+identified in the completion record. The computation dependency closure
+shall remain checkable with bundled Isabelle/ZF independently of AFP.
+
+3 Verification
+
+The revised development and extracted entry shall build. Export shall
+preserve every source byte. Proof endpoints and all canonical theory proof
+dependencies shall be checked. The document build shall contain only its
+publication requirements. CI instrumentation shall act on generated copies
+and shall preserve the original PDF text and geometry.
+
+Negative controls shall test dependency and namespace boundaries. Source
+line width shall be measured in displayed Isabelle symbols. Formula variable
+environments shall agree with the defined de Bruijn indices.
+
+4 Publication
+
+Routine implementation, verification, and repository publication are within
+the authorised revision. AFP submission and contact with editors or reviewers
+remain unauthorised.

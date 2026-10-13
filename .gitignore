@@ -19,3 +19,5 @@ papers/*.log
 papers/*.out
 papers/*.synctex.gz
 papers/EPQ.tex
+# Local collaboration draft, outside the maintained public documents.
+documentation/HUMAN_AI_COOPERATION_DRAFT.txt

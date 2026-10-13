@@ -1,0 +1,189 @@
+AFP PRE SUBMISSION REVIEW
+
+RV.004
+12 October 2026
+Internal simulation by OpenAI Codex
+Decision MINOR REVISION
+
+1 Scope
+
+1.1 The manuscript is Halting Absoluteness and Effective Sentence Invariance
+in Isabelle/ZF. The fixed source revision is
+c10092f4664465318b5558798d5e91c1450ce1b3. The reviewed entry is
+Set_Coded_Halting_Invariance_ZF, containing nineteen theories in one session.
+The verified archive has SHA256
+eefc494bf3ab5c98be622414802c3723bc5c0038702dea50ae49e9c632adc3e7.
+
+1.2 This review follows a technical screen, separate mathematical and
+interface assessments, and a consolidated decision. These are internal
+review passes performed by Codex. They are not referees appointed by AFP,
+and they had access to earlier project reviews. The official sources
+establish submission requirements, not this report's rating categories.
+
+1.3 The author requested simulation only. No material was submitted to AFP.
+No author details were entered, no files were uploaded, and no editor or
+referee was contacted. The fixed manuscript was not revised during this
+review.
+
+2 Technical screen
+
+2.1 PASS. The entry has the required ROOT, entry name, AFP chapter, registered
+theories, and a timeout divisible by 300. Its timeout is 900 seconds. The
+single session also satisfies the official preference for one session per
+entry. The style check covers mandatory proof rules. Sources are cited and
+the document builds. These requirements were checked against source 1.
+
+2.2 The existing exact revision CI run succeeded. Its twenty three archive
+files match the fixed source. All five development sessions and the exported
+entry passed. The nineteen submission theories passed afp_mandatory with an
+empty report. The six principal theorems have no undischarged hypotheses.
+The 12949 named facts in the final theory, including imported dependencies,
+have no oracle dependencies. These are checked facts about the manuscript,
+not independent certification of its intended mathematics.
+
+2.3 The complete document has 138 pages and the outline has 75. Each has
+55 checked contents references, all agreeing with their destinations. No
+extracted text extends beyond a page boundary. The archive, logs, and both
+PDFs were inspected from the existing CI artifacts. Unchanged proofs were
+not rebuilt for this simulation.
+
+2.4 The current Isabelle release remains Isabelle2025-2. The current AFP
+download was additionally examined because matching Isabelle versions alone
+does not identify an AFP snapshot. The downloaded archive is afp-2026-10-06,
+with SHA256
+d6f917ba347c5f8aa5b3b0b95686edc96c8d977dcaed4bd01e6fa555d450996e.
+The relevant Delta_System_Lemma, Transitive_Models, and Independence_CH
+dependencies contain 85 ROOT, theory, and ML files. Their file sets and
+contents are identical to the pinned 6 February dependencies used in CI.
+This source identity was verified. A fresh build against the entire current
+archive was not performed.
+
+3 Mathematical and interface assessments
+
+3.1 The mathematical assessment recommends acceptance within the declared
+scope. The independent contribution is a proved connection between concrete
+set coded execution, actual first order satisfaction in transitive models,
+and primitive recursive construction of closed sentence codes. The
+contribution is not the classical halting argument or CH independence in
+isolation. The satisfaction theorem handles arbitrary typed machines and
+finite inputs, so the interface extends beyond the final self input family.
+
+3.2 The effective construction is substantive. Canonical finite traces enter
+the model through closure proofs, and induction recovers an external run
+from the required applications of an internal witness. Finite names then
+bind both parameters. On the syntax side, a bounded reverse traversal of a
+machine code constructs its name code through PREC. Exact application
+equations identify the resulting numbers with actual formula codes. The
+construction does not query halting or invariance as an oracle.
+
+3.3 The interface assessment recommends minor revision. External users can
+obtain the two explicit PR witnesses, their class membership, their exact
+outputs, and a reduction relation with composition. Formula constructor
+operations support new concrete sentence families. A complete decoder or
+general compiler is not needed for these interfaces. The current direct CH
+disagreement premise adequately separates effective construction from the
+countable model existence argument.
+
+3.4 The model premise is genuine. Invariance ranges over all transitive ZFC
+set models. A countable transitive model supplies two CH disagreement
+witnesses through the existing AFP results. When no such models exist,
+closed sentence invariance is vacuous. The direct noninvariance premise and
+the CTM version both exclude the case that would invalidate the reductions.
+
+3.5 The source hardness and target reductions must retain their separate
+contracts. K is undecidable under the local tm_decidable definition. The two
+maps belong to the Isabelle/ZF prim_rec class. The entry does not prove the
+general connection between those two computation interfaces. Its results
+therefore do not establish machine undecidability of the complete target I,
+the arithmetic truth reduction, or the complete EPQ conclusion. The current
+scope statement observes this boundary.
+
+3.6 The comparison was limited to directly related formal developments.
+Universal Turing Machine supplies a broader computability development in
+Isabelle/HOL. Transitive Models of Fragments of ZFC supplies model closure,
+relativization, and satisfaction infrastructure. Independence_CH supplies
+the model disagreement construction. This manuscript provides a concrete
+ZF machine instance and effective syntax connecting those kinds of objects.
+No exhaustive literature or archive search established priority. A new
+classical theorem or first formalisation claim is not supported by this
+review. The choice of ZF is justified by the need to treat machine data,
+finite traces, formulas, and model satisfaction as related set objects.
+
+4 Consolidated decision
+
+4.1 MINOR REVISION. No additional mathematical theorem is required by this
+review. The manuscript has a coherent, independently closed formal scope
+and a reason to be considered as a reusable AFP contribution. This is the
+internal reviewer's judgment. Acceptance remains a decision for AFP editors
+and their appointed referees.
+
+4.2 R1, required clarification. In submission/document/root.tex, define the
+ordinary unary notation f_plus and f_minus by evaluating the formal functions
+pr_invariance_positive and pr_invariance_negative on singleton lists.
+The formal prim_rec functions have domain list(nat). The present unary
+notation is inferable but its convention is not stated. One sentence is
+sufficient. No wrapper function or new theorem is needed. R1 remains open
+in the fixed manuscript.
+
+4.3 C1, optional subtraction. Turing_CH contains the older halting_sentence
+locale, and Turing_Halting_Sentences interprets it for blank input. Searches
+of the maintained theories found this branch used only within those two
+files. It is discharged correctly and is not a proof gap. Removing it from
+the submission would remove an earlier conditional interface and a side
+result that do not participate in the main effective reduction. Retaining
+it as an expressly identified compatibility interface is also defensible.
+
+4.4 C2, optional dependency refinement. The closed naming theorem does not
+mathematically require CH. Its containing theory nevertheless imports
+Turing_CH and Turing_Rejection. Consequently, importing that interface also
+imports forcing and diagonalisation material. Moving the naming definitions
+and satisfaction theorem into the existing Turing_Halting_Formula theory
+would improve reuse without adding a file. This is a module boundary
+improvement, not a condition for correctness or a demand for new mathematics.
+
+4.5 The recommendation is to resolve R1 and then preserve the current
+mathematical boundary. A compiler, arbitrary arithmetic translation, oracle
+machines, target complexity classification, or a general model class would
+change the scope. They are not substitutes for closing this review.
+
+5 Submission metadata assessment
+
+5.1 The manuscript supplies a title, short name, author name, BSD license,
+abstract, citations, and development provenance. Suggested topics are
+Logic/Computability and Logic/Set theory. These are recommendations, not
+recorded author selections. The current form has a separate generative AI
+field, which should reflect the substantial assistance already disclosed.
+
+5.2 A real contact address and the author's maintenance decision are not
+established. The form uses contact information for review notifications and
+maintenance responsibility. ORCID is optional. These unknowns do not block
+the requested simulation and were not filled from unrelated private data.
+No inference about a required AFP account is made.
+
+6 Sources and evidence
+
+6.1 AFP submission requirements and author maintenance responsibility.
+https://isa-afp.org/submission/
+
+6.2 AFP purpose and entry licensing.
+https://isa-afp.org/about/
+
+6.3 Current distribution and release example.
+https://isa-afp.org/download/
+https://isa-afp.org/entries/Example-Submission.html
+https://isabelle.in.tum.de/
+
+6.4 Related formal developments.
+https://isa-afp.org/entries/Universal_Turing_Machine.html
+https://isa-afp.org/entries/Transitive_Models.html
+https://isa-afp.org/entries/Independence_CH.html
+
+6.5 Fixed manuscript verification.
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/38147469041
+documentation/records/RV.003.txt
+documentation/records/RV.003.sources.txt
+
+6.6 Current dependency comparison was recorded locally in
+output/AFP_CURRENT_DEPENDENCIES_2026-10-12.json. Official web and form checks
+were read only. This report makes no prediction of referee assignments,
+review duration, external endorsement, or acceptance.

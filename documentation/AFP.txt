@@ -1,47 +1,87 @@
 AFP CANDIDATE
-Set_Coded_Computation_ZF
 
-1 SCOPE
+1 THEOREM AND BOUNDARY
 
-The submission unit is Turing_Machines_ZF/Core. Its ten theories depend on
-Isabelle/ZF and the Isabelle distribution's ZF-Induct session. The remaining
-three repository sessions are research
-extensions. They are not part of the candidate entry.
+Set_Coded_Halting_Invariance_ZF constructs an explicit internal halting
+formula for set-coded Turing machines and proves its satisfaction theorem
+in every transitive ZF set model. It closes that formula by naming the
+machine and input. The proofs are established directly in M_ZF1_trans,
+which requires transitivity, Zermelo set theory, and four replacement
+instances. The ZF versions remain corollaries. Choice is not required.
 
-The principal result is the undecidability of self-input halting for the
-defined machine model. A primitive-recursive certificate for numerical
-finite-step evaluation and a bounded workspace theorem are independent
-companion results. No universal machine,
-general compiler, primitive-recursive completeness theorem, or conclusion
-about set-theoretic truth is claimed.
+The entry then constructs two primitive-recursive many-one reductions from
+self-input halting and its complement to the natural-number codes of
+closed sentences invariant across all transitive ZFC set models. The direct
+semantic premise is that CH is not invariant. A countable transitive ZFC
+set model supplies this premise through Independence_CH. The target
+quantifies over all transitive ZFC set models, not only the countable ones.
+Both reductions instantiate pr_reduces_invariance. This general interface
+requires a uniformly expressed sentence family with primitive-recursive
+codes and a fixed closed sentence on which the models disagree.
 
-2 VERIFICATION
+The source halting set is proved undecidable in the defined machine model.
+The reducers are certified in Isabelle/ZF's prim_rec class and evaluated on
+singleton lists. The entry does not establish closure of machine decidability
+under arbitrary primitive-recursive reductions. It therefore does not claim
+machine undecidability of the full target set, a general machine compiler,
+or the EPQ arithmetic-truth reduction.
 
-Use Isabelle2025-2. From the repository root, run
+2 SOURCE AND EXPORT
 
-isabelle build -v -c -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+The maintained candidate source is thys/Set_Coded_Halting_Invariance_ZF.
+Its ROOT declares the nineteen theories and the proof document. The same
+ROOT and sources are copied unchanged into the archive. The repository and
+archive therefore use the same session and qualified theory names.
+Research sessions extend that public interface.
 
-For the proof document, install LuaLaTeX and run
+The parent is Independence_CH. ZF-Induct supplies the primitive-recursive
+function class. The declared timeout is 300 seconds. The archive includes
+the proof document, its LuaLaTeX convergence script, and the repository
+license. No separate computation entry is required.
 
-isabelle build -v -c -o browser_info -o document=pdf \
-  -o 'document_variants=document:outline=/proof,/ML' \
-  -D Turing_Machines_ZF/Core Set_Coded_Computation_ZF
+The numeric evaluator, tape observation, bounded workspace, concrete
+programs, and arithmetic extensions remain outside this candidate.
+The exporter normalizes archive member order, permissions, ownership, and
+timestamps. In the same Python environment, unchanged candidate contents
+produce the same archive bytes. Each verification record shall identify
+its source revision and archive checksum.
 
-The GitHub Actions workflow runs both commands and retains the PDF. A local
-proof build does not verify PDF generation if LuaLaTeX is absent.
+3 VERIFICATION
 
-3 SUBMISSION UNIT
+Use Isabelle2025-2, AFP 2026-02-06, and LuaLaTeX. documentation/BUILD.txt
+gives the environment, export, proof, document, and style commands.
+The exported archive is the acceptance target. Its proof build shall use
+the declared ROOT timeout without an override.
 
-Run scripts/package-afp-entry.sh with an optional output archive path. The
-archive contains only the ROOT file, ten theories, document/root.tex, and
-LICENSE. The package excludes the unfinished research extensions and private
-working documents. Inspect the archive before submission.
+Checks require a successful proof build, the maintained proof-dependency
+check, both document variants with converged references and no overfull
+boxes, and effective AFP mandatory style checking. The submission document
+contains no CI instrumentation. The PDF checker compiles a separate copy
+of generated LaTeX sources and requires its text and geometry to match the
+unmodified PDF. It then checks the final compiler log and text bounds.
 
-4 REVIEW BOUNDARY
+The pinned linter receives the maintained Isabelle2025-2 compatibility
+patch. Clean and deliberately invalid controls verify that it parses commands
+and detects the expected violations. An empty report without coverage and
+control evidence is insufficient.
 
-The Isabelle/HOL AFP entry Universal Turing Machine is the source for the
-five-action operational design. This candidate contributes a set-coded
-Isabelle/ZF development with a finite-list tape observation interface and a
-concrete diagonal argument in that model. It does not establish priority over
-other ZF formalizations or an equivalence with the HOL model. External review
-is needed to judge suitability and novelty for AFP.
+CI also checks all five maintained sessions and the independent computation
+fragment. It retains the source revision, archive, documents, style reports,
+controls, and build logs. Historical reports record their original tools
+and revisions. A later correction does not retroactively validate their
+evidence.
+
+4 FORMAL CONTRIBUTION
+
+The classical inputs are halting diagonalisation, absoluteness for
+transitive models, and the independence of CH. The formal contribution is
+the explicit connection from set-coded execution through internal
+satisfaction and primitive-recursive sentence construction to invariance.
+No claim of a new classical theorem or priority is made.
+
+The entry is a candidate. Successful repository checks do not establish AFP
+acceptance. Submission requires the project owner's explicit authorization,
+reviewed author and contact metadata, and a maintenance commitment. A GitHub
+merge, tag, or branch deletion is not an AFP submission requirement.
+
+https://isa-afp.org/submission/
