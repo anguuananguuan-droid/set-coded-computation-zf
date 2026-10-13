@@ -85,7 +85,8 @@ the two stored final configurations need not be equal as sets.\<close>
 theorem scan_append_padded_result:
   assumes n: "n \<in> nat"
   shows "config_eq(
-    steps(scan_append_machine,initial_config(numeral_input(n) @ [blank_symbol]),succ(n)),
+    steps(scan_append_machine,
+      initial_config(numeral_input(n) @ [blank_symbol]),succ(n)),
     \<langle>final_state,\<langle>numeral_input(n),[one_symbol]\<rangle>\<rangle>)"
 proof -
   have input: "numeral_input(n) \<in> list(symbol)" by (rule numeral_input_type[OF n])

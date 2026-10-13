@@ -75,7 +75,8 @@ the explicit formula satisfies
   \quad\Longleftrightarrow\quad
   \mathrm{halts\_on}(P,x).
 \]
-Theorem \theoremname{transitive_model_halt_fm_iff} proves this statement.
+The satisfaction theorem is
+\theoremname{transitive_model_halt_fm_iff}.
 The closed sentence $\mathit{halt\_sentence}(P,x)$ names both finite
 parameters. The theorem \theoremname{sats_halt_sentence_iff} establishes
 its corresponding satisfaction equation. Both results require
@@ -93,9 +94,10 @@ example's halting sentence using this interface and its operational
 proof, without unfolding the internal formula.
 
 Closure and satisfaction use the AFP model infrastructure
-\cite{afp-models}. The locale and full-ZF interpretation are supplied by
-\texttt{Independence\_CH.ZF\_Trans\_Interpretations}, so the packaged
-session retains \texttt{Independence\_CH} as a dependency~\cite{afp-ch}.
+\cite{afp-models}. The \texttt{Independence\_CH} entry supplies the
+locale and full-ZF interpretation in
+\theoremname{ZF_Trans_Interpretations}. The packaged session therefore
+retains this entry as a dependency~\cite{afp-ch}.
 No CH independence theorem or choice assumption is used by the halting
 interface. The underlying absoluteness method is classical
 \cite[Chapter~12]{jech}; this library supplies the explicit formula and
