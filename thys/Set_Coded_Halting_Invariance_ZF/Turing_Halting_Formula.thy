@@ -21,14 +21,12 @@ function belonging to the model. Conversely, induction recovers the required
 finite sequence from any internal witness.\<close>
 
 text \<open>The formulas \<open>drop_fm\<close> and \<open>fetch_fm\<close>
-are internal components of this construction. The public satisfaction
-interface is \<open>M_ZF1_trans.sats_halt_fm\<close> and its ZF corollary.
-The existing list-indexing absoluteness theorem \<open>M_datatypes.nth_abs\<close>
-uses a locale with additional replacement assumptions, including
-\<open>nth_replacement\<close>. No interpretation of that locale is required
-here. Instead, list traversal uses explicit finite witnesses under
-\<open>M_ZF1_trans\<close>. This does not claim that the additional assumptions
-are independent of this locale.\<close>
+are internal components. The public interface consists of the halting
+satisfaction theorems. The library also supplies \<open>nth_abs\<close>
+in \<open>M_datatypes\<close>. That locale assumes replacement for list
+and formula constructions and list indexing. Here finite traversal
+witnesses are verified in \<open>M_ZF1_trans\<close>, without interpreting
+\<open>M_datatypes\<close>.\<close>
 
 subsection \<open>Names for natural numbers\<close>
 
@@ -774,7 +772,8 @@ theorem sats_halt_fm:
   shows "(M, [P,x] \<Turnstile> halt_fm) \<longleftrightarrow> halts_on(P,x)"
 proof -
   have xA: "x \<in> M" using x by simp
-  have "(M, [P,x] \<Turnstile> halt_fm) \<longleftrightarrow> (\<exists>n\<in>M. n \<in> nat \<and> (\<exists>r\<in>M. r`0 = initial_config(x) \<and>
+  have "(M, [P,x] \<Turnstile> halt_fm) \<longleftrightarrow>
+      (\<exists>n\<in>M. n \<in> nat \<and> (\<exists>r\<in>M. r`0 = initial_config(x) \<and>
       (\<forall>k\<in>n. (M, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
         [r,n,P,x])))) \<Turnstile> step_fm(6,1,0))) \<and> (\<exists>t\<in>M. r`n = \<langle>0,t\<rangle>)))"
     using P xA sats_nat_member_fm[OF M_ZF1_trans_axioms]

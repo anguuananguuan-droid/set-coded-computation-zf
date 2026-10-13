@@ -50,7 +50,8 @@ proof -
     by (rule list_name_fm_type) (rule nat_name_sym_type)
   from tm_machine have machine_name:
     "list_name_fm(instr_name_fm,decode_machine(e)) \<in> formula"
-    unfolding tm_machine_def by (rule list_name_fm_type) (rule instr_name_fm_type)
+    unfolding tm_machine_def
+    by (rule list_name_fm_type) (rule instr_name_fm_type)
   from machine_name halt have inner:
     "Exists(And(list_name_fm(instr_name_fm,decode_machine(e)),halt_fm))
       \<in> formula" by typecheck
@@ -132,11 +133,11 @@ qed
 subsection \<open>Uniform sentence families\<close>
 
 text \<open>Let a family of closed sentences express membership in a set
-uniformly over all transitive ZFC set models. If their codes are produced
-by a primitive-recursive function, disjoining any fixed non-invariant
-sentence gives a primitive-recursive reduction to invariant sentence codes.
-This statement does not require a machine interpretation of the source set
-or use CH.\<close>
+uniformly across all transitive ZFC set models. Suppose a primitive
+recursive function produces its codes. Disjoining a fixed sentence on
+which two models disagree then gives a primitive recursive reduction to
+invariant sentence codes. The theorem does not require a machine
+interpretation of the source set or use CH.\<close>
 
 theorem pr_reduces_invariance:
   assumes f: "f \<in> prim_rec"
