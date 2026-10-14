@@ -19,9 +19,10 @@ set-coded instructions in Isabelle/ZF. It provides execution semantics,
 finite-run witnesses, and an observational equivalence for finite tape
 representations that differ only in stored blank cells. Step invariants
 support nonhalting proofs, and observational equality preserves halting.
-An explicit first-order set-theoretic formula expresses halting. Its satisfaction in
-every transitive ZF set model is equivalent to external halting of the
-given machine on the given input. Finite-object names close the formula.
+An explicit first-order set-theoretic formula expresses halting. For each
+transitive ZF set model, satisfaction of this formula is equivalent to
+external halting of the given well-formed machine on its finite input.
+Formulas naming the machine and input yield a closed sentence.
 An injective formula code and primitive-recursive constructors certify
 sentence codes with independent machine-code and unary-input arguments.
 Worked examples connect program execution, tape observations, and
@@ -39,9 +40,16 @@ Each instruction contains an action and a next state. The actions write
 is initial and state 0 is final. The two entries for a positive state $q$
 occur at indices $2(q-1)$ and $2(q-1)+1$. Missing entries enter the final
 state without changing the tape. The final state is absorbing.
-This design follows the Isabelle/HOL AFP development
-\emph{Universal Turing Machine}~\cite{afp-utm}; the objects and proofs here
-are developed in Isabelle/ZF.
+The instruction-list and two-list tape design follows the Isabelle/HOL
+development of Xu, Zhang, and Urban~\cite{xu-zhang-urban} and its AFP
+entry \emph{Universal Turing Machine}~\cite{afp-utm}. Here the instructions,
+configurations, and finite runs are sets in Isabelle/ZF. Their membership
+in a set-theoretic model can therefore be proved within the same logic as
+the satisfaction statements. This connection to internal satisfaction is
+the purpose of the set-coded representation.
+The program representation follows the unshifted \texttt{tprog0} convention.
+Actions and symbols are natural numbers, and no program-offset parameter
+is included.
 
 A configuration contains a state and two finite symbol lists. The left
 list starts immediately left of the head, while the right list starts
@@ -86,12 +94,28 @@ the explicit formula satisfies
 \]
 The satisfaction theorem is
 \theoremname{transitive_model_halt_fm_iff}.
-The closed sentence $\mathit{halt\_sentence}(P,x)$ names both finite
-parameters. The theorem \theoremname{sats_halt_sentence_iff} establishes
+The closed sentence $\mathit{halt\_sentence}(P,x)$ replaces both finite
+parameters by formulas defining them uniquely. It has no free variables.
+The theorem \theoremname{sats_halt_sentence_iff} establishes
 its corresponding satisfaction equation. Both results require
 $P\in\mathit{tm\_machine}$ and $x\in\mathit{list}(\mathit{symbol})$.
 They do not assert that the formula recognises arbitrary sets as valid
 machines or inputs.
+
+The predicate \theoremname{transitive_zf_model} requires a transitive set
+satisfying the internalised ZF axiom set from
+\theoremname{Internal_ZFC_Axioms}. This is a property of the model under
+consideration, distinct from the ambient Isabelle/ZF logic.
+
+The finite witness is the essential link. For natural $n$, a well-formed
+machine $P$, and a configuration $c$, the canonical trace
+$\lambda k\in n+1.\,\mathrm{steps}(P,c,k)$ belongs to the model by
+\theoremname{transitive_zf_contains_trace}. A finite halting run therefore
+supplies an internal witness. Conversely, the constraints in the formula
+determine the external configurations by induction on the natural time.
+The proof does not assume that every internal witness is itself a finite
+function. Section~\ref{sec:internal-halting} gives the formula and its
+satisfaction proof.
 
 The proofs hold in the weaker locale \texttt{M\_ZF1\_trans}, which
 assumes transitivity, Zermelo set theory, and four specified replacement
@@ -120,8 +144,10 @@ its verified connection to the machine semantics.
 and machines. Decoding an encoded machine recovers it. Decoding an
 arbitrary natural number normalises invalid instruction fields, so the
 decoder is total but not injective on all natural numbers.
-\theoremname{Formula_Coding} supplies an injective code for the
-set-theoretic formulas of Isabelle/ZF~\cite{paulson-zf}.
+\theoremname{Formula_Coding} supplies an injective code for the formula
+datatype of \texttt{ZF-Constructible.Formula}, from Paulson's
+constructibility development~\cite{paulson-zf}. The constructor tags and
+pairing equations are chosen to admit primitive-recursive certificates.
 
 The numerical function \theoremname{pr_machine_input_sentence_code} satisfies
 \[
@@ -130,7 +156,7 @@ The numerical function \theoremname{pr_machine_input_sentence_code} satisfies
 \]
 where $F(e,n)$ denotes its application to $[e,n]$ for natural $e,n$.
 Its membership in \texttt{prim\_rec} and its application equation are
-proved in \theoremname{Turing_Halting_Codes}. This certificate uses the
+proved in Section~\ref{sec:halting-codes}. This certificate uses the
 bundled Isabelle/ZF primitive-recursive function class~\cite{szasz}.
 By formula-code injectivity, any well-formed formula with code $F(e,n)$
 is this sentence. The theorem \theoremname{sats_machine_input_sentence_code_iff}
@@ -143,6 +169,13 @@ functions in this machine model is outside the library's interface.
 
 \clearpage
 \begin{thebibliography}{9}
+
+\bibitem{xu-zhang-urban}
+Jian Xu, Xingyuan Zhang, and Christian Urban.
+\emph{Mechanising Turing Machines and Computability Theory in Isabelle/HOL}.
+In \emph{Interactive Theorem Proving}, LNCS 7998, 147--162.
+Springer, 2013.
+\url{https://doi.org/10.1007/978-3-642-39634-2_13}.
 
 \bibitem{afp-ch}
 Emmanuel Gunther, Miguel Pagano, Pedro S\'anchez Terraf, and Mat\'ias Steinberg.

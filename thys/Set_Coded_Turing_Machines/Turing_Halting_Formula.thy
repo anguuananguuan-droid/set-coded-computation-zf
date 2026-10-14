@@ -2,7 +2,7 @@
     Author:     Tang Ziyi
 *)
 
-section \<open>Internal Halting Formula\<close>
+section \<open>Internal Halting Formula\label{sec:internal-halting}\<close>
 
 theory Turing_Halting_Formula
   imports "Nat_Membership"
@@ -17,8 +17,9 @@ and an input \<open>x\<close> exactly when \<open>P\<close> halts on
 The formulas for list traversal and machine execution constrain finitely
 many applications of an existential witness set. They do not require every
 witness to be a finite function. An external run supplies a canonical finite
-function belonging to the model. Conversely, induction recovers the required
-finite sequence from any internal witness.\<close>
+function belonging to the model by @{thm [source] transitive_zf_contains_trace}.
+Conversely, induction recovers the required finite sequence from any internal
+witness.\<close>
 
 text \<open>The formulas \<open>drop_fm\<close> and \<open>fetch_fm\<close>
 are internal components. The public interface consists of the halting

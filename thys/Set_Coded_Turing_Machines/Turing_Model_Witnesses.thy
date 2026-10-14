@@ -14,7 +14,10 @@ definition transitive_zf_model :: "i \<Rightarrow> o" where
   "transitive_zf_model(M) \<equiv> Transset(M) \<and> M \<Turnstile> ZF"
 
 text \<open>Finite machines, inputs, configurations, and canonical finite
-traces belong to each transitive ZF set model. Choice is not required for
+traces belong to each transitive ZF set model. In
+@{const transitive_zf_model}, @{const ZF} is the internalised axiom set
+from @{theory Independence_CH.Internal_ZFC_Axioms}. The predicate requires
+satisfaction of those axioms by the given set. Choice is not required for
 finite object closure or finite runs.\<close>
 
 subsection \<open>Finite object closure\<close>
@@ -59,6 +62,11 @@ next
   from fn rest nat_into_M[OF succ.hyps(1)] split show ?case by simp
 qed
 
+text \<open>Finite traces are built from ordered pairs by finite induction.
+The closure theorem @{thm [source] tm_finite_lambda_closed} requires only
+that each value belongs to the model. It does not require the whole
+function to have been given internally.\<close>
+
 lemma tm_trace_closed:
   assumes P: "P \<in> tm_machine" and c: "c \<in> configuration" and n: "n \<in> nat"
   shows "M(\<lambda>k\<in>succ(n). steps(P,c,k))"
@@ -68,8 +76,6 @@ proof (rule tm_finite_lambda_closed[OF nat_succI[OF n]])
   show "M(steps(P,c,k))" by (rule tm_configuration_closed[OF steps_type[OF P c
     natural]])
 qed
-
-
 end
 
 subsection \<open>Transitive model interpretations\<close>

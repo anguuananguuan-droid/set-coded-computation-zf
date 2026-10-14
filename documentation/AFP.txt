@@ -4,10 +4,11 @@ AFP CANDIDATE
 
 Set_Coded_Turing_Machines provides a set-coded deterministic machine model,
 finite execution, observational tape equivalence, and internal halting
-formulas. The closed formula halt_sentence(P,x) is true in every transitive
-ZF set model exactly when the well-formed machine P halts on the finite
-input x. The proofs also apply directly in M_ZF1_trans. No model existence
-or choice assumption is needed for the conditional satisfaction theorem.
+formulas. For each transitive ZF set model, the closed formula
+halt_sentence(P,x) is true in that model exactly when the well-formed
+machine P halts on the finite input x. The proofs also apply directly in
+M_ZF1_trans. No model existence or choice assumption is needed for the
+conditional satisfaction theorem.
 
 Numerical coding supplies a primitive-recursive constructor for the code
 of halt_sentence(decode_machine(e),numeral_input(n)), with independent

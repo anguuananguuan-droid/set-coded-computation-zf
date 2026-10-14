@@ -136,6 +136,13 @@ machines or inputs. The theorem does not assert model existence.
 The qualified `M_ZF1_trans.sats_halt_sentence_iff` is available when working
 in that weaker locale. Choice is not needed.
 
+The predicate `transitive_zf_model` combines transitivity with satisfaction
+of the internalised ZF axiom set from `Internal_ZFC_Axioms`. For valid P,
+c, and natural n, `transitive_zf_contains_trace` puts the entire finite
+function `lambda k in succ(n). steps(P,c,k)` inside A. That trace supplies
+the witness for the forward implication. For the converse, induction
+recovers the external run from the formula's internal witness constraints.
+
 [Turing_Halting_Examples](../thys/Set_Coded_Turing_Machines/Turing_Halting_Examples.thy)
 uses the example's halting proof to establish its internal sentence. It
 calls the public satisfaction theorem without unfolding the internal formula.
@@ -184,7 +191,9 @@ unary input. The client proves this exact characterisation using
 `halts_onI` and `not_halts_on_invariant`, preserves it under arbitrary
 finite blank padding, and derives the same characterisation for internal
 sentences and their numerical codes. It imports no example or research
-theory and does not unfold `halt_fm` or `halt_sentence`.
+theory and does not unfold `halt_fm` or `halt_sentence`. It also constructs
+a closed sentence for every pair of natural arguments and checks that
+equal tape observations can coexist with different stored configurations.
 
 The [build instructions](BUILD.txt) give the invocation. CI runs this
 client against the exported archive. This is a maintained interface test,

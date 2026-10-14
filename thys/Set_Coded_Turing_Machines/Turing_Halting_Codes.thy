@@ -2,7 +2,7 @@
     Author:     Tang Ziyi
 *)
 
-section \<open>Effective Halting Sentences\<close>
+section \<open>Effective Halting Sentences\label{sec:halting-codes}\<close>
 
 theory Turing_Halting_Codes
   imports "Turing_Machine_Name_Primrec"
@@ -62,8 +62,10 @@ proof -
         pr_formula_and_apply pr_formula_exists_apply formula_code_type)
 qed
 
-text \<open>The code interface characterises any formula with the constructed
-code. Injectivity removes the need for a separate formula decoder. Formula
+text \<open>The equation @{thm [source] pr_machine_input_sentence_code_apply}
+supplies a particular closed formula with the constructed code. The code
+interface below identifies any formula with that code. Injectivity removes
+the need for a separate formula decoder. Formula
 membership is a premise because the coding function is specified on formulas.\<close>
 
 theorem pr_machine_input_sentence_code_iff:
