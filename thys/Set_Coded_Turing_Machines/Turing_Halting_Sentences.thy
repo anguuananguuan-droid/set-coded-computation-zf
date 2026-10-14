@@ -196,10 +196,9 @@ theorem sats_halt_sentence_iff:
       [OF transitive_zf_M_ZF1_trans[OF assms(1)] assms(2,3)])
 
 text \<open>The theorem @{thm [source] sats_halt_sentence_iff} explicitly
-assumes a transitive ZF set model.
-
-The locale theorem @{thm [source] M_ZF1_trans.sats_halt_sentence_iff}
-uses weaker model assumptions. Neither theorem asserts model existence.\<close>
+assumes a transitive ZF set model. The preceding result in
+@{locale M_ZF1_trans} uses weaker assumptions. Neither theorem asserts
+model existence.\<close>
 
 subsection \<open>Model-theoretic consequences\<close>
 
