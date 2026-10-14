@@ -93,7 +93,9 @@ Maintained by Tang Ziyi under the [BSD 3-Clause License](LICENSE).
 used to make the version of a result explicit.
 
 [Documentation](documentation/README.md) indexes the guides and project
-records. [GitHub Actions](https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/workflows/isabelle.yml)
-retains proof, style, archive, and document checks for each revision.
+records. The [verification record](documentation/records/RV.009.txt)
+identifies the checked source revision, archive checksum, and build evidence.
+[GitHub Actions](https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/workflows/isabelle.yml)
+retains proof, client, style, archive, and document checks for each revision.
 Report problems through [Issues](https://github.com/anguuananguuan-droid/set-coded-computation-zf/issues).
 [Contributing](CONTRIBUTING.txt) describes the source and verification rules.

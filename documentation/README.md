@@ -7,6 +7,10 @@ program proofs, tape observations, halting sentences, and numerical codes.
 [Build instructions](BUILD.txt) specify the supported environment and
 commands for source, proof, archive, style, and document checks.
 
+[Verification record](records/RV.009.txt) identifies the checked revision,
+source manifest, archive checksum, and public build evidence. It covers
+the separate machine and input constructor and the exported library client.
+
 ## 2 Scope
 
 [AFP candidate](AFP.txt) defines the library boundary and acceptance checks.

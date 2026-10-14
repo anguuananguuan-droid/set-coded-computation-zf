@@ -1,0 +1,74 @@
+RV.009
+LIBRARY CONTRACTS
+14 October 2026
+
+1 SOURCES
+
+This record concerns source revision
+7bfc44487d3d71fb8739a8feaaabf45b0bc282ed.
+RV.009.sources.txt identifies the proof sources, exported document sources,
+and verification tools by SHA256. Later navigation and record changes do
+not alter the checked candidate archive.
+
+The successful CI run is
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/38506970141
+
+2 INTERFACES
+
+The candidate contains seventeen theories in one session. The numerical
+sentence constructor now accepts independent machine-code and unary-input
+arguments. Its membership in prim_rec, application equation, formula-code
+identification, and satisfaction contract are proved. The existing
+self-input constructor remains its diagonal instance.
+
+Step invariants provide a nonhalting rule. Observationally equal inputs
+have the same halting behaviour and the same internal halting truth. The
+satisfaction result equates truth values, not different sentence syntax.
+
+A separate client imports the exported library and defines a program that
+halts exactly for unary input zero. It proves both outcomes, transfers the
+result across arbitrary blank padding, and derives internal satisfaction
+from the numerical sentence code. It imports no example or research theory
+and does not unfold the internal halting formula.
+
+3 CHECKS
+
+The recorded revision passes CI on Isabelle2025-2 and AFP 2026-10-06.
+All six maintained sessions build. The seven-theory computation fragment
+builds without AFP. The exported candidate builds with its declared
+300-second timeout, and its separate client builds against that export.
+
+Twenty-one public endpoints pass the check for undischarged hypotheses.
+The checked closure contains 10295 named facts, including imported
+dependencies, without oracle dependencies. This is not a count of new
+theorems. Explicit theorem premises remain necessary assumptions.
+
+The mandatory linter parses 3745 commands in seventeen candidate theories
+and reports no findings. The clean control passes. The unnamed-attribute
+and unfinished-proof controls are both rejected as required.
+
+4 DOCUMENTS AND ARCHIVE
+
+The full proof document has 105 pages and the outline has 66 pages. Both
+converge and pass final LaTeX log and text-bound checks. The verification
+copies match the original PDFs in extracted text and geometry. Rendered
+inspection covers the revised interfaces and final corrected introduction.
+
+The archive contains 22 regular files. Every file matches its canonical
+source. Local and CI exports are byte-identical. The archive SHA256 is
+e2c5c3104501a8f50f375a39675403bec8710f73b1071507bd6bcf328212b169.
+
+The CI run retains the archive, both PDFs, client sources, and check logs.
+The archive can be regenerated with scripts/package-afp-entry.sh.
+documentation/BUILD.txt gives the verification commands.
+
+5 LIMITS
+
+The satisfaction theorem assumes a transitive ZF set model and does not
+assert model existence. The numerical sentence constructor handles unary
+natural input. Its prim_rec certificate does not implement a general
+compiler into this machine model. Research extensions remain outside the
+candidate. No new classical theorem or priority claim is made.
+
+The client is a maintained interface check. These results do not establish
+independent human review or AFP acceptance. No AFP submission has been made.
