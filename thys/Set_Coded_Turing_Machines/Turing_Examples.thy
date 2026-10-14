@@ -78,9 +78,10 @@ corollary scan_append_halts:
 
 subsection \<open>Changing the finite representation\<close>
 
-text \<open>Appending a stored blank does not change the observed run. The
-same program proof applies through configuration equivalence, even though
-the two stored final configurations need not be equal as sets.\<close>
+text \<open>Appending a stored blank does not change the observed run.
+The proof transfers @{thm [source] scan_append_result} through
+configuration equivalence. It uses the observation interface without
+repeating the scan induction.\<close>
 
 theorem scan_append_padded_result:
   assumes n: "n \<in> nat"

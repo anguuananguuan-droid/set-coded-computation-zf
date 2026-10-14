@@ -14,69 +14,6 @@ text \<open>Every Turing-decidable set of natural numbers belongs to every
 transitive ZFC set model. Acceptance on unary inputs is expressed internally,
 and Separation collects the accepted natural numbers in the model.\<close>
 
-subsection \<open>Runs with an arbitrary outer environment\<close>
-
-context M_ZF1_trans
-begin
-
-lemma trans_run_steps:
-  assumes env: "env \<in> list(M)" and p: "p \<in> nat" and P: "nth(p,env) = P" "P \<in> tm_machine"
-    and c0: "c0 \<in> configuration" and n: "n \<in> nat" and rA: "r \<in> M" and r0: "r`0 = c0"
-    and rs: "\<And>k. k \<in> n \<Longrightarrow>
-      (M, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, env)))) \<Turnstile> step_fm(p#+4,1,0))"
-  shows "r`n = steps(P,c0,n)"
-proof -
-  have "\<And>k. k \<in> nat \<Longrightarrow> k \<le> n \<longrightarrow> r`k = steps(P,c0,k)"
-  proof -
-    fix k assume k: "k \<in> nat"
-    then show "k \<le> n \<longrightarrow> r`k = steps(P,c0,k)"
-    proof (induct k rule: nat_induct)
-      case 0 show ?case using r0 by simp
-    next
-      case (succ k)
-      show ?case
-      proof
-        assume le: "succ(k) \<le> n"
-        then have kn: "k \<in> n" using succ.hyps(1) n by (simp add: succ_le_iff ltD)
-        have "k \<le> n" using le by (blast intro: leI succ_leE)
-        then have rk: "r`k = steps(P,c0,k)" using succ.hyps(2) by blast
-        have conf: "r`k \<in> configuration" using rk steps_type[OF P(2) c0 succ.hyps(1)] by simp
-        have kA: "k \<in> M" "succ(k) \<in> M" using succ.hyps(1) by simp_all
-        have envA: "Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, env)))) \<in> list(M)"
-          using rA kA env by simp
-        have "r`succ(k) = tm_step(P,r`k)"
-          using sats_step_fm[OF _ _ _ envA, of "p#+4" 1 0 P "r`k" "r`succ(k)"] rs[OF kn] P p conf rA kA
-          by simp
-        then show "r`succ(k) = steps(P,c0,succ(k))" using rk succ.hyps(1) by simp
-      qed
-    qed
-  qed
-  from this[OF n] n show ?thesis by (simp add: nat_into_Ord)
-qed
-
-lemma trace_trans:
-  assumes env: "env \<in> list(M)" and p: "p \<in> nat" and P: "nth(p,env) = P" "P \<in> tm_machine"
-    and c0: "c0 \<in> configuration" and n: "n \<in> nat" and k: "k \<in> n"
-  shows "(M, Cons((\<lambda>j\<in>succ(n). steps(P,c0,j))`succ(k), Cons((\<lambda>j\<in>succ(n). steps(P,c0,j))`k,
-      Cons(succ(k), Cons(k, env)))) \<Turnstile> step_fm(p#+4,1,0))"
-proof -
-  have knat: "k \<in> nat" using k n by (blast intro: Ord_trans Ord_nat)
-  have sk: "succ(k) \<in> succ(n)" using k n by (simp add: Ord_succ_mem_iff nat_into_Ord)
-  have k1: "k \<in> succ(n)" using k by (rule succI2)
-  have conf: "steps(P,c0,k) \<in> configuration" using steps_type[OF P(2) c0 knat] .
-  have conf2: "steps(P,c0,succ(k)) \<in> configuration"
-    using steps_type[OF P(2) c0 nat_succI[OF knat]] .
-  have kA: "k \<in> M" "succ(k) \<in> M" using knat by simp_all
-  have envA: "Cons(steps(P,c0,succ(k)), Cons(steps(P,c0,k), Cons(succ(k), Cons(k, env)))) \<in> list(M)"
-    using kA env conf conf2 by simp
-  show ?thesis
-    using sats_step_fm[OF _ _ _ envA, of "p#+4" 1 0 P "steps(P,c0,k)" "steps(P,c0,succ(k))"]
-      P p conf conf2 sk k1 knat
-    by simp
-qed
-
-end
-
 subsection \<open>Unary inputs\<close>
 
 definition rep_fm :: "[i,i] \<Rightarrow> i" where

@@ -15,6 +15,8 @@ local
      ("Turing_Examples", "scan_append_result"),
      ("Turing_Examples", "scan_append_padded_result"),
      ("Turing_Coding", "decode_encode_machine"),
+     ("Turing_Halting_Formula", "M_ZF1_trans.trans_run_steps"),
+     ("Turing_Halting_Formula", "M_ZF1_trans.trace_trans"),
      ("Turing_Halting_Formula", "M_ZF1_trans.sats_halt_fm"),
      ("Turing_Halting_Formula", "transitive_model_halt_fm_iff"),
      ("Turing_Halting_Sentences", "M_ZF1_trans.sats_halt_sentence_iff"),
@@ -27,7 +29,8 @@ local
      ("Turing_Halting_Codes", "sats_machine_input_sentence_code_iff"),
      ("Turing_Halting_Codes", "pr_halt_sentence_code_in_prim_rec"),
      ("Turing_Halting_Codes", "pr_halt_sentence_code_apply"),
-     ("Turing_Halting_Examples", "scan_append_sentence")];
+     ("Turing_Halting_Examples", "scan_append_sentence"),
+     ("Turing_Halting_Examples", "scan_append_sentence_code")];
 
   fun check_theorem (theory_name, name) =
     let

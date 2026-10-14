@@ -1,5 +1,12 @@
 # Library guide
 
+The library connects a program's external halting behaviour to an explicit
+closed sentence of set theory. For each transitive ZF set model, the
+sentence is true exactly when the program halts. A certified numerical
+constructor produces its code from a machine code and unary input.
+The sections below follow the client path from program execution to
+internal satisfaction and sentence codes.
+
 ## 1 Imports
 
 The public session is `Set_Coded_Turing_Machines`. A client theory chooses
@@ -136,9 +143,27 @@ machines or inputs. The theorem does not assert model existence.
 The qualified `M_ZF1_trans.sats_halt_sentence_iff` is available when working
 in that weaker locale. Choice is not needed.
 
+The predicate `transitive_zf_model` combines transitivity with satisfaction
+of the internalised ZF axiom set from `Internal_ZFC_Axioms`. For valid P,
+c, and natural n, `transitive_zf_contains_trace` puts the entire finite
+function `lambda k in succ(n). steps(P,c,k)` inside A. That trace supplies
+the witness for the forward implication. For the converse, induction
+recovers the external run from the formula's internal witness constraints.
+The witness need not itself have the shape of a finite function.
+
+Within `M_ZF1_trans`, `trans_run_steps` performs this reconstruction for an
+arbitrary initial configuration and outer environment. `trace_trans`
+supplies the converse transition fact for a canonical trace. The halting
+proof and the output-predicate proofs in `Turing_Decidable_Sets` share
+these lemmas. A client constructing another run formula can reuse the
+same argument without proving the finite-run induction again.
+
 [Turing_Halting_Examples](../thys/Set_Coded_Turing_Machines/Turing_Halting_Examples.thy)
 uses the example's halting proof to establish its internal sentence. It
 calls the public satisfaction theorem without unfolding the internal formula.
+Its `scan_append_sentence_code` theorem also derives satisfaction of a
+formula given only its code. This completes the example from concrete
+program execution to the numerical interface.
 
 `sats_halt_sentence_half_tape_eq_iff` transfers the truth of a closed
 halting sentence between observationally equal inputs. The sentences can
@@ -184,7 +209,9 @@ unary input. The client proves this exact characterisation using
 `halts_onI` and `not_halts_on_invariant`, preserves it under arbitrary
 finite blank padding, and derives the same characterisation for internal
 sentences and their numerical codes. It imports no example or research
-theory and does not unfold `halt_fm` or `halt_sentence`.
+theory and does not unfold `halt_fm` or `halt_sentence`. It also constructs
+a closed sentence for every pair of natural arguments and checks that
+equal tape observations can coexist with different stored configurations.
 
 The [build instructions](BUILD.txt) give the invocation. CI runs this
 client against the exported archive. This is a maintained interface test,

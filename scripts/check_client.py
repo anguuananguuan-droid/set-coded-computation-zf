@@ -74,6 +74,11 @@ proof -
     x padding blank_guard_halts_iff[OF n] show ?thesis by simp
 qed
 
+lemma blank_guard_distinct_storage:
+  "steps(blank_guard,initial_config([blank_symbol]),1) \<noteq>
+    steps(blank_guard,initial_config([]),1)"
+  by (simp add: blank_guard_def fetch_def slot_def)
+
 theorem blank_guard_sentence_iff:
   assumes model: "transitive_zf_model(A)" and n: "n \<in> nat"
   shows "(A, [] \<Turnstile> halt_sentence(blank_guard,numeral_input(n)))
@@ -103,6 +108,23 @@ theorem blank_guard_code_iff:
   using sats_machine_input_sentence_code_iff[OF model
       encode_machine_natural[OF blank_guard_type] n p code]
     decode_encode_machine[OF blank_guard_type] blank_guard_halts_iff[OF n] by simp
+
+theorem sentence_code_contract:
+  assumes model: "transitive_zf_model(A)" and e: "e \<in> nat" and n: "n \<in> nat"
+  shows "\<exists>p\<in>formula. arity(p) = 0 \<and>
+    formula_code(p) = pr_machine_input_sentence_code`[e,n] \<and>
+    ((A, [] \<Turnstile> p) \<longleftrightarrow>
+      halts_on(decode_machine(e),numeral_input(n)))"
+proof -
+  let ?P = "decode_machine(e)"
+  let ?x = "numeral_input(n)"
+  have P: "?P \<in> tm_machine" by (rule decode_machine_type[OF e])
+  have x: "?x \<in> list(symbol)" by (rule numeral_input_type[OF n])
+  from halt_sentence_type[OF P x] arity_halt_sentence[OF P x]
+    pr_machine_input_sentence_code_apply[OF e n, of "[]"]
+    sats_halt_sentence_iff[OF model P x]
+  show ?thesis by auto
+qed
 
 end
 '''

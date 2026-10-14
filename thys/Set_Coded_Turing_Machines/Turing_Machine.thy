@@ -14,8 +14,9 @@ text \<open>A machine is a finite instruction list. An instruction contains an
 action number and a next-state number. Actions 0 and 1 write symbols, 2 and
 3 move the head, and 4 leaves the tape unchanged. State 1 is initial and
 state 0 is final. The named actions, states, and symbols are input
-abbreviations for these natural numbers; printed propositions may show the
-numbers instead of their names.\<close>
+abbreviations for these natural numbers. Printed propositions use numbers
+so that the same set, such as 0, is not given an action name when it occurs
+as a state or symbol.\<close>
 
 definition symbol :: i where
   "symbol \<equiv> 2"

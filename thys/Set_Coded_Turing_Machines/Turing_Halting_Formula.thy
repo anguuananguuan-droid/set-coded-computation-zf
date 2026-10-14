@@ -2,7 +2,7 @@
     Author:     Tang Ziyi
 *)
 
-section \<open>Internal Halting Formula\<close>
+section \<open>Internal Halting Formula\label{sec:internal-halting}\<close>
 
 theory Turing_Halting_Formula
   imports "Nat_Membership"
@@ -17,8 +17,9 @@ and an input \<open>x\<close> exactly when \<open>P\<close> halts on
 The formulas for list traversal and machine execution constrain finitely
 many applications of an existential witness set. They do not require every
 witness to be a finite function. An external run supplies a canonical finite
-function belonging to the model. Conversely, induction recovers the required
-finite sequence from any internal witness.\<close>
+function belonging to the model by @{thm [source] transitive_zf_contains_trace}.
+Conversely, induction recovers the required finite sequence from any internal
+witness.\<close>
 
 text \<open>The formulas \<open>drop_fm\<close> and \<open>fetch_fm\<close>
 are internal components. The public interface consists of the halting
@@ -581,7 +582,7 @@ qed
 
 end
 
-subsection \<open>Halting\<close>
+subsection \<open>Run formulas\<close>
 
 definition init_fm :: "[i,i] \<Rightarrow> i" where
   "init_fm(r,x) \<equiv>
@@ -669,6 +670,87 @@ proof -
   show ?thesis unfolding trans_fm_def using assms kA by auto
 qed
 
+subsection \<open>Run correspondence\<close>
+
+text \<open>The following two lemmas separate finite execution from the
+layout of a surrounding formula. The reconstruction lemma accepts any
+initial configuration and any outer environment. Its induction establishes
+configuration validity along the run before applying the one-step theorem.
+The converse lemma supplies a transition from the canonical finite trace.
+These same interfaces support the halting proof and applications that
+constrain a run's output.\<close>
+
+lemma trans_run_steps:
+  assumes env: "env \<in> list(M)" and p: "p \<in> nat"
+    and P: "nth(p,env) = P" "P \<in> tm_machine"
+    and c0: "c0 \<in> configuration" and n: "n \<in> nat"
+    and rA: "r \<in> M" and r0: "r`0 = c0"
+    and rs: "\<And>k. k \<in> n \<Longrightarrow>
+      (M, Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, env))))
+        \<Turnstile> step_fm(p#+4,1,0))"
+  shows "r`n = steps(P,c0,n)"
+proof -
+  have "\<And>k. k \<in> nat \<Longrightarrow> k \<le> n \<longrightarrow> r`k = steps(P,c0,k)"
+  proof -
+    fix k assume k: "k \<in> nat"
+    then show "k \<le> n \<longrightarrow> r`k = steps(P,c0,k)"
+    proof (induct k rule: nat_induct)
+      case 0 show ?case using r0 by simp
+    next
+      case (succ k)
+      show ?case
+      proof
+        assume le: "succ(k) \<le> n"
+        then have kn: "k \<in> n"
+          using succ.hyps(1) n by (simp add: succ_le_iff ltD)
+        have "k \<le> n" using le by (blast intro: leI succ_leE)
+        then have rk: "r`k = steps(P,c0,k)" using succ.hyps(2) by blast
+        have conf: "r`k \<in> configuration"
+          using rk steps_type[OF P(2) c0 succ.hyps(1)] by simp
+        have kA: "k \<in> M" "succ(k) \<in> M" using succ.hyps(1) by simp_all
+        have envA:
+          "Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k, env)))) \<in> list(M)"
+          using rA kA env by simp
+        have "r`succ(k) = tm_step(P,r`k)"
+          using sats_step_fm[OF _ _ _ envA, of "p#+4" 1 0 P "r`k" "r`succ(k)"]
+            rs[OF kn] P p conf rA kA
+          by simp
+        then show "r`succ(k) = steps(P,c0,succ(k))"
+          using rk succ.hyps(1) by simp
+      qed
+    qed
+  qed
+  from this[OF n] n show ?thesis by (simp add: nat_into_Ord)
+qed
+
+lemma trace_trans:
+  assumes env: "env \<in> list(M)" and p: "p \<in> nat"
+    and P: "nth(p,env) = P" "P \<in> tm_machine"
+    and c0: "c0 \<in> configuration" and n: "n \<in> nat" and k: "k \<in> n"
+  shows "(M, Cons((\<lambda>j\<in>succ(n). steps(P,c0,j))`succ(k),
+    Cons((\<lambda>j\<in>succ(n). steps(P,c0,j))`k,
+      Cons(succ(k), Cons(k, env)))) \<Turnstile> step_fm(p#+4,1,0))"
+proof -
+  have knat: "k \<in> nat" using k n by (blast intro: Ord_trans Ord_nat)
+  have sk: "succ(k) \<in> succ(n)"
+    using k n by (simp add: Ord_succ_mem_iff nat_into_Ord)
+  have k1: "k \<in> succ(n)" using k by (rule succI2)
+  have conf: "steps(P,c0,k) \<in> configuration" using steps_type[OF P(2) c0 knat] .
+  have conf2: "steps(P,c0,succ(k)) \<in> configuration"
+    using steps_type[OF P(2) c0 nat_succI[OF knat]] .
+  have kA: "k \<in> M" "succ(k) \<in> M" using knat by simp_all
+  have envA: "Cons(steps(P,c0,succ(k)),
+    Cons(steps(P,c0,k), Cons(succ(k), Cons(k, env)))) \<in> list(M)"
+    using kA env conf conf2 by simp
+  show ?thesis
+    using sats_step_fm[OF _ _ _ envA, of "p#+4" 1 0 P
+      "steps(P,c0,k)" "steps(P,c0,succ(k))"]
+      P p conf conf2 sk k1 knat
+    by simp
+qed
+
+subsection \<open>Halting satisfaction\<close>
+
 lemma halting_witness_iff:
   assumes P: "P \<in> tm_machine" and x: "x \<in> list(symbol)"
   shows "(\<exists>n\<in>M. n \<in> nat \<and> (\<exists>r\<in>M. r`0 = initial_config(x) \<and>
@@ -687,39 +769,12 @@ proof
     by blast
   have init: "initial_config(x) \<in> configuration" using x by (rule
     initial_config_type)
-  have "\<And>k. k \<in> nat \<Longrightarrow> k \<le> n \<longrightarrow> r`k = steps(P,initial_config(x),k)"
-  proof -
-    fix k assume k: "k \<in> nat"
-    then show "k \<le> n \<longrightarrow> r`k = steps(P,initial_config(x),k)"
-    proof (induct k rule: nat_induct)
-      case 0 show ?case using r0 by simp
-    next
-      case (succ k)
-      show ?case
-      proof
-        assume le: "succ(k) \<le> n"
-        then have kn: "k \<in> n" using succ.hyps(1) n by (simp add: ltD)
-        have "k \<le> n" using le by (blast intro: leI)
-        then have rk: "r`k = steps(P,initial_config(x),k)" using succ.hyps(2) by
-          blast
-        have conf: "r`k \<in> configuration" using rk steps_type[OF P init
-          succ.hyps(1)] by simp
-        have kA: "k \<in> M" "succ(k) \<in> M" using succ.hyps(1) by simp_all
-        have xA: "x \<in> M" using x by simp
-        have envA: "Cons(r`succ(k), Cons(r`k, Cons(succ(k), Cons(k,
-          [r,n,P,x])))) \<in> list(M)"
-          using rA kA n xA P by simp
-        have "r`succ(k) = tm_step(P,r`k)"
-          using sats_step_fm[OF _ _ _ envA, of 6 1 0 P "r`k" "r`succ(k)"] rs[OF
-            kn] P conf rA kA
-          by simp
-        then show "r`succ(k) = steps(P,initial_config(x),succ(k))" using rk
-          succ.hyps(1) by simp
-      qed
-    qed
-  qed
-  from this[OF n(1)] n(1) have "r`n = steps(P,initial_config(x),n)" by simp
-  with rn have "fst(steps(P,initial_config(x),n)) = final_state" by simp
+  have env: "[r,n,P,x] \<in> list(M)" using rA n P x by simp
+  have run: "r`n = steps(P,initial_config(x),n)"
+    by (rule trans_run_steps[OF env, of 2 P "initial_config(x)" n r])
+      (use P init n rA r0 rs in auto)
+  from rn have "fst(r`n) = final_state" by simp
+  with run have "fst(steps(P,initial_config(x),n)) = final_state" by simp
   with P x n(1) show "halts_on(P,x)" unfolding halts_on_def by blast
 next
   assume h: "halts_on(P,x)"
@@ -733,27 +788,10 @@ next
   have nA: "n \<in> M" using n by simp
   have xA: "x \<in> M" using x by simp
   have r0: "?r`0 = initial_config(x)" using ltD[OF nat_0_le[OF n]] by simp
+  have env: "[?r,n,P,x] \<in> list(M)" using rA nA P xA by simp
   have rs: "\<And>k. k \<in> n \<Longrightarrow> (M, Cons(?r`succ(k), Cons(?r`k,
     Cons(succ(k), Cons(k, [?r,n,P,x])))) \<Turnstile> step_fm(6,1,0))"
-  proof -
-    fix k assume k: "k \<in> n"
-    then have knat: "k \<in> nat" using n by (blast intro: Ord_trans)
-    have sk: "succ(k) \<in> succ(n)" using k n by (simp add: Ord_succ_mem_iff)
-    have k1: "k \<in> succ(n)" using k by (rule succI2)
-    have conf: "steps(P,initial_config(x),k) \<in> configuration" using
-      steps_type[OF P init knat] .
-    have conf2: "steps(P,initial_config(x),succ(k)) \<in> configuration"
-      using steps_type[OF P init nat_succI[OF knat]] .
-    have kA: "k \<in> M" "succ(k) \<in> M" using knat by simp_all
-    have envA: "Cons(?r`succ(k), Cons(?r`k, Cons(succ(k), Cons(k, [?r,n,P,x]))))
-      \<in> list(M)"
-      using rA kA nA xA P conf conf2 sk k1 by simp
-    show "(M, Cons(?r`succ(k), Cons(?r`k, Cons(succ(k), Cons(k, [?r,n,P,x]))))
-      \<Turnstile> step_fm(6,1,0))"
-      using sats_step_fm[OF _ _ _ envA, of 6 1 0 P "?r`k" "?r`succ(k)"] P conf
-        conf2 sk k1 knat
-      by simp
-  qed
+    using trace_trans[OF env _ _ P init n, where p=2] by simp
   have "steps(P,initial_config(x),n) \<in> configuration" using steps_type[OF P
     init n] .
   then obtain t where st: "steps(P,initial_config(x),n) = \<langle>0,t\<rangle>"

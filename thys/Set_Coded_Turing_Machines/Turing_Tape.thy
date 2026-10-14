@@ -10,9 +10,11 @@ begin
 
 text \<open>A finite list represents an infinite blank-ended half-tape. The
 Isabelle/ZF function nth returns 0 beyond the end of the list, matching the
-blank symbol. Equality of represented contents must therefore ignore trailing
-blanks. No instruction
-is added to the machine: this relation is used only to observe its output.\<close>
+blank symbol. Equality of represented contents therefore ignores trailing
+blanks. The relation \<open>half_tape_eq\<close> compares observations only.
+Its uses as a tape interface state list membership separately. The relations
+\<open>tape_eq\<close> and \<open>config_eq\<close> include the validity of
+both arguments.\<close>
 
 definition half_tape_eq :: "[i,i] \<Rightarrow> o" where
   "half_tape_eq(xs,ys) \<equiv> \<forall>n\<in>nat. nth(n,xs) = nth(n,ys)"

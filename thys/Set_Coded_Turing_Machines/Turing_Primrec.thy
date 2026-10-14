@@ -13,9 +13,11 @@ begin
 text \<open>This theory constructs primitive-recursive numerical operations
 for pairing and finite-list codes. Each certificate consists of membership
 in the formal class of primitive-recursive functions and an application
-theorem identifying its value with the
-corresponding code operation. These results do not construct a Turing
-machine that implements the operations.\<close>
+theorem identifying its value with the corresponding code operation.
+Arguments form a list of natural numbers. Application equations retain an
+arbitrary natural-number tail to state explicitly which leading arguments
+the operation uses. These results do not construct a Turing machine that
+implements the operations.\<close>
 
 subsection \<open>Composition and Projection\<close>
 
