@@ -27,8 +27,8 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .ci-deps
-          key: linux-isabelle2025-2-afp2026-02-06-${{ hashFiles('scripts/install-ci.sh', 'scripts/patch_isabelle_linter.py', 'scripts/isabelle-linter-2025-2.patch') }}
-          restore-keys: linux-isabelle2025-2-afp2026-02-06-
+          key: linux-isabelle2025-2-afp2026-10-06-${{ hashFiles('scripts/install-ci.sh', 'scripts/patch_isabelle_linter.py', 'scripts/isabelle-linter-2025-2.patch') }}
+          restore-keys: linux-isabelle2025-2-
       - name: Install Isabelle, AFP, and linter
         run: bash scripts/install-ci.sh "$GITHUB_WORKSPACE/.ci-deps"
       - name: Check independent computation session
@@ -37,7 +37,7 @@ jobs:
           python3 scripts/check_computation.py --isabelle .ci-deps/Isabelle2025-2/bin/isabelle --directory "$RUNNER_TEMP/computation-check" 2>&1 | tee "$RUNNER_TEMP/isabelle-core.log"
       - name: Register AFP and linter
         run: |
-          .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/afp-2026-02-06/thys"
+          .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/afp-2026-10-06/thys"
           .ci-deps/Isabelle2025-2/bin/isabelle components -u "$GITHUB_WORKSPACE/.ci-deps/isabelle-linter-c9983adc5c51a6455f702bb58c9f960d425a2af3/linter_base"
       - name: Verify AFP linter controls
         run: python3 scripts/check_linter_controls.py --isabelle .ci-deps/Isabelle2025-2/bin/isabelle --output "$RUNNER_TEMP/linter-controls"
@@ -58,6 +58,10 @@ jobs:
           .ci-deps/Isabelle2025-2/bin/isabelle build -v -b -c -j 1 -o threads=2 -o browser_info -o document=pdf -o 'document_variants=document:outline=/proof,/ML' -o "document_output=$RUNNER_TEMP/afp-document" -D "$RUNNER_TEMP/afp-entry/Set_Coded_Turing_Machines" 2>&1 | tee "$RUNNER_TEMP/isabelle-submission.log"
           test -s "$RUNNER_TEMP/afp-document/document.pdf"
           test -s "$RUNNER_TEMP/afp-document/outline.pdf"
+      - name: Check exported library client
+        run: |
+          set -o pipefail
+          python3 scripts/check_client.py --isabelle .ci-deps/Isabelle2025-2/bin/isabelle --entry "$RUNNER_TEMP/afp-entry/Set_Coded_Turing_Machines" --directory "$RUNNER_TEMP/library-client" 2>&1 | tee "$RUNNER_TEMP/isabelle-client.log"
       - name: Check proof document layout
         run: |
           set -o pipefail
@@ -83,6 +87,8 @@ jobs:
             ${{ runner.temp }}/isabelle-afp-lint.log
             ${{ runner.temp }}/isabelle-afp-lint.txt
             ${{ runner.temp }}/isabelle-proof-dependencies.log
+            ${{ runner.temp }}/isabelle-client.log
+            ${{ runner.temp }}/library-client
             ${{ runner.temp }}/isabelle-document-layout.log
             ${{ runner.temp }}/linter-controls
             ${{ runner.temp }}/computation-check

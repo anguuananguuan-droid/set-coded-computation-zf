@@ -324,6 +324,12 @@ proof -
   qed
 qed
 
+lemma steps_invariant:
+  assumes time: "n \<in> nat" and start: "I(c)"
+    and closed: "\<And>d. I(d) \<Longrightarrow> I(tm_step(P,d))"
+  shows "I(steps(P,c,n))"
+  using time by (induct n rule: nat_induct) (auto intro: start closed)
+
 lemma steps_final [simp]:
   assumes time: "n \<in> nat"
   shows "steps(M,\<langle>final_state,t\<rangle>,n) =
@@ -506,6 +512,23 @@ lemma halts_onI:
     and final: "fst(steps(P,initial_config(x),n)) = final_state"
   shows "halts_on(P,x)"
   using assms unfolding halts_on_def by auto
+
+text \<open>A nonhalting proof may give a step-closed invariant that excludes
+the final state. Only reachable configurations need to satisfy the invariant.
+The rule requires neither a running-time bound nor a complete transition table.\<close>
+
+theorem not_halts_on_invariant:
+  assumes start: "I(initial_config(x))"
+    and closed: "\<And>c. I(c) \<Longrightarrow> I(tm_step(P,c))"
+    and nonfinal: "\<And>c. I(c) \<Longrightarrow> fst(c) \<noteq> final_state"
+  shows "\<not> halts_on(P,x)"
+proof
+  assume "halts_on(P,x)"
+  then obtain n where time: "n \<in> nat"
+    and final: "fst(steps(P,initial_config(x),n)) = final_state"
+    unfolding halts_on_def by auto
+  from steps_invariant[OF time start closed] nonfinal final show False by blast
+qed
 
 theorem halts_on_iff_finite_run:
   "halts_on(M,x) \<longleftrightarrow>

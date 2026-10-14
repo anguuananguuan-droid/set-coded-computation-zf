@@ -20,17 +20,19 @@ not assert that such a model exists. A weaker locale interface is also
 available.
 
 Natural-number codes for machines and formulas support a primitive-recursive
-constructor for self-input halting sentences. This is a certificate for
-sentence construction, not a general compiler to the machine model.
+constructor with separate machine-code and unary-input arguments. Its output
+is the code of the corresponding closed halting sentence. The self-input
+constructor is a special case. This certifies sentence construction, not a
+general compiler to the machine model.
 
 ## 2 Build
 
 Use [Isabelle2025-2](https://isabelle.in.tum.de/website-Isabelle2025-2/)
-and the [AFP snapshot of 6 February 2026](https://isa-afp.org/release/afp-2026-02-06.tar.gz).
+and the [AFP snapshot of 6 October 2026](https://isa-afp.org/release/afp-2026-10-06.tar.gz).
 With Isabelle on the executable search path, run from the repository root.
 
 ```sh
-isabelle components -u /absolute/path/to/afp-2026-02-06/thys
+isabelle components -u /absolute/path/to/afp-2026-10-06/thys
 isabelle build -d . Set_Coded_Turing_Machines
 ```
 
@@ -57,11 +59,11 @@ build command, machine conventions, and proof interfaces.
 
 | Theory | Interface |
 | --- | --- |
-| [Turing_Machine](thys/Set_Coded_Turing_Machines/Turing_Machine.thy) | Instructions, configurations, finite execution, and halting |
-| [Turing_Tape](thys/Set_Coded_Turing_Machines/Turing_Tape.thy) | Equality of observed tape contents and its preservation under execution |
+| [Turing_Machine](thys/Set_Coded_Turing_Machines/Turing_Machine.thy) | Execution, finite witnesses, and rules for proving halting or nonhalting |
+| [Turing_Tape](thys/Set_Coded_Turing_Machines/Turing_Tape.thy) | Observational equivalence preserving execution and halting |
 | [Turing_Coding](thys/Set_Coded_Turing_Machines/Turing_Coding.thy) | Machine encoding, decoding, and canonical natural-number codes |
 | [Turing_Halting_Sentences](thys/Set_Coded_Turing_Machines/Turing_Halting_Sentences.thy) | Closed halting sentences and their satisfaction theorem |
-| [Turing_Halting_Codes](thys/Set_Coded_Turing_Machines/Turing_Halting_Codes.thy) | Primitive-recursive construction of self-input sentence codes |
+| [Turing_Halting_Codes](thys/Set_Coded_Turing_Machines/Turing_Halting_Codes.thy) | Primitive-recursive sentence codes and their satisfaction contract |
 
 [Turing_Examples](thys/Set_Coded_Turing_Machines/Turing_Examples.thy)
 proves a two-instruction scanning program correct on every unary input,

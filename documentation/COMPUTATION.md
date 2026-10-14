@@ -92,6 +92,11 @@ Useful general facts are `step_type`, `steps_type`, `steps_add`,
 `halts_on_iff_finite_run` supplies a finite function of configurations
 when a subsequent argument needs an explicit execution witness.
 
+`steps_invariant` lifts a step-closed predicate to every finite execution.
+For a nonhalting proof, `not_halts_on_invariant` requires a predicate I
+that holds initially, is preserved by `tm_step(P,_)`, and excludes state 0.
+It then concludes `not halts_on(P,x)`. No running-time bound is needed.
+
 ## 4 Tape observations
 
 `[1]` and `[1,0,0]` are different finite lists with identical observed
@@ -103,6 +108,12 @@ requires well-formed configurations and equal states.
 finite number of steps of a well-formed machine. `config_eq_observe`
 recovers the state and scanned symbol. These relations do not identify
 head shifts. Raw list equality remains available for exact storage results.
+
+For well-formed symbol lists x and y, `initial_config_eq` lifts
+`half_tape_eq(x,y)` to their initial configurations.
+`halts_on_half_tape_eq_iff` then transfers both halting and nonhalting
+between those inputs. It requires a well-formed machine and both input
+domain premises, since `half_tape_eq` alone does not assert list validity.
 
 `scan_append_padded_result` transfers the example to an input with an extra
 stored blank. It reuses the operational result through `steps_config_eq`.
@@ -129,6 +140,11 @@ in that weaker locale. Choice is not needed.
 uses the example's halting proof to establish its internal sentence. It
 calls the public satisfaction theorem without unfolding the internal formula.
 
+`sats_halt_sentence_half_tape_eq_iff` transfers the truth of a closed
+halting sentence between observationally equal inputs. The sentences can
+have different syntax and codes because they name different finite lists.
+The theorem asserts agreement of satisfaction, not equality of formulas.
+
 ## 6 Numerical codes
 
 `decode_encode_machine` recovers a valid machine from its code.
@@ -136,14 +152,40 @@ calls the public satisfaction theorem without unfolding the internal formula.
 fields. It is not injective on all natural numbers. `machine_numbering_bij`
 is a bijection only on the canonical machine codes.
 
-`formula_code_injective` states injectivity on well-formed formulas.
-`pr_halt_sentence_code_in_prim_rec` certifies the numerical construction of
-a self-input halting sentence. `pr_halt_sentence_code_apply` identifies its
-value with the code of
-`halt_sentence(decode_machine(e),numeral_input(e))` for natural e.
-The primitive-recursive function is applied to `[e]`; its equation also
-allows unused natural-number arguments after the first.
+`encode_machine_natural` supplies the natural-number domain fact for an
+encoded well-formed machine. `formula_code_injective` states injectivity
+on well-formed formulas.
 
-This interface certifies the self-input construction. It does not provide
-a general primitive-recursive-to-machine compiler or an effective
-translation of arbitrary arithmetic sentences.
+`pr_machine_input_sentence_code_in_prim_rec` certifies the numerical
+constructor. For natural e and n, `pr_machine_input_sentence_code_apply`
+identifies its value on `[e,n]` with the code of
+`halt_sentence(decode_machine(e),numeral_input(n))`. The equation also
+allows unused natural-number arguments after the first two.
+
+`pr_machine_input_sentence_code_iff` identifies any well-formed formula
+p bearing that code with the constructed sentence.
+`sats_machine_input_sentence_code_iff` directly gives its satisfaction
+condition in a transitive ZF set model. A client receiving a formula by
+its code can use this contract without unfolding the formula constructor.
+
+`pr_halt_sentence_code` retains the unary self-input interface. It applies
+the general constructor to `[e,e]`. Its existing membership and application
+theorems retain their statements. Neither constructor supplies a general
+primitive-recursive-to-machine compiler. The numerical input convention
+is unary, whereas the semantic halting interface accepts any finite
+symbol list.
+
+## 7 External client check
+
+`scripts/check_client.py` creates a separate session that imports only
+the exported library. Its two-instruction program halts on the empty
+unary input and remains in its initial configuration on every nonempty
+unary input. The client proves this exact characterisation using
+`halts_onI` and `not_halts_on_invariant`, preserves it under arbitrary
+finite blank padding, and derives the same characterisation for internal
+sentences and their numerical codes. It imports no example or research
+theory and does not unfold `halt_fm` or `halt_sentence`.
+
+The [build instructions](BUILD.txt) give the invocation. CI runs this
+client against the exported archive. This is a maintained interface test,
+not independent peer review.

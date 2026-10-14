@@ -152,6 +152,28 @@ theorem steps_config_eq:
   shows "config_eq(steps(M,c,n),steps(M,d,n))"
   using n by (induct n rule: nat_induct) (auto intro: eq step_config_eq[OF M])
 
+subsection \<open>Input Representation and Halting\<close>
+
+lemma initial_config_eq:
+  assumes x: "x \<in> list(symbol)" and y: "y \<in> list(symbol)"
+    and eq: "half_tape_eq(x,y)"
+  shows "config_eq(initial_config(x),initial_config(y))"
+  using assms unfolding config_eq_def configuration_def tape_eq_def tm_tape_def
+  by auto
+
+theorem halts_on_half_tape_eq_iff:
+  assumes P: "P \<in> tm_machine"
+    and x: "x \<in> list(symbol)" and y: "y \<in> list(symbol)"
+    and eq: "half_tape_eq(x,y)"
+  shows "halts_on(P,x) \<longleftrightarrow> halts_on(P,y)"
+proof -
+  have states: "\<And>n. n \<in> nat \<Longrightarrow>
+      fst(steps(P,initial_config(x),n)) = fst(steps(P,initial_config(y),n))"
+    by (rule config_eq_observe(1), rule steps_config_eq[OF P
+          initial_config_eq[OF x y eq]])
+  from P x y states show ?thesis unfolding halts_on_def by simp
+qed
+
 subsection \<open>Tape Span and Trailing Blanks\<close>
 
 definition tape_span :: "i \<Rightarrow> i" where

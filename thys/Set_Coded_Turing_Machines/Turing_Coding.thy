@@ -704,6 +704,10 @@ proof -
     unfolding machine_code_def encode_machine_def by simp
 qed
 
+lemma encode_machine_natural [TC]:
+  "P \<in> tm_machine \<Longrightarrow> encode_machine(P) \<in> nat"
+  using encode_machine_type machine_code_subset_nat by blast
+
 lemma decode_machine_type [TC]:
   assumes natural: "n \<in> nat"
   shows "decode_machine(n) \<in> tm_machine"
