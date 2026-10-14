@@ -47,10 +47,14 @@ halting or nonhalting therefore determines the truth of its sentence in
 each such model. The result is conditional on the model premise and
 asserts no model existence.
 
-The public contract comprises the formula typing theorem
-\theoremname{halt_sentence_type}, the arity theorem
-\theoremname{arity_halt_sentence}, and the satisfaction theorem
-\theoremname{sats_halt_sentence_iff}.
+The public contract consists of three theorems.
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+Formula membership & \theoremname{halt_sentence_type} \\
+No free variables & \theoremname{arity_halt_sentence} \\
+Satisfaction & \theoremname{sats_halt_sentence_iff}
+\end{tabular}
+\end{center}
 Their object premises are $P\in\mathit{tm\_machine}$ and
 $x\in\mathit{list}(\mathit{symbol})$.
 The predicate \theoremname{transitive_zf_model} requires a transitive set
