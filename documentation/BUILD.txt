@@ -3,18 +3,18 @@ REPRODUCTION
 1 ENVIRONMENT
 
 The supported release is Isabelle2025-2. The candidate and research sessions
-use the AFP snapshot dated 6 February 2026. The independent computation
+use the AFP snapshot dated 6 October 2026. The independent computation
 check uses only Isabelle/ZF and bundled ZF-Induct. LuaLaTeX is required for
 the PDF. Python 3 is required for repository checks and export. Poppler's
 pdftotext is required for the PDF layout check.
 
 https://isabelle.in.tum.de/website-Isabelle2025-2/
-https://isa-afp.org/release/afp-2026-02-06.tar.gz
+https://isa-afp.org/release/afp-2026-10-06.tar.gz
 
 Run commands from the repository root with Isabelle on the executable search
 path. Register the AFP theory directory using its actual absolute path.
 
-    isabelle components -u /absolute/path/to/afp-2026-02-06/thys
+    isabelle components -u /absolute/path/to/afp-2026-10-06/thys
 
 2 MAINTAINED SESSIONS
 
@@ -67,6 +67,12 @@ sources unchanged. It normalizes archive member order, permissions,
 ownership, and timestamps. In the same Python environment, unchanged
 candidate contents produce the same archive bytes. The archive also
 contains LICENSE and documentation/AI_USAGE.txt from the repository.
+
+Build a separate mathematical client against the exported library. The
+client checks both halting and nonhalting, blank padding, internal
+satisfaction, and the numerical sentence contract. Use a fresh directory.
+
+    python3 scripts/check_client.py --isabelle /absolute/path/to/isabelle --entry output/afp-entry/Set_Coded_Turing_Machines --directory output/library-client
 
 5 PROOFS AND DOCUMENTS
 
@@ -134,8 +140,8 @@ https://github.com/isabelle-prover/isabelle-linter
 
 .github/workflows/isabelle.yml checks repository sources, the independent
 computation fragment before AFP registration, all six maintained sessions,
-the unmodified exported candidate, document variants and layout, proof
-dependencies, linter controls, and AFP mandatory findings. Acceptance builds
+the unmodified exported candidate and its external client, document variants
+and layout, proof dependencies, linter controls, and AFP mandatory findings. Acceptance builds
 use the ROOT timeouts. Artifacts retain the source revision, archive,
 documents, style reports, and verification logs.
 
@@ -146,8 +152,8 @@ the external distributions in the source repository.
 Isabelle2025-2_linux.tar.gz
     a20a507bc7c1270d8be96a9f3fbec06345387789d2dc2c4d3df6260d47bfb33c
 
-afp-2026-02-06.tar.gz
-    b059edd46073479ee8dde45004c2346a7365e5d94cded49d27257cfea66c8879
+afp-2026-10-06.tar.gz
+    d6f917ba347c5f8aa5b3b0b95686edc96c8d977dcaed4bd01e6fa555d450996e
 
 isabelle-linter-c9983adc5c51a6455f702bb58c9f960d425a2af3.tar.gz
     83dc386d6e9dcbfa9f820abddac31c1bedffa46f1f74265a8ccf9007ff9ca2f1

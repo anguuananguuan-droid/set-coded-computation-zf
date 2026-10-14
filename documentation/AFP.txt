@@ -10,14 +10,21 @@ input x. The proofs also apply directly in M_ZF1_trans. No model existence
 or choice assumption is needed for the conditional satisfaction theorem.
 
 Numerical coding supplies a primitive-recursive constructor for the code
-of halt_sentence(decode_machine(e),numeral_input(e)). Its membership and
-application equation are separate checked facts. The interface does not
-claim a general machine compiler or a universal machine.
+of halt_sentence(decode_machine(e),numeral_input(n)), with independent
+natural-number arguments e and n. Formula-code injectivity connects any
+formula bearing that code to the satisfaction theorem. The self-input
+constructor is the diagonal instance. The interface does not claim a
+general machine compiler or a universal machine.
 
 The operational example proves a scanning program's result for every unary
 input and transfers it to a padded representation. The model example uses
 that program theorem through the satisfaction interface. The library guide
 in documentation/COMPUTATION.md specifies imports and intended use.
+
+Step-closed invariants provide a nonhalting rule. Observationally equal
+inputs have identical halting behaviour and agree on internal halting
+truth. An external client checks these interfaces against the exported
+archive using a program that halts exactly on the empty unary input.
 
 2 DEPENDENCIES AND APPLICATIONS
 

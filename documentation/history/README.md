@@ -63,6 +63,12 @@ and application separation. The
 library revision. The record includes the first document failure and the
 successful corrected archive.
 
+[RV.009](../records/RV.009.txt) records the separate machine and input
+constructor, nonhalting and tape interfaces, and exported library client.
+Its [source manifest](../records/RV.009.sources.txt) identifies the checked
+sources and verification tools. The record uses the 6 October AFP snapshot
+and retains the exact archive checksum and successful CI run.
+
 ## 3 Earlier reviews
 
 [August development review](RV-IN-ISABELLE-ZF-WEEKLY-2026-08-03.md) records

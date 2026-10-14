@@ -16,11 +16,11 @@ if [[ ! -x Isabelle2025-2/bin/isabelle ]]; then
   rm isabelle.tar.gz
 fi
 
-if [[ ! -f afp-2026-02-06/thys/ROOTS ]]; then
+if [[ ! -f afp-2026-10-06/thys/ROOTS ]]; then
   curl --fail --location --retry 3 \
-    https://isa-afp.org/release/afp-2026-02-06.tar.gz \
+    https://isa-afp.org/release/afp-2026-10-06.tar.gz \
     --output afp.tar.gz
-  echo 'b059edd46073479ee8dde45004c2346a7365e5d94cded49d27257cfea66c8879  afp.tar.gz' | sha256sum --check
+  echo 'd6f917ba347c5f8aa5b3b0b95686edc96c8d977dcaed4bd01e6fa555d450996e  afp.tar.gz' | sha256sum --check
   tar -xzf afp.tar.gz
   rm afp.tar.gz
 fi

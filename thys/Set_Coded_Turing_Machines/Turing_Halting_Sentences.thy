@@ -5,7 +5,7 @@
 section \<open>Closed Halting Sentences\<close>
 
 theory Turing_Halting_Sentences
-  imports "Turing_Halting_Formula"
+  imports "Turing_Halting_Formula" "Turing_Tape"
 begin
 
 text \<open>Closed sentences are obtained from \<open>halt_fm\<close> by naming
@@ -196,6 +196,16 @@ theorem sats_halt_sentence_iff:
       [OF transitive_zf_M_ZF1_trans[OF assms(1)] assms(2,3)])
 
 subsection \<open>Model-theoretic consequences\<close>
+
+theorem sats_halt_sentence_half_tape_eq_iff:
+  assumes model: "transitive_zf_model(A)" and P: "P \<in> tm_machine"
+    and x: "x \<in> list(symbol)" and y: "y \<in> list(symbol)"
+    and eq: "half_tape_eq(x,y)"
+  shows "(A, [] \<Turnstile> halt_sentence(P,x)) \<longleftrightarrow>
+    (A, [] \<Turnstile> halt_sentence(P,y))"
+  using sats_halt_sentence_iff[OF model P x]
+    sats_halt_sentence_iff[OF model P y]
+    halts_on_half_tape_eq_iff[OF P x y eq] by simp
 
 corollary transitive_models_agree_on_halting:
   assumes "transitive_zf_model(A)" "transitive_zf_model(B)"
