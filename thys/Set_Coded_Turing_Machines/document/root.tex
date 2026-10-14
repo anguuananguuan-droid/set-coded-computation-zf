@@ -47,8 +47,9 @@ halting or nonhalting therefore determines the truth of its sentence in
 each such model. The result is conditional on the model premise and
 asserts no model existence.
 
-The public contract consists of
-\theoremname{halt_sentence_type}, \theoremname{arity_halt_sentence}, and
+The public contract comprises the formula typing theorem
+\theoremname{halt_sentence_type}, the arity theorem
+\theoremname{arity_halt_sentence}, and the satisfaction theorem
 \theoremname{sats_halt_sentence_iff}.
 Their object premises are $P\in\mathit{tm\_machine}$ and
 $x\in\mathit{list}(\mathit{symbol})$.
@@ -128,9 +129,10 @@ for this contract.
 
 The implementation of $F$ is
 \theoremname{pr_machine_input_sentence_code}, applied to $[e,n]$.
-The theorem \theoremname{sats_machine_input_sentence_code_iff} gives
-satisfaction directly from that code. The unary constructor
-\theoremname{pr_halt_sentence_code} is the diagonal instance $F(e,e)$.
+The associated theorem,
+\theoremname{sats_machine_input_sentence_code_iff}, derives satisfaction
+directly from the constructed code. Setting $n=e$ yields the unary
+constructor \theoremname{pr_halt_sentence_code}.
 These certificates use the Isabelle/ZF primitive-recursive function
 class~\cite{szasz}.
 
