@@ -15,7 +15,9 @@ the separate machine and input constructor and the exported library client.
 
 [AFP candidate](AFP.txt) defines the library boundary and acceptance checks.
 [Research extensions](RESEARCH.md) describes applications outside that
-boundary and the migration from earlier theory namespaces.
+boundary, their remaining proof obligations, and the migration from earlier
+theory namespaces. [Research audit](records/RV.010.txt) identifies the
+proved interfaces and open objectives at main revision 6c1b42c.
 
 ## 3 Project records
 

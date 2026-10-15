@@ -83,8 +83,12 @@ contribution disclosure. The current disclosure is [AI usage](../AI_USAGE.txt).
 review and updates through 4 October.
 [Technical audit of 4 October](FULL_TECHNICAL_AUDIT_2026-10-04.md) examines
 commit 3a454f76d417e2cd133c5398aabb2c1d29269315.
-[Internal formula design](TURING_INTERNALISATION.md) records proposed routes
-that remain unfinished.
+[Internal formula design](TURING_INTERNALISATION.md) records earlier proposed
+routes. Its assumed halting interface has since been replaced by the explicit
+formula and satisfaction proofs in the candidate. The general arithmetic
+translation remains open. [RV.010](../records/RV.010.txt) records this
+correction against the maintained sources. The historical proposal is
+unchanged.
 
 The versions before repository organisation are retained at commit
 e85583541f9f86409d7538004a230c26636a20c8. None of these records establishes
