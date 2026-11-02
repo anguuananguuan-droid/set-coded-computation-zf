@@ -1,0 +1,64 @@
+RV.012
+LIBRARY DOCUMENTS AND EPQ LOG
+2 November 2026
+
+1 SOURCES AND SCOPE
+
+The publication baseline is main at
+94a0518e9b66b83e237408b7a85e1852a9b66455.
+The mathematical sources remain at the unchanged candidate baseline
+6c1b42c9e853ff61e934ce08b1e4a40c60166fa3.
+
+This revision changes document navigation and adds a reading copy of the
+EPQ production log. The model, theorem premises, theory files, and session
+manifests are unchanged. RV.011 remains the proof-document provenance record.
+
+2 LOG SOURCE AND READING COPY
+
+The selected source is the candidate's Word production record. Its SHA256 is
+47a8bb33e5cb5114e128a0361d4c0675b70dc8b38e242f792dafbb86fac87617.
+A paragraph comparison confirms that the public Word preserves the research
+text and recorded dates. Seventeen administrative paragraphs were cleared
+and a public-copy notice was added. Signature fields were already empty.
+
+The complete public Word and 24-page PDF are unchanged in this revision.
+Their SHA256 values are
+
+papers/EPQ_Production_Log.docx
+324e51ed9f6ab4a17ad37d67ad2080a759cb2337b925f62ffb2065c0a02e975c
+
+papers/EPQ_Production_Log.pdf
+cfc62c03c5af4c16d06da4be75c0fb02f5b77f189f66539ba0942414770945f7
+
+papers/EPQ_Log.pdf extracts original pages 7 to 10, 14 to 19, and 22 to 23.
+It has twelve pages and opens with Record of initial ideas. Original text,
+page content streams, and printed page numbers are retained. Page dimensions
+agree within 0.00001 points after PDF numeric serialization. The omitted
+pages are declarations, unfilled assessment sections, and institutional
+information. The complete source remains linked beside the reading copy.
+
+The reading copy SHA256 is
+937633b247f347828a92f997376b23dee595c93f789437f1c62f38d0733e0bfd.
+
+scripts/build_epq_log.py verifies the complete source hash before extracting
+these pages and checks the result against each selected source page. The
+reading copy was rendered for visual inspection.
+
+3 PUBLICATION AND VERIFICATION
+
+README now identifies the machine model, semantic result, use, build,
+documents, and maintenance. The proof outline, complete proof document,
+EPQ repository paper, and log have distinct descriptions and destinations.
+The research summary's EPQ link label no longer asserts an unchanged
+assessment original. Its mathematical content is unchanged.
+
+papers/Research_Summary.pdf
+30063d7de4f1f204fef9ab65b9a5b40b9e815947170be2cbcfb2e2e97631282d
+
+The successful proof build for the publication baseline is
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/41419894679
+
+That build used Isabelle2025-2 and AFP 2026-10-06. It is not evidence of
+Isabelle2026 compatibility. The README states this remaining version check.
+This document publication does not add a mathematical result, independent
+expert review, or an AFP acceptance decision. No AFP submission was made.
