@@ -7,15 +7,18 @@ program proofs, tape observations, halting sentences, and numerical codes.
 [Build instructions](BUILD.txt) specify the supported environment and
 commands for source, proof, archive, style, and document checks.
 
-[Verification record](records/RV.009.txt) identifies the checked revision,
-source manifest, archive checksum, and public build evidence. It covers
-the separate machine and input constructor and the exported library client.
+[Verification record](records/RV.011.txt) identifies the proof-source
+revision, archive checksum, public build evidence, and published PDFs.
+[Research and proof documents](../papers/README.md) provide the one-page
+summary, proof outline, complete proof document, and original EPQ paper.
 
 ## 2 Scope
 
 [AFP candidate](AFP.txt) defines the library boundary and acceptance checks.
 [Research extensions](RESEARCH.md) describes applications outside that
-boundary and the migration from earlier theory namespaces.
+boundary, their remaining proof obligations, and the migration from earlier
+theory namespaces. [Research audit](records/RV.010.txt) identifies the
+proved interfaces and open objectives at main revision 6c1b42c.
 
 ## 3 Project records
 

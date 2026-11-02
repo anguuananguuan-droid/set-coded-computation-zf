@@ -1,0 +1,85 @@
+RV.010
+RESEARCH STATUS
+15 October 2026
+
+1 SOURCES
+
+This audit concerns main at
+6c1b42c9e853ff61e934ce08b1e4a40c60166fa3.
+It examines the six session manifests, current public documentation,
+research interfaces, and Section V of papers/EPQ.pdf, printed pages 4 to 6.
+The candidate contains seventeen theories. Five research sessions contain
+twenty-six theories. The candidate imports no research theory.
+
+2 ESTABLISHED INTERFACES
+
+Turing_Halting_Formula proves membership of halt_fm in formula, its arity,
+and its satisfaction theorem. Turing_Halting_Sentences proves the closed
+sentence interface in transitive ZF set models. Turing_Halting_Codes proves
+primitive-recursive construction of the corresponding formula codes.
+These are proved constructions, not assumed halting interfaces.
+
+Turing_Rejection proves self_halting_not_tm_decidable.
+Turing_Effective_Invariance proves primitive-recursive reductions from
+self-input halting and its complement to invariant_formula_codes.
+Its generic theorem assumes uniform truth, closed sentence syntax,
+primitive-recursive sentence codes, and a non-invariant closed sentence.
+The CH corollaries obtain non-invariance from a countable transitive ZFC
+set model. They do not assert existence of that model.
+
+Turing_Evaluator and Turing_Evaluator_Primrec prove numerical simulation
+and primitive-recursive certificates. Turing_Composition proves sequential
+machine composition. Turing_Reduction proves preservation of decidability
+under machine-realised many-one reductions. Turing_Decidable_Sets proves
+membership of machine-decidable sets in transitive ZFC set models.
+
+3 OPEN OBLIGATIONS
+
+Turing_Arithmetic_Truth provides atomic arithmetic relations and restricted
+quantifiers. It does not provide a general arithmetic syntax, standard
+truth definition for that syntax, recursive translation, structural
+truth-preservation proof, or certified translation of arbitrary sentence
+codes. The full arithmetic-truth reduction in the EPQ paper is not proved.
+The paper's further non-arithmeticity conclusion also requires the relevant
+undefinability and preimage-closure theorems in the formal development.
+
+Turing_Realisation does not prove arbitrary COMP or PREC realisation.
+Turing_Primrec_Reduction explicitly assumes realisation when transferring
+numerical primitive-recursive reductions to machine reductions.
+Neither a general machine compiler nor a universal machine implementing
+the numerical evaluator is present. The target invariance set has not
+been proved undecidable for this machine model.
+
+The EPQ translation is direct from arithmetic syntax to set-theoretic
+syntax. It does not pass full arithmetic truth through ordinary halting.
+A universal machine is not a prerequisite for that syntactic reduction.
+The numerical reduction has a membership equivalence in both directions.
+A reverse reduction from the target to the source is not needed to transfer
+undecidability once the forward reducing function has a machine realiser.
+
+4 HISTORICAL CORRECTION
+
+The README at ca22fca described internal halting as an assumed interface.
+The README at 8f013c1 described the explicit closed formula and its proved
+semantics. The earlier interface limitation does not describe the audited
+revision. The current history index incorrectly described all internal
+formula routes as unfinished. The index is corrected. Historical reports
+remain unchanged.
+
+5 VERIFICATION
+
+The public CI run for the audited main revision completed successfully.
+
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/38594422660
+
+The successful steps include all six maintained sessions, the independent
+computation check, the exported candidate and client, both PDF variants,
+document layout, proof dependencies, linter controls, and mandatory style
+checks. This audit inspected that run and the source interfaces. It did
+not rerun Isabelle or independently reprove every theorem.
+
+The accompanying changes correct current research documentation and its
+historical index. No theory, theorem, session manifest, candidate source,
+or proof document is changed. No new mathematical result is claimed.
+No AFP submission was made. This audit does not establish independent
+human review or AFP acceptance.
