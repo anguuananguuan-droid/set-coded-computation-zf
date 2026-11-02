@@ -12,7 +12,8 @@
   <a href="papers/Research_Summary.pdf">Research summary</a> &nbsp;·&nbsp;
   <a href="papers/library/Set_Coded_Turing_Machines_Outline.pdf">Proof outline</a> &nbsp;·&nbsp;
   <a href="papers/library/Set_Coded_Turing_Machines.pdf">Full proof</a> &nbsp;·&nbsp;
-  <a href="documentation/COMPUTATION.md">Library guide</a>
+  <a href="documentation/COMPUTATION.md">Library guide</a> &nbsp;·&nbsp;
+  <a href="papers/EPQ_Production_Log.pdf">EPQ log</a>
 </p>
 
 A formal library connecting **Turing-machine execution** with **first-order
@@ -37,7 +38,7 @@ does not assert that one exists.
 | [Tape observations](thys/Set_Coded_Turing_Machines/Turing_Tape.thy) | Blank-padding equivalence preserves execution and halting |
 | [Machine codes](thys/Set_Coded_Turing_Machines/Turing_Coding.thy) | Natural-number encoding, decoding, and canonical codes |
 | [Halting sentences](thys/Set_Coded_Turing_Machines/Turing_Halting_Sentences.thy#L192) | Closed formulas agree with external halting in transitive ZF models |
-| [Sentence codes](thys/Set_Coded_Turing_Machines/Turing_Halting_Codes.thy#L34) | A primitive-recursive constructor returns the exact halting-formula code |
+| [Sentence codes](thys/Set_Coded_Turing_Machines/Turing_Halting_Codes.thy#L34) | Primitive-recursive construction of the exact sentence code for a machine code and unary input |
 
 ## 2 Use
 

@@ -25,6 +25,8 @@ proved interfaces and open objectives at main revision 6c1b42c.
 [AI usage](AI_USAGE.txt) records authorship, tool participation, and
 verification responsibilities. [Development records](history/README.md)
 retain earlier instructions, reviews, source manifests, and build evidence.
+The [EPQ production log](../papers/EPQ_Production_Log.pdf) preserves the
+candidate's original project process in a public copy.
 Historical claims apply to the revisions recorded in those documents.
 
 [Contribution rules](../CONTRIBUTING.txt) govern changes to the repository.
