@@ -31,3 +31,16 @@ The paper is distinct from the generated proof documents. Its full
 arithmetic-truth argument has not been formalised. The
 [research guide](../documentation/RESEARCH.md) identifies the remaining
 proof obligations.
+
+## 4 EPQ production log
+
+[EPQ production log](EPQ_Production_Log.pdf) is the candidate's process
+record from September 2025 to April 2026. It records the initial proposal,
+planning and project reviews, presentation preparation, and final reflection.
+
+This public copy retains the research text and recorded dates. Examination
+identifiers and personal document metadata have been removed. Supervisor
+and assessment fields remain as recorded, including their unfilled sections.
+
+The public record is available as a 24-page PDF and an
+[editable Word copy](EPQ_Production_Log.docx).
