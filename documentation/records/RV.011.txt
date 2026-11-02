@@ -22,20 +22,17 @@ environment is Isabelle2025-2 and AFP 2026-10-06.
 
 2 PUBLISHED PDFS
 
-The published full proof and outline were retained from the successful
-pre-merge build of ab9d22348462a47c7f2eefa3628cebcbad5ab849.
-That candidate has the same exported contents and archive SHA256 as the
-main baseline. The PDFs are copied unchanged from its build artifact.
-
-https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/38591301980
+The published full proof and outline are copied unchanged from the
+isabelle-build-log artifact of the main build identified in section 1.
+The artifact was retrieved and its document hashes checked on 2 November.
 
 papers/library/Set_Coded_Turing_Machines.pdf
 108 pages
-203524479094a09fc3f0bc4209f510515d1f8b849628de48b92d345ae6b3b50a
+0e57dd801ebbbeead7fd13c3b6fef58519364ec0ab076a5a3344de064ab28809
 
 papers/library/Set_Coded_Turing_Machines_Outline.pdf
 68 pages
-e2e7f3dea32083e589c3465adc97bf9ed7c3960bbd4eeeee421f10d252fa519a
+28eb570dba76d581fe46ed2d501877ef8548b58d4db7a679078f20cb3f02a6cb
 
 The full document includes the proofs. The outline omits the detailed proof
 and ML blocks. Both retain the definitions, theorem statements, explanations,
