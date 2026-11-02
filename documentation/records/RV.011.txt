@@ -1,0 +1,78 @@
+RV.011
+PUBLISHED PROOF DOCUMENTS
+2 November 2026
+
+1 PROOF SOURCES
+
+The maintained mathematical baseline is main at
+6c1b42c9e853ff61e934ce08b1e4a40c60166fa3.
+The candidate contains seventeen theories in one session. Its exported
+archive contains twenty-two regular files. Exporting the unchanged candidate
+on 2 November reproduces the recorded archive SHA256.
+
+b2881e8cb3b75b8be6326401cc0d358842fb1a2ad75e765cfd934ebee41977d2
+
+The successful main build is recorded at
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/38594422660
+
+This run checks all six maintained sessions, the independent computation
+fragment, the exported candidate and client, proof dependencies, document
+variants and layout, and the linter with its negative controls. The verified
+environment is Isabelle2025-2 and AFP 2026-10-06.
+
+2 PUBLISHED PDFS
+
+The published full proof and outline were retained from the successful
+pre-merge build of ab9d22348462a47c7f2eefa3628cebcbad5ab849.
+That candidate has the same exported contents and archive SHA256 as the
+main baseline. The PDFs are copied unchanged from its build artifact.
+
+https://github.com/anguuananguuan-droid/set-coded-computation-zf/actions/runs/38591301980
+
+papers/library/Set_Coded_Turing_Machines.pdf
+108 pages
+203524479094a09fc3f0bc4209f510515d1f8b849628de48b92d345ae6b3b50a
+
+papers/library/Set_Coded_Turing_Machines_Outline.pdf
+68 pages
+e2e7f3dea32083e589c3465adc97bf9ed7c3960bbd4eeeee421f10d252fa519a
+
+The full document includes the proofs. The outline omits the detailed proof
+and ML blocks. Both retain the definitions, theorem statements, explanations,
+and references from the same candidate. The retained logs record successful
+convergence and layout checks for both variants.
+
+The same build records twenty-four checked public endpoints and 10298 named
+facts without oracle dependencies. The fact count includes imported facts.
+The linter parses 3766 commands and reports no mandatory findings. These
+counts describe the recorded build, not a new November proof run.
+
+3 READING AND USE
+
+The README now links the main theorem to its formula membership, closedness,
+and satisfaction proofs. Its client derives the truth of the scanning
+program's halting sentence through the public interface. The library guide
+contains the session and import instructions.
+
+The exact README client was extracted into a separate session and built
+successfully on 2 November with Isabelle2025-2 and the locally registered
+AFP 2026-02-06. This local client check is separate from the pinned
+AFP 2026-10-06 CI evidence above.
+
+papers/Research_Summary.pdf is a separate one-page introduction to the
+research question, verified result, effective construction, and scope.
+scripts/build_research_summary.py reproduces it using ReportLab and pypdf.
+It is explanatory material, not a generated proof or additional theorem.
+
+4 RELATION TO EARLIER RECORDS
+
+RV.009 records the earlier library-contract revision. It remains valid for
+the revision it identifies. The published documents and current default
+verification link now refer to this record and the later proof baseline.
+RV.010 separately records the wider research audit and open EPQ obligations.
+
+These publication changes do not alter the candidate sources, its ROOT,
+or the exported archive. A successful build establishes derivability of
+the formal statements from their definitions and premises. It does not
+establish mathematical novelty or independent human review.
+No AFP submission has been made.

@@ -7,9 +7,10 @@ program proofs, tape observations, halting sentences, and numerical codes.
 [Build instructions](BUILD.txt) specify the supported environment and
 commands for source, proof, archive, style, and document checks.
 
-[Verification record](records/RV.009.txt) identifies the checked revision,
-source manifest, archive checksum, and public build evidence. It covers
-the separate machine and input constructor and the exported library client.
+[Verification record](records/RV.011.txt) identifies the proof-source
+revision, archive checksum, public build evidence, and published PDFs.
+[Research and proof documents](../papers/README.md) provides the one-page
+summary, proof outline, complete proof document, and original EPQ paper.
 
 ## 2 Scope
 
