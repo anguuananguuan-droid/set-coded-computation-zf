@@ -170,7 +170,7 @@ story.append(para(
     f'<link href="{REPO}" color="black"><u>Repository</u></link>'
     f' &nbsp; | &nbsp; <link href="{THEOREM}" color="black"><u>Main theorem</u></link>'
     f' &nbsp; | &nbsp; <link href="{CI}" color="black"><u>Recorded build</u></link>'
-    f' &nbsp; | &nbsp; <link href="{EPQ}" color="black"><u>Original EPQ</u></link>'
+    f' &nbsp; | &nbsp; <link href="{EPQ}" color="black"><u>EPQ paper</u></link>'
     '<br/>github.com/anguuananguuan-droid/set-coded-computation-zf',
     "links",
 ))
