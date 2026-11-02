@@ -50,7 +50,7 @@ accepts any finite symbol input.
 The public session is `Set_Coded_Turing_Machines`. Select the interface
 needed by a client, for example
 
-```isabelle
+```text
 theory My_Machine
   imports "Set_Coded_Turing_Machines.Turing_Machine"
 begin
@@ -72,7 +72,7 @@ The verified environment is
 [AFP 2026-10-06](https://isa-afp.org/release/afp-2026-10-06.tar.gz).
 With Isabelle on the executable search path, run from this directory
 
-```sh
+```text
 isabelle components -u /absolute/path/to/afp-2026-10-06/thys
 isabelle build -d . Set_Coded_Turing_Machines
 ```

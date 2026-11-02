@@ -12,7 +12,7 @@ internal satisfaction and sentence codes.
 The public session is `Set_Coded_Turing_Machines`. A client theory chooses
 the smallest interface it needs.
 
-```isabelle
+```text
 theory My_Machine
   imports "Set_Coded_Turing_Machines.Turing_Machine"
 begin
@@ -72,7 +72,7 @@ system.
 [Turing_Examples](../thys/Set_Coded_Turing_Machines/Turing_Examples.thy)
 is a complete checked example. The machine has two instructions.
 
-```isabelle
+```text
 [\<langle>write_one,final_state\<rangle>, \<langle>move_right,initial_state\<rangle>]
 ```
 
