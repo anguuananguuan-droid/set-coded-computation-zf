@@ -8,7 +8,7 @@ mkdir -p "$deps_dir"
 cd "$deps_dir"
 
 if [[ ! -x Isabelle2025-2/bin/isabelle ]]; then
-  curl --fail --location --retry 3 \
+  curl --fail --location --retry 3 --retry-all-errors --connect-timeout 30 \
     https://isabelle.in.tum.de/website-Isabelle2025-2/dist/Isabelle2025-2_linux.tar.gz \
     --output isabelle.tar.gz
   echo 'a20a507bc7c1270d8be96a9f3fbec06345387789d2dc2c4d3df6260d47bfb33c  isabelle.tar.gz' | sha256sum --check
@@ -17,7 +17,7 @@ if [[ ! -x Isabelle2025-2/bin/isabelle ]]; then
 fi
 
 if [[ ! -f afp-2026-10-06/thys/ROOTS ]]; then
-  curl --fail --location --retry 3 \
+  curl --fail --location --retry 3 --retry-all-errors --connect-timeout 30 \
     https://isa-afp.org/release/afp-2026-10-06.tar.gz \
     --output afp.tar.gz
   echo 'd6f917ba347c5f8aa5b3b0b95686edc96c8d977dcaed4bd01e6fa555d450996e  afp.tar.gz' | sha256sum --check
@@ -27,7 +27,7 @@ fi
 
 linter_revision=c9983adc5c51a6455f702bb58c9f960d425a2af3
 if [[ ! -f "isabelle-linter-$linter_revision/linter_base/src/linter.scala" ]]; then
-  curl --fail --location --retry 3 \
+  curl --fail --location --retry 3 --retry-all-errors --connect-timeout 30 \
     "https://codeload.github.com/isabelle-prover/isabelle-linter/tar.gz/$linter_revision" \
     --output linter.tar.gz
   echo '83dc386d6e9dcbfa9f820abddac31c1bedffa46f1f74265a8ccf9007ff9ca2f1  linter.tar.gz' | sha256sum --check

@@ -9,7 +9,7 @@ commands for source, proof, archive, style, and document checks.
 
 [Verification record](records/RV.011.txt) identifies the proof-source
 revision, archive checksum, public build evidence, and published PDFs.
-[Research and proof documents](../papers/README.md) provides the one-page
+[Research and proof documents](../papers/README.md) provide the one-page
 summary, proof outline, complete proof document, and original EPQ paper.
 
 ## 2 Scope
