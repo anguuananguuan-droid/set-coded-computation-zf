@@ -4,7 +4,7 @@
 
 The [candidate library](../thys/Set_Coded_Turing_Machines/ROOT) contains
 seventeen theories. Its interfaces are described in the
-[library guide](COMPUTATION.md). Twenty-six additional theories in five
+[library guide](COMPUTATION.md). Twenty-eight additional theories in five
 research sessions extend that same namespace. Each theory has one
 maintained source. The full repository build checks all six sessions.
 
@@ -75,9 +75,9 @@ verified universal machine.
 
 ### 2.4 Model extensions
 
-[Turing_Models](../thys/Research/Models/ROOT) contains arithmetic formulas
-and model-restricted halting index sets. Its ZFC interfaces use the
-application model predicate.
+[Turing_Models](../thys/Research/Models/ROOT) contains the translation of
+relational arithmetic into set theory and model-restricted halting index
+sets. Its ZFC interfaces use the application model predicate.
 [Turing_Absoluteness](../thys/Research/Absoluteness/ROOT) proves that every
 set decidable by a machine of this model belongs to every transitive ZFC
 set model, using an explicit acceptance formula and Separation.
@@ -91,20 +91,26 @@ sentence sigma then gives the map from the code of theta to the code of
 `Or(theta-omega,sigma)`. Invalid arithmetic sentence codes map to the code
 of sigma. This construction does not require a universal Turing machine.
 
-[Turing_Arithmetic_Truth](../thys/Research/Models/Turing_Arithmetic_Truth.thy)
-currently supplies the meanings of zero, successor, order, addition,
-multiplication, and natural-number-restricted quantifiers. It does not
-define a source arithmetic language or prove translation correctness for
-arbitrary sentences. The following obligations remain.
-
 ### 3.1 Syntax and truth preservation
 
-Define the arithmetic source syntax, its standard-natural-number semantics,
-and a recursive translation into `formula`. Prove formula membership,
-free-variable bounds, and satisfaction equivalence by structural induction.
-The closed instance must state that every transitive ZF set model satisfies
-the translated sentence exactly when it is true in the standard natural
-numbers. Atomic and quantifier lemmas alone do not establish this theorem.
+[Arithmetic_Translation](../thys/Research/Models/Arithmetic_Translation.thy)
+defines first-order relational arithmetic with equality, zero, successor,
+order, addition, and multiplication. Its natural-number semantics is
+defined independently of the set-theoretic target. The source expresses
+arithmetic operations as their graphs. A translation from syntax with
+nested function terms is a separate front end.
+
+`arith_translate_arity` proves preservation of the free-variable arity.
+`sats_arith_translate_iff` proves truth preservation by structural induction
+for natural-number environments that supply all free variables.
+For a closed source sentence, `sats_arith_sentence_iff` gives agreement
+with standard arithmetic in each transitive ZF set model.
+
+[Arithmetic_Invariance](../thys/Research/Models/Arithmetic_Invariance.thy)
+uses this uniform truth theorem. For a closed source sentence p and a
+closed sentence q on which the transitive ZFC set models disagree,
+`arith_or_invariant_iff` proves that `Or(arith_translate(p),q)` is invariant
+exactly when p is true in the standard natural numbers.
 
 ### 3.2 Effective codes and reduction
 
@@ -163,10 +169,9 @@ arithmetic translation are distinct obligations.
 6c1b42c. The successful build checks all present proofs. It does not check
 the unimplemented obligations in sections 3 and 4.
 
-The next EPQ milestone is section 3.1. Its acceptance condition is the
-structural truth-preservation theorem with no assumed translation-correctness
-interface. Section 3.2 then establishes the effective reduction. Section
-3.3 closes the stronger conclusion of the paper. Machine realisation remains
+The next EPQ milestone is section 3.2. The effectivity proof must certify
+closed arithmetic code recognition, translation on codes, and the output
+on invalid codes. Section 3.3 concerns the stronger conclusion of the paper. Machine realisation remains
 a separate research objective and is required when transferring numerical
 reductions to this repository's `tm_decidable` predicate.
 

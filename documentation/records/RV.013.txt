@@ -1,0 +1,39 @@
+RV.013
+ARITHMETIC TRANSLATION
+25 November 2026
+
+1 SOURCE AND RESULT
+
+This revision extends the Turing_Models research session from main at
+cfb0ba09cc87cec42d17656df18f66e41011cd23.
+
+Arithmetic_Translation.thy defines relational first-order arithmetic,
+its satisfaction over nat, and a recursive translation into formula.
+The proved interfaces cover formula membership, exact arity preservation,
+and truth preservation under every transitive ZF set model. The result
+for closed sentences uses the empty environment.
+
+Arithmetic_Invariance.thy proves arith_or_invariant_iff. Given a closed
+disagreement sentence, the disjunction of the translated arithmetic
+sentence and that sentence is ZFC invariant exactly when the source
+is true over nat.
+
+2 VERIFICATION
+
+Isabelle2025-2 with the local AFP 2026-02-06 dependencies passed
+
+    isabelle build -c -j 1 -o threads=2 -D .
+
+The build cleaned and rebuilt all six repository sessions. Repository
+checks covered the 45 declared theories. The exported AFP candidate
+matched the earlier archive byte for byte, with SHA256
+
+b2881e8cb3b75b8be6326401cc0d358842fb1a2ad75e765cfd934ebee41977d2
+
+3 SCOPE
+
+The source language uses graph relations for arithmetic operations.
+The semantic result takes source formulas as inputs. The proof of a
+total effective map on arithmetic sentence codes, including the invalid
+code case, remains open. The research theories lie outside the candidate
+archive. No AFP submission was made.

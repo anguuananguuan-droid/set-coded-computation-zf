@@ -98,9 +98,10 @@ provides the complete log form and Word copy.
 
 The [library](thys/Set_Coded_Turing_Machines) contains seventeen theories
 and is the standalone AFP candidate. [Research extensions](documentation/RESEARCH.md)
-cover the separate computation and model-invariance applications. Their
-open objectives include the full EPQ formalisation. The library has not
-been submitted to AFP.
+cover the separate computation and model-invariance applications. They
+include a truth-preserving translation of relational arithmetic into set
+theory. The effective reduction on arithmetic sentence codes remains open.
+The library has not been submitted to AFP.
 
 ## 6 Sources and maintenance
 
