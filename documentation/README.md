@@ -19,6 +19,8 @@ summary, proof outline, complete proof document, and EPQ paper.
 boundary, their remaining proof obligations, and the migration from earlier
 theory namespaces. [Research audit](records/RV.010.txt) identifies the
 proved interfaces and open objectives at main revision 6c1b42c.
+[Arithmetic translation record](records/RV.013.txt) covers the subsequent
+truth-preservation theorem and its application to model invariance.
 
 ## 3 Project records
 
